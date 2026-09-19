@@ -679,15 +679,15 @@
             currentScrambleMoves.forEach((move, idx) => {
                 const imgIndex = MOVE_IMAGE_INDEX[move];
                 const card = document.createElement('div');
-                card.className = "flex-shrink-0 flex flex-col items-center bg-base-200 border border-base-300 rounded-lg p-1.5 min-w-[64px] sm:min-w-[72px] shadow-sm";
+                card.className = "flex-shrink-0 flex flex-col items-center bg-base-200 border border-base-300 rounded-xl p-2 min-w-[120px] sm:min-w-[136px] shadow-sm";
 
                 // 余計な onerror や display:none のないシンプルな img タグ
                 card.innerHTML = `
-          <div class="flex items-center justify-between w-full px-1 mb-1">
-            <span class="text-[10px] text-base-content/40 font-mono">${idx + 1}</span>
-            <span class="badge badge-warning badge-xs font-black px-1">${move}</span>
+          <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
+            <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
+            <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
           </div>
-          <div class="w-12 h-12 sm:w-14 sm:h-14 bg-base-300 rounded flex items-center justify-center overflow-hidden">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
             <img 
               src="${IMAGE_PATH_BASE}${imgIndex}.png" 
               alt="${move}" 
