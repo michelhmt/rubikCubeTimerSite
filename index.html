@@ -99,30 +99,33 @@
                             <p class="text-xs text-base-content/60 font-bold">スペースキー長押し（0.3秒）で準備完了 → 離してスタート！</p>
                         </div>
                     </div>
-                    <!-- 右上コントロール群（モードバッジ ＆ 歯車設定ボタン） -->
+                    <!-- 右上コントロール群（サウンド切替 ＆ モードバッジ ＆ 歯車設定ボタン） -->
                     <div class="flex items-center gap-2">
+                        <!-- サウンドON/OFFボタン -->
+                        <button id="sound-toggle-btn"
+                            class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
+                            title="ビープ音の切り替え（ON/OFF）">
+                            <span id="sound-icon" class="text-base">🔊</span>
+                        </button>
+
                         <!-- キューブ管理ボタン -->
                         <button id="cube-mgmt-btn"
                             class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1.5 shadow-sm">
                             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <!-- 3D等角投影ルービックキューブのSVG形状 -->
                                 <path d="M12 2.5 L20.5 7.4 V16.6 L12 21.5 L3.5 16.6 V7.4 Z" fill="currentColor"
                                     fill-opacity="0.1" />
                                 <path d="M12 2.5 L20.5 7.4 L12 12.3 L3.5 7.4 Z" />
                                 <path d="M3.5 7.4 V16.6 L12 21.5 V12.3 Z" />
                                 <path d="M20.5 7.4 V16.6 L12 21.5 V12.3 Z" />
-                                <!-- 上面のグリッド線 -->
                                 <path d="M6.3 5.8 L14.8 10.7" />
                                 <path d="M9.2 4.1 L17.7 9.0" />
                                 <path d="M9.2 10.7 L17.7 5.8" />
                                 <path d="M6.3 9.0 L14.8 4.1" />
-                                <!-- 左面のグリッド線 -->
                                 <path d="M6.3 9.0 V18.2" />
                                 <path d="M9.2 10.7 V19.9" />
                                 <path d="M3.5 10.5 L12 15.4" />
                                 <path d="M3.5 13.5 L12 18.4" />
-                                <!-- 右面のグリッド線 -->
                                 <path d="M14.8 10.7 V19.9" />
                                 <path d="M17.7 9.0 V18.2" />
                                 <path d="M12 15.4 L20.5 10.5" />
@@ -140,7 +143,6 @@
                             class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning relative"
                             title="ログイン・設定">
                             <span class="text-base">⚙️</span>
-                            <!-- ログイン状態インジケーター（未ログイン: 灰色 / ログイン済: 緑色） -->
                             <span id="auth-status-dot"
                                 class="w-2.5 h-2.5 rounded-full bg-slate-500 absolute -top-0.5 -right-0.5 border-2 border-base-100 transition-colors"></span>
                         </button>
@@ -155,7 +157,6 @@
                             スクランブル</span>
 
                         <div class="flex items-center gap-3">
-                            <!-- 画像ガイド表示切り替えトグル -->
                             <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
                                 <span class="label-text text-xs font-bold text-base-content/70">🧭 イラストガイド</span>
                                 <input type="checkbox" id="toggle-scramble-images"
@@ -172,20 +173,17 @@
                         R2 U B2 D L2 F2 U' L2 U2 R2
                     </div>
 
-                    <!-- 回転方向画像の並び表示エリア（トグル連動） -->
                     <div id="scramble-images-wrapper" class="hidden mt-3 pt-3 border-t border-base-200 min-w-0 w-full">
                         <p class="text-[11px] text-base-content/50 font-bold mb-2 text-left flex items-center gap-1">
                             <span>👉</span> まわす順番（左から右へ、折り返して順番にまわしてね）
                         </p>
                         <div id="scramble-images-list"
                             class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1">
-                            <!-- 各手の画像カードがJSで順番に生成されます -->
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- タイマーグリッド表示エリア -->
             <div class="my-3 sm:my-4 flex-1 flex flex-col justify-center min-w-0 w-full">
                 <!-- 状態ガイドバナー -->
                 <div id="status-banner"
@@ -194,7 +192,6 @@
                 </div>
                 <!-- リキッドグリッド：カード枚数や解像度に応じて自動で幅・列数を最適配置 -->
                 <div id="timer-grid" class="liquid-timer-grid items-stretch">
-                    <!-- プレイヤーカードがJSにより動的に生成されます -->
                 </div>
             </div>
 
@@ -241,10 +238,9 @@
             </footer>
         </section>
 
-        <!-- 右側サイドバー：実績 ＆ 今日のランキングスペース -->
         <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
 
-            <!-- 実績（バッジ）スペース (クリックで開閉するアコーディオン) -->
+            <!-- 実績（バッジ）スペース -->
             <details id="achievement-details"
                 class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                 <summary
@@ -258,19 +254,15 @@
                         class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col gap-2 max-h-[380px]">
-                    <!-- きょうの子ども別獲得サマリー -->
                     <div id="today-kid-achievements-summary"
                         class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2">
-                        <!-- JSで「けんた: 3回」「ゆうき: 1回」などが並びます -->
                     </div>
-                    <!-- 実績リスト -->
                     <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1">
-                        <!-- 実績アイテムがJSで生成されます -->
                     </div>
                 </div>
             </details>
 
-            <!-- 今日のランキング / 最近の記録スペース (クリックで開閉するアコーディオン) -->
+            <!-- 今日のランキング -->
             <details id="leaderboard-details"
                 class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                 <summary
@@ -283,7 +275,6 @@
                         class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col max-h-[350px]">
-                    <!-- リーダーボードリスト -->
                     <div id="leaderboard-list" class="overflow-y-auto space-y-1.5 flex-1 pr-1 mt-1">
                         <div class="text-center text-xs text-base-content/50 py-4">
                             タイムを測定して保存すると<br>ここにランクインするよ！
@@ -292,7 +283,7 @@
                 </div>
             </details>
 
-            <!-- スクランブル完成図カード (画面右下) -->
+            <!-- スクランブル完成図カード -->
             <div id="cube-preview-card"
                 class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
                 <div class="flex items-center justify-between w-full mb-1">
@@ -303,7 +294,6 @@
                     <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 /
                         手前:緑 / 右:赤</span>
                 </div>
-                <!-- 3D等角投影キューブプレビューコンテナ -->
                 <div id="cube-preview-svg-container" class="w-44 h-44 flex items-center justify-center my-1">
                     <span class="loading loading-spinner loading-sm text-warning"></span>
                 </div>
@@ -315,13 +305,12 @@
         </aside>
     </div>
 
-    <!-- トースト通知用コンテナ (DaisyUI) -->
+    <!-- トースト通知用コンテナ -->
     <div id="toast-container" class="toast toast-top toast-center z-50 pointer-events-none"></div>
 
-    <!-- 認証・ログイン用モーダル (DaisyUI) -->
+    <!-- 認証・ログイン用モーダル -->
     <dialog id="auth-modal" class="modal">
         <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-sm">
-            <!-- モーダルヘッダー -->
             <div class="flex items-center justify-between pb-3 border-b border-base-200">
                 <h3 class="font-black text-lg text-warning flex items-center gap-2">
                     <span>⚙️</span> アカウント設定
@@ -331,7 +320,6 @@
                 </form>
             </div>
 
-            <!-- 未ログイン時のログインフォーム -->
             <div id="login-section" class="py-4 space-y-3">
                 <p class="text-xs text-base-content/70 font-semibold leading-relaxed">
                     Supabaseへタイムを登録するためにログインしてください。一度ログインすると次回以降も自動で維持されます。
@@ -360,7 +348,6 @@
                 </div>
             </div>
 
-            <!-- ログイン済みの表示セクション -->
             <div id="logged-in-section" class="py-4 space-y-3 hidden">
                 <div class="p-3 bg-success/10 border border-success/30 rounded-xl flex items-center gap-3">
                     <span class="text-2xl">✅</span>
@@ -378,13 +365,12 @@
                 </button>
             </div>
         </div>
-        <!-- モーダル背景クリックで閉じる -->
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>
     </dialog>
 
-    <!-- キューブ管理用モーダル (DaisyUI) -->
+    <!-- キューブ管理用モーダル -->
     <dialog id="cube-mgmt-modal" class="modal">
         <div
             class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
@@ -425,9 +411,7 @@
                     class="text-xs sm:text-sm font-bold text-base-content/70 mb-3 bg-base-200 p-3 rounded-xl border border-base-300 shrink-0">
                     データを読み込み中...
                 </div>
-                <!-- キューブ一覧コンテナ（高さをモーダルいっぱいに拡張） -->
                 <div id="cube-mgmt-list" class="space-y-2.5 flex-1 overflow-y-auto pr-1">
-                    <!-- JSで動的にキューブ一覧がレンダリングされます -->
                 </div>
             </div>
         </div>
@@ -437,7 +421,111 @@
     </dialog>
 
     <script>
-        // --- Supabase設定 ---
+        // --- Web Audio API サウンドシステム ---
+        let audioCtx = null;
+        let isSoundEnabled = true;
+
+        // localStorageからサウンド設定の読み込み
+        try {
+            const savedSound = localStorage.getItem('cube_sound_enabled');
+            if (savedSound !== null) {
+                isSoundEnabled = savedSound === 'true';
+            }
+        } catch (e) {
+            console.warn(e);
+        }
+
+        const soundToggleBtn = document.getElementById('sound-toggle-btn');
+        const soundIcon = document.getElementById('sound-icon');
+
+        function updateSoundUI() {
+            if (!soundIcon) return;
+            soundIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
+            if (isSoundEnabled) {
+                soundToggleBtn.classList.remove('opacity-50');
+            } else {
+                soundToggleBtn.classList.add('opacity-50');
+            }
+        }
+        updateSoundUI();
+
+        if (soundToggleBtn) {
+            soundToggleBtn.addEventListener('click', () => {
+                isSoundEnabled = !isSoundEnabled;
+                try {
+                    localStorage.setItem('cube_sound_enabled', isSoundEnabled ? 'true' : 'false');
+                } catch (e) { }
+                updateSoundUI();
+                if (isSoundEnabled) {
+                    playBeep(880, 0.08, 'sine', 0.2); // ONにしたときに確認音を鳴らす
+                    showToast('ビープ音をONにしました 🔊', 'info');
+                } else {
+                    showToast('ビープ音をOFFにしました 🔇', 'info');
+                }
+            });
+        }
+
+        // ユーザーインタラクション時にAudioContextを初期化
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // 基本のビープ音再生関数（クリックノイズを抑えるエンベロープ付き）
+        function playBeep(freq = 880, duration = 0.08, type = 'sine', volume = 0.25) {
+            if (!isSoundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+                // クリックノイズ防止のため微小フェード
+                gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + duration);
+            } catch (err) {
+                console.warn('ビープ音の再生エラー:', err);
+            }
+        }
+
+        // 計測開始音：「ピッ！」（高めのシャープなトーン）
+        function playStartBeep() {
+            playBeep(987.77, 0.1, 'sine', 0.35); // B5音
+        }
+
+        // 個別ストップ音：「ピッ！」（歯切れのよいトーン、1位は特別感のあるピピッ）
+        function playStopBeep(rank = 1) {
+            if (rank === 1) {
+                // 1位: 軽快な「ピピッ！」
+                playBeep(880, 0.06, 'triangle', 0.3);
+                setTimeout(() => {
+                    playBeep(1174.66, 0.09, 'triangle', 0.35); // D6
+                }, 75);
+            } else {
+                // 2位以降: 確実なストップ音「ピッ」
+                playBeep(784, 0.08, 'triangle', 0.28); // G5
+            }
+        }
+
         const SUPABASE_URL = "https://sqknnxyumrbiunsllzcl.supabase.co";
         const SUPABASE_KEY = "sb_publishable_QKQjNX4H8SLKclkvH8zrUg_DQOeLl_I";
         let supabaseClient = null;
@@ -449,10 +537,8 @@
             console.warn("Supabase is not initialized. Using local memory mode.", err);
         }
 
-        // ローカルランキングデータ（初期状態は空）
+        // ローカルランキングデータ
         let localLeaderboard = [];
-
-        // ローカルストレージから本日の記録を復元
         try {
             const savedBoard = localStorage.getItem('cube_today_leaderboard');
             if (savedBoard) {
@@ -462,7 +548,7 @@
             console.warn("ローカルランキングの読み込みに失敗しました", e);
         }
 
-        // 直近で登録されたメンバーのID一覧（前回測った子たち）
+        // 直近で登録されたメンバーのID一覧
         let lastRegisteredUserIds = [];
         try {
             const savedRecentUsers = localStorage.getItem('cube_recent_user_ids');
@@ -473,10 +559,8 @@
             console.warn("前回メンバーの読み込みに失敗しました", e);
         }
 
-        // 各スロットごとに「他の名前も表示」が選ばれたかどうかを管理するセット
         let expandedSlots = new Set();
 
-        // 実績マスターデータ定義
         let ACHIEVEMENTS = [
             {id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩'},
             {id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️'},
@@ -486,13 +570,11 @@
             {id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯'}
         ];
 
-        // 今日の日付キーを取得 (YYYY-MM-DD)
         function getTodayKey() {
             const now = new Date();
             return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         }
 
-        // 今日の実績獲得回数データ: { [achId]: { [playerName]: count } }
         let todayAchievementCounts = {};
 
         function loadTodayAchievements() {
@@ -511,20 +593,13 @@
         }
         loadTodayAchievements();
 
-        // Supabaseから取得したアクティブユーザー一覧（フォールバック用初期値付き）
         let usersList = [];
+        const SOLVE_TYPES = ['CROSS', '完全一面', 'F2L', 'OLL', 'PLL(LBL)', 'PLL(CFOP)'];
 
-        // ソルブタイプ（目標ステップ）の選択肢リスト
-        const SOLVE_TYPES = [
-            'CROSS', '完全一面', 'F2L', 'OLL', 'PLL(LBL)', 'PLL(CFOP)'
-        ];
-
-        // 名前選択肢のHTMLを動的に生成する関数
         function buildNameOptionsHtml(slotId, selectedUserId = null) {
             const isExpanded = expandedSlots.has(slotId);
             const hasRecent = lastRegisteredUserIds.length > 0;
 
-            // 絞り込み対象：前回登録メンバーがある＆展開されていない場合は前回メンバーのみ
             let displayUsers = usersList;
             let showExpandOption = false;
 
@@ -532,7 +607,6 @@
                 const filtered = usersList.filter(u => lastRegisteredUserIds.includes(u.id));
                 if (filtered.length > 0) {
                     displayUsers = filtered;
-                    // 全体の中にまだ表示されていないメンバーがいれば「他の名前も表示」を出す
                     if (usersList.some(u => !lastRegisteredUserIds.includes(u.id))) {
                         showExpandOption = true;
                     }
@@ -553,8 +627,6 @@
             return html;
         }
 
-        // スクランブル記号と画像ファイル番号（0〜17）の対応マップ
-        // 0:U, 1:U', 2:B, 3:B', 4:R, 5:R', 6:L, 7:L', 8:F, 9:F', 10:D, 11:D', 12:U2, 13:B2, 14:R2, 15:L2, 16:F2, 17:D2
         const MOVE_IMAGE_INDEX = {
             "U": 0, "U'": 1,
             "B": 2, "B'": 3,
@@ -566,19 +638,16 @@
             "R2": 14, "L2": 15,
             "F2": 16, "D2": 17
         };
-        // 画像フォルダのパス（scramblePic/xx.png 形式）
         const IMAGE_PATH_BASE = 'scramblePic/';
 
-        // --- 状態変数 ---
         let playerCount = 5;
         let players = [];
         let spacePressTimer = null;
         let isReady = false;
-        let globalState = 'IDLE'; // 'IDLE' | 'HOLDING' | 'READY' | 'RUNNING'
-        let currentScrambleMoves = []; // 現在の手順配列
-        let canStopTouch = false; // スタート直後のストップ誤爆防止フラグ
+        let globalState = 'IDLE';
+        let currentScrambleMoves = [];
+        let finishOrder = 0;
 
-        // DOM要素
         const timerGrid = document.getElementById('timer-grid');
         const countButtons = document.querySelectorAll('.player-count-btn');
         const saveAllBtn = document.getElementById('save-all-btn');
@@ -595,14 +664,7 @@
         const toggleScrambleImages = document.getElementById('toggle-scramble-images');
         const scrambleImagesWrapper = document.getElementById('scramble-images-wrapper');
         const scrambleImagesList = document.getElementById('scramble-images-list');
-        const touchStartBtn = document.getElementById('touch-start-btn');
-        const touchBtnIcon = document.getElementById('touch-btn-icon');
-        const touchBtnText = document.getElementById('touch-btn-text');
-        const mobileTimerOverlay = document.getElementById('mobile-timer-overlay');
-        const overlayTimerText = document.getElementById('overlay-timer-text');
-        const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
 
-        // 実績 ＆ ランキングのアコーディオンDOM要素 (<details>)
         const achievementDetails = document.getElementById('achievement-details');
         const leaderboardDetails = document.getElementById('leaderboard-details');
 
@@ -618,16 +680,14 @@
             });
         }
 
-        // キューブ管理関連DOM要素
         const cubeMgmtBtn = document.getElementById('cube-mgmt-btn');
         const cubeMgmtModal = document.getElementById('cube-mgmt-modal');
         const cubeMgmtList = document.getElementById('cube-mgmt-list');
         const cubeMgmtSummary = document.getElementById('cube-mgmt-summary');
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
 
-        let cubesData = []; // cube_managementテーブルのデータ配列
+        let cubesData = [];
 
-        // キューブ管理モーダルを開く (安全なnullガード付き)
         if (cubeMgmtBtn && cubeMgmtModal) {
             cubeMgmtBtn.addEventListener('click', () => {
                 cubeMgmtModal.showModal();
@@ -639,12 +699,10 @@
             cubeMgmtRefreshBtn.addEventListener('click', fetchCubeManagementData);
         }
 
-        // Supabaseの cube_management テーブルからデータを取得
         async function fetchCubeManagementData() {
             cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-base-content/60"><span class="loading loading-spinner loading-sm text-warning"></span> データを読み込み中...</div>`;
 
             if (!supabaseClient) {
-                // フォールバック用サンプル
                 cubesData = [
                     {id: '11eca1b3-870e-4e4f-8cc1-1dab8c56a420', cubeName: 'sel3', user_id: null, user_name: null, created_at: '2026-08-30 15:23:46'},
                     {id: '261b5c83-3505-4322-b1e8-36cbb0476b1a', cubeName: '356M', user_id: null, user_name: null, created_at: '2026-09-19 17:10:47'},
@@ -672,15 +730,12 @@
             }
         }
 
-        // 表示用のキューブ名を整形（sel1→1, maglev14_1→maglev14(1) など）
         function formatCubeDisplayName(name) {
             if (!name) return 'キューブ';
             const trimmed = name.trim();
-            // sel1, sel2 ... → 数字のみ（1, 2 ...）
             if (/^sel\d+$/i.test(trimmed)) {
                 return trimmed.replace(/^sel/i, '');
             }
-            // maglev14_1, maglev14_2 → maglev14(1), maglev14(2)
             if (/^maglev14_\d+$/i.test(trimmed)) {
                 return trimmed.replace(/^maglev14_(\d+)$/i, 'maglev14($1)');
             }
@@ -690,7 +745,6 @@
             return trimmed;
         }
 
-        // キューブ管理UIの描画
         function renderCubeManagementUI() {
             cubeMgmtList.innerHTML = '';
 
@@ -702,67 +756,61 @@
 
             const inUseCount = cubesData.filter(c => !!c.user_id).length;
             cubeMgmtSummary.innerHTML = `
-        <div class="flex items-center justify-between">
-          <span>全 <strong class="text-warning">${cubesData.length}</strong> 個中、<strong class="text-error">${inUseCount}</strong> 個貸出中</span>
-          <span class="badge badge-success badge-sm font-bold">空き: ${cubesData.length - inUseCount} 個</span>
-        </div>
-      `;
+                <div class="flex items-center justify-between">
+                  <span>全 <strong class="text-warning">${cubesData.length}</strong> 個中、<strong class="text-error">${inUseCount}</strong> 個貸出中</span>
+                  <span class="badge badge-success badge-sm font-bold">空き: ${cubesData.length - inUseCount} 個</span>
+                </div>
+            `;
 
             cubesData.forEach(cube => {
                 const isUsing = !!cube.user_id;
-                // usersListから照合、なければテーブル内のuser_nameを表示
                 const assignedUser = usersList.find(u => u.id === cube.user_id);
                 const userName = assignedUser ? assignedUser.name : (cube.user_name || (isUsing ? '（貸出中）' : ''));
                 const cubeLabel = formatCubeDisplayName(cube.cubeName) || `キューブ #${cube.id.slice(0, 6)}`;
 
                 const card = document.createElement('div');
-                card.className = `p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all ${isUsing ? 'bg-warning/10 border-warning/40 shadow-sm' : 'bg-base-200/70 border-base-300'
-                    }`;
+                card.className = `p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all ${isUsing ? 'bg-warning/10 border-warning/40 shadow-sm' : 'bg-base-200/70 border-base-300'}`;
 
-                // 子どもの選択肢HTML生成
                 const userOptionsHtml = usersList.map(u => {
                     const selected = u.id === cube.user_id ? 'selected' : '';
                     return `<option value="${u.id}" ${selected}>${u.name}</option>`;
                 }).join('');
 
                 card.innerHTML = `
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
-            <div class="min-w-0">
-              <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
-                <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
-                <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
-                  ${isUsing ? '貸出中' : '空き'}
-                </span>
-              </div>
-              <div class="text-xs text-base-content/70 font-bold mt-0.5">
-                ${isUsing
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
+                    <div class="min-w-0">
+                      <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
+                        <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
+                        <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
+                          ${isUsing ? '貸出中' : '空き'}
+                        </span>
+                      </div>
+                      <div class="text-xs text-base-content/70 font-bold mt-0.5">
+                        ${isUsing
                         ? `使っている子: <span class="text-warning font-black text-sm underline decoration-warning/40 underline-offset-2">${userName}</span>`
                         : '棚にあります（使えます）'}
-              </div>
-            </div>
-          </div>
+                      </div>
+                    </div>
+                  </div>
 
-          <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-            <!-- 割り当て用セレクト -->
-            <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
-              <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
-              ${userOptionsHtml}
-            </select>
+                  <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                    <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
+                      <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
+                      ${userOptionsHtml}
+                    </select>
 
-            <!-- 返却（解除）ボタン -->
-            ${isUsing ? `
-              <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
-                返却 📥
-              </button>
-            ` : ''}
-          </div>
-        `;
+                    ${isUsing ? `
+                      <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
+                        返却 📥
+                      </button>
+                    ` : ''}
+                  </div>
+                `;
 
                 cubeMgmtList.appendChild(card);
             });
 
-            // 子どもの割り当て変更イベントリスナー
             document.querySelectorAll('.cube-assign-select').forEach(select => {
                 select.addEventListener('change', async (e) => {
                     const cubeId = e.target.dataset.cubeId;
@@ -771,7 +819,6 @@
                 });
             });
 
-            // 返却ボタンのイベントリスナー
             document.querySelectorAll('.cube-release-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const cubeId = e.currentTarget.dataset.cubeId;
@@ -780,7 +827,6 @@
             });
         }
 
-        // キューブの使用者（user_id / user_name / supabase_Authid）を更新する処理
         async function updateCubeUser(cubeId, userId) {
             const assignedUser = usersList.find(u => u.id === userId);
             const userName = assignedUser ? assignedUser.name : null;
@@ -809,7 +855,6 @@
                 }
             }
 
-            // ローカル配列を更新
             const target = cubesData.find(c => String(c.id) === String(cubeId));
             if (target) {
                 target.user_id = userId;
@@ -826,7 +871,6 @@
             renderCubeManagementUI();
         }
 
-        // 認証・モーダル関連DOM要素
         const settingsBtn = document.getElementById('settings-btn');
         const authModal = document.getElementById('auth-modal');
         const authStatusDot = document.getElementById('auth-status-dot');
@@ -841,17 +885,14 @@
 
         let currentUser = null;
 
-        // 認証UIの更新（ドット色とモーダル内部の切り替え）
         function updateAuthUI(user) {
             currentUser = user;
             if (user) {
-                // ログイン中: ドットを緑色、モーダルをログイン済み表示へ
                 authStatusDot.className = "w-2.5 h-2.5 rounded-full bg-success absolute -top-0.5 -right-0.5 border-2 border-base-100 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
                 loginSection.classList.add('hidden');
                 loggedInSection.classList.remove('hidden');
                 loggedInEmailText.textContent = user.email || '管理者';
             } else {
-                // 未ログイン: ドットを灰色、モーダルをログインフォームへ
                 authStatusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-500 absolute -top-0.5 -right-0.5 border-2 border-base-100";
                 loginSection.classList.remove('hidden');
                 loggedInSection.classList.add('hidden');
@@ -862,17 +903,14 @@
             }
         }
 
-        // 認証状態の初期化＆次回自動ログイン（永続化セッション監視）
         async function initAuth() {
             if (!supabaseClient) return;
 
             try {
-                // 1. 保存されたセッションの取得（次回アクセス時も自動で復帰）
                 const {data: {session}, error} = await supabaseClient.auth.getSession();
                 if (error) throw error;
                 updateAuthUI(session ? session.user : null);
 
-                // 2. 認証ステータスの変化（ログイン・ログアウト・トークン更新）を自動検知
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     updateAuthUI(session ? session.user : null);
                     if (event === 'SIGNED_IN') {
@@ -885,13 +923,11 @@
             }
         }
 
-        // 歯車ボタンをクリックしたらモーダルを開く
         settingsBtn.addEventListener('click', () => {
             authErrorMsg.classList.add('hidden');
             authModal.showModal();
         });
 
-        // ログイン処理
         submitLoginBtn.addEventListener('click', async () => {
             const email = authEmailInput.value.trim();
             const password = authPasswordInput.value;
@@ -941,7 +977,6 @@
             }
         });
 
-        // ログアウト処理
         submitLogoutBtn.addEventListener('click', async () => {
             if (!supabaseClient) return;
 
@@ -961,7 +996,6 @@
             }
         });
 
-        // ミリ秒フォーマット関数（1分未満は 00.000、1分以上は 1:23.456）
         function formatTime(ms) {
             if (ms <= 0) return '00.000';
             const totalSec = ms / 1000;
@@ -978,7 +1012,6 @@
             return `${secStr}.${msStr}`;
         }
 
-        // トースト通知関数（DaisyUI）
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `alert alert-${type} shadow-lg py-2 px-4 text-sm font-bold flex items-center gap-2 pointer-events-auto transition-all transform duration-300`;
@@ -992,7 +1025,6 @@
             }, 2500);
         }
 
-        // スクランブル生成（WCA 3x3形式簡易ジェネレーター）
         function generateScramble() {
             const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
             const modifiers = ['', "'", '2'];
@@ -1012,7 +1044,6 @@
             return scramble;
         }
 
-        // 回転方向画像のリストを描画
         function renderScrambleImages() {
             if (!toggleScrambleImages.checked || currentScrambleMoves.length === 0) return;
 
@@ -1022,20 +1053,19 @@
                 const card = document.createElement('div');
                 card.className = "flex-shrink-0 flex flex-col items-center bg-base-200 border border-base-300 rounded-xl p-2 min-w-[120px] sm:min-w-[136px] shadow-sm";
 
-                // 余計な onerror や display:none のないシンプルな img タグ
                 card.innerHTML = `
-          <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
-            <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
-            <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
-          </div>
-          <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
-            <img 
-              src="${IMAGE_PATH_BASE}${imgIndex}.png" 
-              alt="${move}" 
-              class="w-full h-full object-contain pointer-events-none"
-            />
-          </div>
-        `;
+                  <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
+                    <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
+                    <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
+                  </div>
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
+                    <img 
+                      src="${IMAGE_PATH_BASE}${imgIndex}.png" 
+                      alt="${move}" 
+                      class="w-full h-full object-contain pointer-events-none"
+                    />
+                  </div>
+                `;
                 scrambleImagesList.appendChild(card);
             });
         }
@@ -1048,17 +1078,15 @@
         }
         newScrambleBtn.addEventListener('click', refreshScramble);
 
-        // --- 3x3x3 ルービックキューブシミュレーター＆3D等角投影プレビュー ---
         const CUBE_COLORS = {
-            W: '#ffffff', // Up: 白
-            Y: '#ffd500', // Down: 黄
-            G: '#009b48', // Front: 緑
-            B: '#0046ad', // Back: 青
-            O: '#ff5800', // Left: 橙
-            R: '#b71234'  // Right: 赤
+            W: '#ffffff',
+            Y: '#ffd500',
+            G: '#009b48',
+            B: '#0046ad',
+            O: '#ff5800',
+            R: '#b71234'
         };
 
-        // 初期状態のキューブモデル（各面9マス 0〜8）
         function createSolvedCube() {
             return {
                 U: Array(9).fill('W'),
@@ -1070,7 +1098,6 @@
             };
         }
 
-        // 面自体の時計回り90度回転
         function rotateFaceCW(face) {
             return [
                 face[6], face[3], face[0],
@@ -1079,7 +1106,6 @@
             ];
         }
 
-        // 1手の回転を適用
         function applyCubeMove(cube, move) {
             const baseMove = move[0];
             const isPrime = move.includes("'");
@@ -1130,21 +1156,19 @@
             }
         }
 
-        // スクランブル手順からキューブを再現
         function simulateCube(moves) {
             const cube = createSolvedCube();
             moves.forEach(m => applyCubeMove(cube, m));
             return cube;
         }
 
-        // 3D等角投影ビュー（上面・正面・右面）をSVGで描画
         function updateCubePreview() {
             const container = document.getElementById('cube-preview-svg-container');
             if (!container) return;
 
             const cube = simulateCube(currentScrambleMoves);
-            const s = 20; // 1ピースの辺の長さ
-            const cos30 = Math.cos(Math.PI / 6); // 0.866025
+            const s = 20;
+            const cos30 = Math.cos(Math.PI / 6);
             const sin30 = 0.5;
             const cx = 80;
             const cy = 76;
@@ -1156,7 +1180,6 @@
 
             let svgPolygons = '';
 
-            // 1. 上面 (U 面: 白が上) - r: 0(Back)..2(Front), c: 0(Left)..2(Right)
             const uOrig = {x: cx, y: cy - 6 * s * sin30};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1169,7 +1192,6 @@
                 }
             }
 
-            // 2. 正面 (F 面: 緑が手前) - r: 0(Top)..2(Bottom), c: 0(Left)..2(Right)
             const fOrig = {x: cx - 3 * s * cos30, y: cy - 3 * s * sin30};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1182,7 +1204,6 @@
                 }
             }
 
-            // 3. 右面 (R 面: 赤が右) - r: 0(Top)..2(Bottom), c: 0(Front)..2(Back)
             const rOrig = {x: cx, y: cy};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1196,13 +1217,12 @@
             }
 
             container.innerHTML = `
-        <svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">
-          ${svgPolygons}
-        </svg>
-      `;
+                <svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">
+                  ${svgPolygons}
+                </svg>
+            `;
         }
 
-        // トグル切り替えイベント
         toggleScrambleImages.addEventListener('change', (e) => {
             const isEnabled = e.target.checked;
             localStorage.setItem('cube_show_scramble_images', isEnabled ? 'true' : 'false');
@@ -1215,15 +1235,13 @@
             }
         });
 
-        // プレイヤーUIの初期化
         function initPlayers(count) {
             playerCount = count;
             players = [];
             timerGrid.innerHTML = '';
             finishOrder = 0;
-            expandedSlots.clear(); // ラウンド開始時に展開状態をリセット
+            expandedSlots.clear();
 
-            // 人数に応じたバッジ表示の切り替え
             if (modeBadge) {
                 if (count === 1) {
                     modeBadge.textContent = 'ソロモード';
@@ -1250,10 +1268,8 @@
                 };
                 players.push(p);
 
-                // selectの選択肢（前回メンバーを優先表示）
                 const optionsHtml = buildNameOptionsHtml(p.id);
 
-                // ソルブタイプの選択肢
                 const solveTypeOptionsHtml = SOLVE_TYPES.map((type, idx) =>
                     `<option value="${type}" ${idx === 0 ? 'selected' : ''}>🎯 ${type}</option>`
                 ).join('');
@@ -1262,69 +1278,61 @@
                 card.id = `player-card-${p.id}`;
                 card.className = "card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 flex flex-col justify-between items-center relative overflow-hidden transition-all duration-300 w-full";
                 card.innerHTML = `
-          <div class="w-full flex items-center justify-between mb-2 gap-1.5">
-            <span id="rank-badge-${p.id}" class="badge badge-sm badge-neutral font-black shrink-0">Slot ${p.id}</span>
-            <div id="badge-status-${p.id}" class="w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0"></div>
-            <!-- ミス・除外用の✕ボタン -->
-            <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
-          </div>
+                  <div class="w-full flex items-center justify-between mb-2 gap-1.5">
+                    <span id="rank-badge-${p.id}" class="badge badge-sm badge-neutral font-black shrink-0">Slot ${p.id}</span>
+                    <div id="badge-status-${p.id}" class="w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0"></div>
+                    <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
+                  </div>
 
-          <!-- 子どもが押しやすい大きな名前セレクトボックス -->
-          <div class="w-full mb-2">
-            <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
-            <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
-              ${optionsHtml}
-            </select>
-          </div>
+                  <div class="w-full mb-2">
+                    <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
+                    <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
+                      ${optionsHtml}
+                    </select>
+                  </div>
 
-          <!-- 子どもが押しやすい大きなソルブタイプセレクトボックス -->
-          <div class="w-full mb-2">
-            <label class="text-[11px] font-bold text-base-content/60 block mb-1">🎯 ソルブタイプ:</label>
-            <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" disabled>
-              ${solveTypeOptionsHtml}
-            </select>
-          </div>
+                  <div class="w-full mb-2">
+                    <label class="text-[11px] font-bold text-base-content/60 block mb-1">🎯 ソルブタイプ:</label>
+                    <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" disabled>
+                      ${solveTypeOptionsHtml}
+                    </select>
+                  </div>
 
-          <!-- 個別統計バッジ表示エリア（最速タイム PB & ao5） -->
-          <div id="stats-badge-${p.id}" class="w-full bg-base-200/70 border border-base-300 rounded-lg py-1 px-2 mb-2 flex items-center justify-around text-[11px] font-bold text-base-content/80 min-h-[28px] hidden">
-            <div class="flex items-center gap-1">
-              <span class="text-warning text-xs">👑 PB:</span>
-              <span id="pb-val-${p.id}" class="font-mono text-warning font-black">--</span>
-            </div>
-            <div class="h-3 w-px bg-base-content/20"></div>
-            <div class="flex items-center gap-1">
-              <span class="text-info text-xs">📊 ao5:</span>
-              <span id="ao5-val-${p.id}" class="font-mono text-info font-black">--</span>
-            </div>
-          </div>
-          
-          <div class="my-1.5 sm:my-2 w-full text-center">
-            <div id="timer-${p.id}" class="timer-font text-4xl sm:text-5xl lg:text-6xl font-black text-base-content tracking-wider select-none truncate">
-              00.000
-            </div>
-          </div>
-          
-          <button id="stop-btn-${p.id}" class="stop-btn btn btn-neutral btn-sm w-full font-black text-base-content/50 cursor-not-allowed shadow transition-all duration-200" data-id="${p.id}" disabled>
-            待機中
-          </button>
-        `;
+                  <div id="stats-badge-${p.id}" class="w-full bg-base-200/70 border border-base-300 rounded-lg py-1 px-2 mb-2 flex items-center justify-around text-[11px] font-bold text-base-content/80 min-h-[28px] hidden">
+                    <div class="flex items-center gap-1">
+                      <span class="text-warning text-xs">👑 PB:</span>
+                      <span id="pb-val-${p.id}" class="font-mono text-warning font-black">--</span>
+                    </div>
+                    <div class="h-3 w-px bg-base-content/20"></div>
+                    <div class="flex items-center gap-1">
+                      <span class="text-info text-xs">📊 ao5:</span>
+                      <span id="ao5-val-${p.id}" class="font-mono text-info font-black">--</span>
+                    </div>
+                  </div>
+                  
+                  <div class="my-1.5 sm:my-2 w-full text-center">
+                    <div id="timer-${p.id}" class="timer-font text-4xl sm:text-5xl lg:text-6xl font-black text-base-content tracking-wider select-none truncate">
+                      00.000
+                    </div>
+                  </div>
+                  
+                  <button id="stop-btn-${p.id}" class="stop-btn btn btn-neutral btn-sm w-full font-black text-base-content/50 cursor-not-allowed shadow transition-all duration-200" data-id="${p.id}" disabled>
+                    待機中
+                  </button>
+                `;
                 timerGrid.appendChild(card);
             }
 
-            // 名前選択リスナーの設定
             attachNameSelectListeners();
 
-            // ソルブタイプ選択リスナー
             document.querySelectorAll('.solve-type-select').forEach(select => {
                 select.addEventListener('change', (e) => {
                     const id = parseInt(e.target.dataset.id) - 1;
                     players[id].solveType = e.target.value;
-                    // ソルブタイプを変更した際にもPBとao5を再計算
                     updatePlayerStatsDisplay(id + 1, players[id].userId, players[id].solveType);
                 });
             });
 
-            // 個別ストップボタン（画面タップ用）
             document.querySelectorAll('.stop-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = parseInt(e.currentTarget.dataset.id) - 1;
@@ -1332,7 +1340,6 @@
                 });
             });
 
-            // ✕ボタン（カードの除外・取り消し）
             document.querySelectorAll('.cancel-slot-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1342,21 +1349,16 @@
             });
         }
 
-        // 名前選択selectのイベントリスナーバインド関数（再生成時にも使用）
         function attachNameSelectListeners() {
             document.querySelectorAll('.player-select').forEach(select => {
-                // 重複登録を避けるため一度既存のonchangeをクリア
                 select.onchange = (e) => {
                     const slotId = parseInt(e.target.dataset.id);
                     const pIndex = slotId - 1;
                     const val = e.target.value;
 
-                    // 「他の名前も表示」が選ばれた場合
                     if (val === '__SHOW_ALL__') {
                         expandedSlots.add(slotId);
-                        // 全メンバーを含めたHTMLで選択肢を再生成
                         e.target.innerHTML = buildNameOptionsHtml(slotId, players[pIndex].userId);
-                        // 再展開後は未選択状態に戻して開かせる
                         e.target.value = players[pIndex].userId || '';
                         showToast('すべてのメンバーを表示しました 📋', 'info');
                         return;
@@ -1369,7 +1371,6 @@
                         players[pIndex].userId = userObj.id;
                         players[pIndex].name = userObj.name;
 
-                        // ユーザーごとの default_solvetype があれば自動適用
                         if (userObj.default_solvetype) {
                             players[pIndex].solveType = userObj.default_solvetype;
                             const solveSelect = document.getElementById(`solve-type-${slotId}`);
@@ -1378,14 +1379,12 @@
                             }
                         }
 
-                        // 名前選択時にそのソルブタイプのPBとao5を計算・表示
                         updatePlayerStatsDisplay(slotId, userObj.id, players[pIndex].solveType);
                     }
                 };
             });
         }
 
-        // --- PB（自己最速）および ao5 の計算と表示 ---
         async function updatePlayerStatsDisplay(slotId, userId, solveType) {
             const statsBadge = document.getElementById(`stats-badge-${slotId}`);
             const pbVal = document.getElementById(`pb-val-${slotId}`);
@@ -1402,7 +1401,6 @@
 
             let solves = [];
 
-            // 1. Supabaseから該当ユーザー＆ソルブタイプの直近の記録を取得
             if (supabaseClient) {
                 try {
                     const {data, error} = await supabaseClient
@@ -1421,7 +1419,6 @@
                 }
             }
 
-            // 2. オフライン時または未保存のローカルデータも加味
             if (solves.length === 0 && localLeaderboard) {
                 const userObj = usersList.find(u => u.id === userId);
                 const uName = userObj ? userObj.name : null;
@@ -1432,7 +1429,6 @@
                 }
             }
 
-            // PB（最速タイム）の計算
             if (solves.length > 0) {
                 const bestMs = Math.min(...solves);
                 pbVal.textContent = formatTime(bestMs);
@@ -1440,11 +1436,9 @@
                 pbVal.textContent = 'なし';
             }
 
-            // ao5（Average of 5: 直近5回のうち最速と最遅を除いた3回の平均）の計算
             if (solves.length >= 5) {
-                const last5 = solves.slice(0, 5); // 直近5回
+                const last5 = solves.slice(0, 5);
                 const sorted5 = [...last5].sort((a, b) => a - b);
-                // 最速(index 0) と 最遅(index 4) を除外した中間3回の平均
                 const middle3 = sorted5.slice(1, 4);
                 const avgMs = Math.round(middle3.reduce((sum, v) => sum + v, 0) / 3);
                 ao5Val.textContent = formatTime(avgMs);
@@ -1453,7 +1447,6 @@
             }
         }
 
-        // プレイヤーカードの除外（キャンセル）処理
         function cancelPlayerSlot(index) {
             const p = players[index];
             if (!p || p.isCancelled) return;
@@ -1463,7 +1456,7 @@
                 clearInterval(p.intervalId);
                 p.intervalId = null;
             }
-            p.isFinished = true; // 進行を止めないよう完了扱いに
+            p.isFinished = true;
 
             const card = document.getElementById(`player-card-${p.id}`);
             if (card) {
@@ -1475,15 +1468,11 @@
             }
             showToast(`スロット ${p.id} を除外しました`, 'info');
 
-            // 計測中に除外した場合、残りの有効なプレイヤーが全員終了したかチェック
             if (globalState === 'RUNNING') {
                 checkAllFinished();
             }
         }
 
-        let finishOrder = 0;
-
-        // 全員一斉スタート
         function startAllTimers() {
             globalState = 'RUNNING';
             isReady = false;
@@ -1491,6 +1480,9 @@
             setAllTimerColor('text-warning');
             statusBanner.textContent = '⏱ 計測中！解き終わったらスペースキーでストップ';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-warning py-1 px-3 bg-warning/10 rounded-lg max-w-md mx-auto animate-pulse';
+
+            // 🚀 スタート時のビープ音を再生！
+            playStartBeep();
 
             const now = Date.now();
             const currentScrambleText = currentScrambleMoves.join(' ');
@@ -1504,7 +1496,6 @@
                 p.userId = null;
                 p.name = '';
 
-                // ドロップダウンをロック
                 const select = document.getElementById(`select-${p.id}`);
                 if (select) {
                     select.disabled = true;
@@ -1527,7 +1518,6 @@
                 const statusDot = document.getElementById(`badge-status-${p.id}`);
                 if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-warning animate-pulse";
 
-                // ストップボタンを「赤色（ストップ可能）」に切り替え
                 const stopBtn = document.getElementById(`stop-btn-${p.id}`);
                 if (stopBtn) {
                     stopBtn.disabled = false;
@@ -1540,151 +1530,28 @@
                     const formatted = formatTime(p.elapsedTime);
                     const el = document.getElementById(`timer-${p.id}`);
                     if (el) el.textContent = formatted;
-
-                    // 全画面オーバーレイが開いていればそちらのタイムも更新
-                    if (!mobileTimerOverlay.classList.contains('hidden') && p.id === 1) {
-                        overlayTimerText.textContent = formatted;
-                    }
                 }, 10);
             });
-
-            // スマホ・タッチ操作でのスタート時、またはモバイル画面幅時は全画面オーバーレイを表示
-            if (window.innerWidth < 1024 || isTouchStarted) {
-                showMobileFullscreenTimer();
-            }
         }
 
-        let isTouchStarted = false; // タッチボタン起点でスタートしたかの判定
-
-        // 全画面タイマーオーバーレイの表示
-        function showMobileFullscreenTimer() {
-            if (!mobileTimerOverlay) return;
-            overlayTimerText.textContent = '00.000';
-            overlayScrambleHint.textContent = currentScrambleMoves.slice(0, 8).join(' ') + '...';
-            mobileTimerOverlay.classList.remove('hidden');
-            mobileTimerOverlay.classList.add('flex');
-
-            // スタート時の指離し直後にストップが誤爆しないよう250msの保護期間を設ける
-            canStopTouch = false;
-            setTimeout(() => {
-                canStopTouch = true;
-            }, 250);
-        }
-
-        // 全画面タイマーオーバーレイの非表示
-        function hideMobileFullscreenTimer() {
-            if (!mobileTimerOverlay) return;
-            mobileTimerOverlay.classList.add('hidden');
-            mobileTimerOverlay.classList.remove('flex');
-        }
-
-        // 全画面オーバーレイをどこでもタップしてストップ
-        function handleOverlayStop(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            if (!canStopTouch) return;
-
-            if (globalState === 'RUNNING') {
-                const runningPlayerIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
-                if (runningPlayerIndex !== -1) {
-                    stopIndividualTimer(runningPlayerIndex);
-                }
-            }
-            hideMobileFullscreenTimer();
-        }
-
-        if (mobileTimerOverlay) {
-            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, {passive: false});
-            mobileTimerOverlay.addEventListener('pointerdown', handleOverlayStop);
-        }
-
-        // 全員終了チェック共通処理
         function checkAllFinished() {
             const activePlayers = players.filter(p => !p.isCancelled);
             if (activePlayers.length > 0 && activePlayers.every(p => p.isFinished)) {
                 globalState = 'IDLE';
-                isTouchStarted = false;
-                hideMobileFullscreenTimer();
                 unlockNameSelectors();
                 statusBanner.textContent = '🎉 全員ゴール！それぞれのタイムに名前を割り当ててね';
                 statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
                 showToast('測定完了！名前を選んで保存してね ✍️', 'success');
 
-                // タッチスタートボタンの表示リセット
-                resetTouchButtonUI();
+                // 全員ゴール時のファンファーレ的ビープ音
+                setTimeout(() => {
+                    playBeep(523.25, 0.08, 'sine', 0.25);
+                    setTimeout(() => playBeep(659.25, 0.08, 'sine', 0.25), 80);
+                    setTimeout(() => playBeep(783.99, 0.12, 'sine', 0.3), 160);
+                }, 200);
             }
         }
 
-        function resetTouchButtonUI() {
-            if (!touchStartBtn) return;
-            touchStartBtn.className = "btn btn-warning btn-outline btn-md sm:btn-wide font-black shadow-md flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2";
-            touchBtnIcon.textContent = '👆';
-            touchBtnText.textContent = '長押し（0.3秒）でスタート準備';
-        }
-
-        // タッチスタートボタンの長押し制御（Pointer Events対応）
-        if (touchStartBtn) {
-            const startHold = (e) => {
-                if (e.pointerType === 'mouse' && e.button !== 0) return;
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (globalState === 'RUNNING') {
-                    // 計測中にボタンを押したらストップ
-                    const runningIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
-                    if (runningIndex !== -1) stopIndividualTimer(runningIndex);
-                    return;
-                }
-
-                if (globalState === 'IDLE') {
-                    globalState = 'HOLDING';
-                    isReady = false;
-                    setAllTimerColor('text-error');
-                    touchStartBtn.className = "btn btn-error btn-md sm:btn-wide font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2";
-                    touchBtnIcon.textContent = '⏳';
-                    touchBtnText.textContent = 'そのまま長押し...';
-
-                    spacePressTimer = setTimeout(() => {
-                        isReady = true;
-                        globalState = 'READY';
-                        setAllTimerColor('text-success');
-                        touchStartBtn.className = "btn btn-success btn-md sm:btn-wide font-black text-slate-900 shadow-xl flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 animate-pulse";
-                        touchBtnIcon.textContent = '🟢';
-                        touchBtnText.textContent = '準備完了！指を離してスタート！';
-                    }, 300);
-                }
-            };
-
-            const endHold = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (globalState === 'HOLDING' || globalState === 'READY') {
-                    clearTimeout(spacePressTimer);
-
-                    if (isReady) {
-                        isTouchStarted = true;
-                        startAllTimers();
-                        touchStartBtn.className = "btn btn-error btn-md sm:btn-wide font-black text-slate-900 shadow-md flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 animate-pulse";
-                        touchBtnIcon.textContent = '🛑';
-                        touchBtnText.textContent = 'タップしてストップ！';
-                    } else {
-                        setAllTimerColor('text-base-content');
-                        globalState = 'IDLE';
-                        resetTouchButtonUI();
-                    }
-                }
-            };
-
-            touchStartBtn.addEventListener('pointerdown', startHold);
-            touchStartBtn.addEventListener('pointerup', endHold);
-            touchStartBtn.addEventListener('pointercancel', endHold);
-            touchStartBtn.addEventListener('contextmenu', e => e.preventDefault());
-        }
-
-        // プレイヤー個別のタイマー停止
         function stopIndividualTimer(index) {
             const p = players[index];
             if (!p || p.isFinished || p.isCancelled || !p.intervalId) return;
@@ -1695,7 +1562,9 @@
             finishOrder++;
             p.rank = finishOrder;
 
-            // ストップボタンを「緑色（ゴール完了）」に切り替え＆無効化
+            // 🛑 ストップ時のビープ音を再生！（着順に応じた音）
+            playStopBeep(finishOrder);
+
             const stopBtn = document.getElementById(`stop-btn-${p.id}`);
             if (stopBtn) {
                 stopBtn.disabled = true;
@@ -1703,7 +1572,6 @@
                 stopBtn.className = "stop-btn btn btn-success btn-sm w-full font-black text-slate-900 shadow opacity-90 cursor-default";
             }
 
-            // 着順バッジ表示
             const rankBadge = document.getElementById(`rank-badge-${p.id}`);
             if (rankBadge) {
                 const medal = finishOrder === 1 ? '🥇 1位' : finishOrder === 2 ? '🥈 2位' : finishOrder === 3 ? '🥉 3位' : `${finishOrder}位`;
@@ -1711,27 +1579,18 @@
                 rankBadge.className = finishOrder === 1 ? 'badge badge-sm badge-warning font-black' : 'badge badge-sm badge-neutral font-black';
             }
 
-            // 確定タイム表示
             const timerEl = document.getElementById(`timer-${p.id}`);
             if (timerEl) {
                 timerEl.textContent = formatTime(p.elapsedTime);
                 timerEl.className = "timer-font text-4xl sm:text-5xl font-black text-base-content tracking-wider select-none";
             }
 
-            // カード上のステータス更新
             const statusDot = document.getElementById(`badge-status-${p.id}`);
             if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-success";
 
-            // 1人測定などの場合、タイマー停止に合わせて全画面オーバーレイを閉じる
-            if (players.filter(pl => !pl.isCancelled && !pl.isFinished).length === 0) {
-                hideMobileFullscreenTimer();
-            }
-
-            // 全員終了チェック
             checkAllFinished();
         }
 
-        // 全員終了時に名前ドロップダウンを有効化
         function unlockNameSelectors() {
             players.forEach(p => {
                 if (p.isCancelled) return;
@@ -1751,7 +1610,6 @@
             });
         }
 
-        // 全タイマーの色切り替え
         function setAllTimerColor(colorClass) {
             players.forEach(p => {
                 if (!p.isFinished && !p.isCancelled) {
@@ -1761,11 +1619,13 @@
             });
         }
 
-        // キーボード操作：スペース長押しで準備 → 離してスタート → 押して個別ストップ
         document.addEventListener('keydown', (e) => {
             if (e.code !== 'Space' || e.repeat) return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
             e.preventDefault();
+
+            // ユーザー操作時にAudioContextの再開を確実に実行
+            getAudioContext();
 
             if (globalState === 'IDLE') {
                 globalState = 'HOLDING';
@@ -1779,9 +1639,10 @@
                     setAllTimerColor('text-success');
                     statusBanner.textContent = '🟢 準備完了！手を離すとスタート！';
                     statusBanner.className = 'text-center mb-3 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto animate-pulse';
+                    // 準備完了のサイン音（ごく短い確認音）
+                    playBeep(587.33, 0.05, 'sine', 0.15);
                 }, 300);
             } else if (globalState === 'RUNNING') {
-                // 走っているタイマーのうち、先頭の未終了＆非キャンセルプレイヤーを1人停止
                 const runningPlayerIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
                 if (runningPlayerIndex !== -1) {
                     stopIndividualTimer(runningPlayerIndex);
@@ -1807,7 +1668,6 @@
             }
         });
 
-        // 人数変更ボタンのクリック処理（currentTargetで正確に取得）
         countButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetBtn = e.currentTarget;
@@ -1826,7 +1686,6 @@
             });
         });
 
-        // リセットボタン
         resetAllBtn.addEventListener('click', () => {
             players.forEach(p => {
                 if (p.intervalId) clearInterval(p.intervalId);
@@ -1841,11 +1700,10 @@
             showToast('タイマーをリセットしました', 'warning');
         });
 
-        // 実績の描画
         function renderAchievements() {
             achievementList.innerHTML = '';
             let totalTodayUnlocks = 0;
-            const kidTotalCounts = {}; // 子どもごとの本日の実績獲得合計数
+            const kidTotalCounts = {};
 
             ACHIEVEMENTS.forEach(ach => {
                 const countsForAch = todayAchievementCounts[ach.id] || {};
@@ -1857,26 +1715,25 @@
                     kidTotalCounts[name] = (kidTotalCounts[name] || 0) + count;
                 });
 
-                // 達成者バッジタグの生成（回数付き）
                 let earnersHtml = '';
                 if (isUnlockedToday) {
                     earnersHtml = `
-            <div class="mt-1.5 flex flex-wrap gap-1 items-center">
-              <span class="text-[10px] text-base-content/60 font-bold">今日の達成者:</span>
-              ${earnersEntries.map(([name, count]) => `
-                <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
-                  <span>${name}</span>
-                  <span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">
-                    ${count}回
-                  </span>
-                </span>
-              `).join('')}
-            </div>
-          `;
+                        <div class="mt-1.5 flex flex-wrap gap-1 items-center">
+                          <span class="text-[10px] text-base-content/60 font-bold">今日の達成者:</span>
+                          ${earnersEntries.map(([name, count]) => `
+                            <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
+                              <span>${name}</span>
+                              <span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">
+                                ${count}回
+                              </span>
+                            </span>
+                          `).join('')}
+                        </div>
+                    `;
                 } else {
                     earnersHtml = `
-            <div class="mt-1 text-[10px] text-base-content/40 italic">きょうはまだ誰も達成していません</div>
-          `;
+                        <div class="mt-1 text-[10px] text-base-content/40 italic">きょうはまだ誰も達成していません</div>
+                    `;
                 }
 
                 const item = document.createElement('div');
@@ -1885,26 +1742,25 @@
                     : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
                     }`;
                 item.innerHTML = `
-          <div class="flex items-start gap-2.5">
-            <div class="text-2xl shrink-0">${ach.icon}</div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <div class="text-xs font-black text-warning">${ach.title}</div>
-                <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
-                  ${isUnlockedToday ? `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨` : '🔒 未解除'}
-                </span>
-              </div>
-              <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
-              ${earnersHtml}
-            </div>
-          </div>
-        `;
+                  <div class="flex items-start gap-2.5">
+                    <div class="text-2xl shrink-0">${ach.icon}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <div class="text-xs font-black text-warning">${ach.title}</div>
+                        <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
+                          ${isUnlockedToday ? `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨` : '🔒 未解除'}
+                        </span>
+                      </div>
+                      <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
+                      ${earnersHtml}
+                    </div>
+                  </div>
+                `;
                 achievementList.appendChild(item);
             });
 
             achievementCount.textContent = `きょう計 ${totalTodayUnlocks} 回 達成`;
 
-            // 子どもごとの合計獲得数サマリーの描画
             if (todayKidSummary) {
                 todayKidSummary.innerHTML = '';
                 const sortedKids = Object.entries(kidTotalCounts).sort((a, b) => b[1] - a[1]);
@@ -1922,7 +1778,6 @@
             }
         }
 
-        // 個人ごとの実績解除＆回数カウント処理
         function unlockAchievement(id, playerName) {
             const ach = ACHIEVEMENTS.find(a => a.id === id);
             if (!ach || !playerName) return;
@@ -1931,12 +1786,10 @@
                 todayAchievementCounts[id] = {};
             }
 
-            // 回数を+1加算
             const currentCount = todayAchievementCounts[id][playerName] || 0;
             const newCount = currentCount + 1;
             todayAchievementCounts[id][playerName] = newCount;
 
-            // 日付ごとにローカルストレージへ保存
             try {
                 const todayKey = getTodayKey();
                 localStorage.setItem(`cube_achievements_${todayKey}`, JSON.stringify(todayAchievementCounts));
@@ -1948,20 +1801,17 @@
             showToast(`🎉【${playerName}】が「${ach.title}」を達成！ (きょう ${newCount} 回目)`, 'warning');
         }
 
-        // ソルブ時の実績チェック（個人名を受け取る）
         function checkSolveAchievements(timeSec, playerName) {
             if (timeSec < 60) unlockAchievement('sub_60', playerName);
             if (timeSec < 30) unlockAchievement('sub_30', playerName);
             if (timeSec < 20) unlockAchievement('sub_20', playerName);
 
-            // ミリ秒の下3桁ゾロ目チェック（例: .333 や .777）
             const millisPart = Math.floor((timeSec * 1000) % 1000);
             if (millisPart >= 111 && millisPart % 111 === 0) {
                 unlockAchievement('lucky_double', playerName);
             }
         }
 
-        // 今日のランキング描画（子どもごとの自己ベストのみを抽出して重複排除 ＋ 測定回数表示）
         function renderLeaderboard() {
             leaderboardList.innerHTML = '';
             if (!localLeaderboard || localLeaderboard.length === 0) {
@@ -1969,13 +1819,11 @@
                 return;
             }
 
-            // 各子どもの今日測定した合計回数を集計
             const solveCountMap = new Map();
             localLeaderboard.forEach(item => {
                 solveCountMap.set(item.name, (solveCountMap.get(item.name) || 0) + 1);
             });
 
-            // 同じ子ども（名前）が重複しないよう、その日の最速タイム（自己ベスト）のみを抽出
             const bestRecordsMap = new Map();
             localLeaderboard.forEach(item => {
                 const key = item.name;
@@ -1984,7 +1832,6 @@
                 }
             });
 
-            // 各自のベストタイムを昇順（速い順）にソートして全員分を表示（上限解除）
             const sorted = Array.from(bestRecordsMap.values()).sort((a, b) => a.time - b.time);
 
             sorted.forEach((item, index) => {
@@ -1996,28 +1843,25 @@
                 const countBadge = `<span class="badge badge-neutral badge-xs text-[9px] font-bold text-base-content/70 px-1 py-0.5 ml-1 shrink-0" title="きょう測定した回数">${count}回測定</span>`;
 
                 const row = document.createElement('div');
-                row.className = `flex items-center justify-between p-2 rounded-lg bg-base-200 border border-base-300 text-xs font-black transition-all duration-300 ${index === 0 ? 'border-warning/50 bg-warning/5' : ''
-                    }`;
+                row.className = `flex items-center justify-between p-2 rounded-lg bg-base-200 border border-base-300 text-xs font-black transition-all duration-300 ${index === 0 ? 'border-warning/50 bg-warning/5' : ''}`;
                 row.innerHTML = `
-          <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
-            <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
-            <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
-            ${solveTypeBadge}
-            ${countBadge}
-          </div>
-          <div class="flex items-center gap-2 shrink-0 ml-auto">
-            <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
-            <span class="text-[10px] text-base-content/40 font-normal">${item.date || ''}</span>
-          </div>
-        `;
+                  <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
+                    <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
+                    <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
+                    ${solveTypeBadge}
+                    ${countBadge}
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0 ml-auto">
+                    <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
+                    <span class="text-[10px] text-base-content/40 font-normal">${item.date || ''}</span>
+                  </div>
+                `;
                 leaderboardList.appendChild(row);
             });
         }
 
-        // Supabaseから users (isActive === true) を取得する関数
         async function fetchActiveUsersFromSupabase() {
             if (!supabaseClient) {
-                // オフライン・モック用フォールバック（10人分）
                 usersList = [
                     {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
                     {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'},
@@ -2059,14 +1903,12 @@
             initPlayers(playerCount);
         }
 
-        // Supabaseから本日の記録を取得する関数
         async function fetchTodayLeaderboardFromSupabase() {
             if (!supabaseClient) return;
             try {
                 const todayStart = new Date();
                 todayStart.setHours(0, 0, 0, 0);
 
-                // cube_solvesテーブルからユーザー情報と当日の記録を取得（回数を正確に拾えるよう件数を拡張）
                 const {data, error} = await supabaseClient
                     .from('cube_solves')
                     .select('user_id, time_ms, solve_type, created_at, users(name)')
@@ -2075,7 +1917,6 @@
                     .limit(100);
 
                 if (error) {
-                    // リレーションがない場合のフォールバック
                     const fallbackRes = await supabaseClient
                         .from('cube_solves')
                         .select('user_id, time_ms, solve_type, created_at')
@@ -2114,9 +1955,7 @@
             }
         }
 
-        // 全員のタイム保存
         saveAllBtn.addEventListener('click', async () => {
-            // 測定済みで、除外（キャンセル）されておらず、タイムがあるカードを抽出
             const finishedPlayers = players.filter(p => !p.isCancelled && p.elapsedTime > 0);
 
             if (finishedPlayers.length === 0) {
@@ -2130,10 +1969,8 @@
                 return;
             }
 
-            // クラウド保存時の認証ユーザーチェック（supabase_Authid が NOT NULL 制約のため）
             let authUserId = currentUser ? currentUser.id : null;
             if (supabaseClient && !authUserId) {
-                // セッションが切れていないか再取得を試みる
                 const {data: {session}} = await supabaseClient.auth.getSession();
                 if (session && session.user) {
                     currentUser = session.user;
@@ -2147,17 +1984,16 @@
                     return;
                 }
             }
-            // Supabase送信用のレコード（テーブル: cube_solves, カラム: user_id, time_ms, solve_type, scramble, supabase_Authid）
+
             const recordsForSupabase = finishedPlayers.map(p => ({
                 user_id: p.userId,
-                time_ms: Math.round(p.elapsedTime), // int4 ミリ秒
+                time_ms: Math.round(p.elapsedTime),
                 solve_type: p.solveType || 'CROSS',
-                scramble: p.scramble || currentScrambleMoves.join(' '), // 実際に測ったスクランブル文字列
-                supabase_Authid: authUserId, // ログイン中ユーザーのUUIDを付与
+                scramble: p.scramble || currentScrambleMoves.join(' '),
+                supabase_Authid: authUserId,
                 created_at: new Date().toISOString()
             }));
 
-            // ローカルランキング・表示用データ（UI上では名前を使用）
             const nowStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
             finishedPlayers.forEach(p => {
                 localLeaderboard.push({
@@ -2168,7 +2004,6 @@
                 });
             });
 
-            // ローカルストレージに永続化して即時再描画
             try {
                 localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
             } catch (e) {
@@ -2176,7 +2011,6 @@
             }
             renderLeaderboard();
 
-            // 今回保存したメンバーのID一覧を記憶（次回の選択肢優先用）
             lastRegisteredUserIds = Array.from(new Set(finishedPlayers.map(p => p.userId).filter(Boolean)));
             try {
                 localStorage.setItem('cube_recent_user_ids', JSON.stringify(lastRegisteredUserIds));
@@ -2184,7 +2018,6 @@
                 console.warn("前回メンバーの保存に失敗しました", e);
             }
 
-            // 実績の判定＆解除（表示用ネームでローカル付与）
             finishedPlayers.forEach(p => {
                 const timeSec = parseFloat((p.elapsedTime / 1000).toFixed(3));
                 unlockAchievement('first_solve', p.name);
@@ -2196,13 +2029,11 @@
                 });
             }
 
-            // Supabase保存（cube_solves テーブルに送信）
             if (supabaseClient) {
                 try {
                     const {error} = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
                     if (error) throw error;
                     showToast(`${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
-                    // 保存後にSupabase側の最新ランキングと同期
                     await fetchTodayLeaderboardFromSupabase();
                 } catch (err) {
                     console.error(err);
@@ -2212,7 +2043,6 @@
                 showToast(`${finishedPlayers.length}人分の記録を保存しました！`, 'success');
             }
 
-            // 次のラウンドへ向けてタイマーを再初期化
             initPlayers(playerCount);
             refreshScramble();
             statusBanner.textContent = 'スペース長押し（0.3秒）でスタート準備';
@@ -2223,14 +2053,12 @@
             renderAchievements();
             renderLeaderboard();
 
-            // イラストガイド設定の復元
             const savedToggle = localStorage.getItem('cube_show_scramble_images') === 'true';
             toggleScrambleImages.checked = savedToggle;
             if (savedToggle) {
                 scrambleImagesWrapper.classList.remove('hidden');
             }
 
-            // アコーディオン開閉状態の復元（初期状態は閉じて画面を広々使う）
             if (achievementDetails) {
                 achievementDetails.open = localStorage.getItem('cube_achievement_open') === 'true';
             }
@@ -2240,10 +2068,7 @@
 
             refreshScramble();
 
-            // 認証の初期化とセッション自動復元
             await initAuth();
-
-            // Supabaseから users データを取得後、タイマーカードを初期化
             await fetchActiveUsersFromSupabase();
             await fetchTodayLeaderboardFromSupabase();
         });
