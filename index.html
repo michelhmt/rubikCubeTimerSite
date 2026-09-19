@@ -101,6 +101,12 @@
                     </div>
                     <!-- 右上コントロール群（モードバッジ ＆ 歯車設定ボタン） -->
                     <div class="flex items-center gap-2">
+                        <!-- キューブ管理ボタン -->
+                        <button id="cube-mgmt-btn"
+                            class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1 shadow-sm">
+                            <span>🎲</span>
+                            <span class="hidden sm:inline">キューブ管理</span>
+                        </button>
                         <!-- モード表示バッジ（人数に応じて動的切り替え） -->
                         <div id="mode-badge"
                             class="badge badge-outline badge-warning font-bold py-3 px-3 transition-colors hidden sm:inline-flex">
@@ -213,46 +219,55 @@
         </section>
 
         <!-- 右側サイドバー：実績 ＆ 今日のランキングスペース -->
-        <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-4 shrink-0">
+        <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
 
-            <!-- 実績（バッジ）スペース -->
-            <div class="card bg-base-100 border border-base-200 shadow-xl flex flex-col max-h-[480px]">
-                <div class="p-4 border-b border-base-200 flex flex-col gap-2">
-                    <div class="flex items-center justify-between">
-                        <h2 class="font-black text-lg text-warning flex items-center gap-2">
-                            <span>🏆</span> かくとく実績
-                        </h2>
-                        <span id="achievement-count" class="badge badge-sm badge-warning font-bold">きょう 0 回 達成</span>
+            <!-- 実績（バッジ）スペース (クリックで開閉するアコーディオン) -->
+            <details id="achievement-details"
+                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary
+                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🏆</span>
+                        <span class="font-black text-sm sm:text-base text-warning">かくとく実績</span>
+                        <span id="achievement-count" class="badge badge-xs badge-warning font-bold">0回</span>
                     </div>
+                    <span
+                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col gap-2 max-h-[380px]">
                     <!-- きょうの子ども別獲得サマリー -->
                     <div id="today-kid-achievements-summary"
-                        class="flex flex-wrap gap-1 items-center pt-1 border-t border-base-200/50">
+                        class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2">
                         <!-- JSで「けんた: 3回」「ゆうき: 1回」などが並びます -->
                     </div>
-                </div>
-
-                <!-- 実績リスト -->
-                <div id="achievement-list" class="p-3 overflow-y-auto space-y-2.5 flex-1">
-                    <!-- 実績アイテムがJSで生成されます（誰が今日何回取ったかも表示） -->
-                </div>
-            </div>
-
-            <!-- 今日のランキング / 最近の記録スペース -->
-            <div class="card bg-base-100 border border-base-200 shadow-xl flex flex-col flex-1 max-h-[400px]">
-                <div class="p-4 border-b border-base-200 flex items-center justify-between">
-                    <h2 class="font-black text-lg text-info flex items-center gap-2">
-                        <span>⚡️</span> きょうのベスト
-                    </h2>
-                    <span class="text-xs text-base-content/50 font-bold">自動更新中</span>
-                </div>
-
-                <!-- リーダーボードリスト -->
-                <div id="leaderboard-list" class="p-3 overflow-y-auto space-y-2 flex-1">
-                    <div class="text-center text-xs text-base-content/50 py-6">
-                        タイムを測定して保存すると<br>ここにランクインするよ！
+                    <!-- 実績リスト -->
+                    <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1">
+                        <!-- 実績アイテムがJSで生成されます -->
                     </div>
                 </div>
-            </div>
+            </details>
+
+            <!-- 今日のランキング / 最近の記録スペース (クリックで開閉するアコーディオン) -->
+            <details id="leaderboard-details"
+                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary
+                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">⚡️</span>
+                        <span class="font-black text-sm sm:text-base text-info">きょうのベスト</span>
+                    </div>
+                    <span
+                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col max-h-[350px]">
+                    <!-- リーダーボードリスト -->
+                    <div id="leaderboard-list" class="overflow-y-auto space-y-1.5 flex-1 pr-1 mt-1">
+                        <div class="text-center text-xs text-base-content/50 py-4">
+                            タイムを測定して保存すると<br>ここにランクインするよ！
+                        </div>
+                    </div>
+                </div>
+            </details>
 
         </aside>
     </div>
@@ -321,6 +336,38 @@
             </div>
         </div>
         <!-- モーダル背景クリックで閉じる -->
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
+    <!-- キューブ管理用モーダル (DaisyUI) -->
+    <dialog id="cube-mgmt-modal" class="modal">
+        <div
+            class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
+            <div class="flex items-center justify-between pb-3 border-b border-base-200 shrink-0">
+                <h3 class="font-black text-lg sm:text-xl text-warning flex items-center gap-2">
+                    <span>🎲</span> キューブ管理スペース
+                </h3>
+                <div class="flex items-center gap-2">
+                    <button id="cube-mgmt-refresh-btn" class="btn btn-ghost btn-xs text-base-content/70">🔄 更新</button>
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="py-3 flex-1 flex flex-col min-h-0">
+                <div id="cube-mgmt-summary"
+                    class="text-xs sm:text-sm font-bold text-base-content/70 mb-3 bg-base-200 p-3 rounded-xl border border-base-300 shrink-0">
+                    データを読み込み中...
+                </div>
+                <!-- キューブ一覧コンテナ（高さをモーダルいっぱいに拡張） -->
+                <div id="cube-mgmt-list" class="space-y-2.5 flex-1 overflow-y-auto pr-1">
+                    <!-- JSで動的にキューブ一覧がレンダリングされます -->
+                </div>
+            </div>
+        </div>
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>
@@ -484,6 +531,230 @@
         const toggleScrambleImages = document.getElementById('toggle-scramble-images');
         const scrambleImagesWrapper = document.getElementById('scramble-images-wrapper');
         const scrambleImagesList = document.getElementById('scramble-images-list');
+
+        // 実績 ＆ ランキングのアコーディオンDOM要素 (<details>)
+        const achievementDetails = document.getElementById('achievement-details');
+        const leaderboardDetails = document.getElementById('leaderboard-details');
+
+        if (achievementDetails) {
+            achievementDetails.addEventListener('toggle', () => {
+                localStorage.setItem('cube_achievement_open', achievementDetails.open ? 'true' : 'false');
+            });
+        }
+
+        if (leaderboardDetails) {
+            leaderboardDetails.addEventListener('toggle', () => {
+                localStorage.setItem('cube_leaderboard_open', leaderboardDetails.open ? 'true' : 'false');
+            });
+        }
+
+        // キューブ管理関連DOM要素
+        const cubeMgmtBtn = document.getElementById('cube-mgmt-btn');
+        const cubeMgmtModal = document.getElementById('cube-mgmt-modal');
+        const cubeMgmtList = document.getElementById('cube-mgmt-list');
+        const cubeMgmtSummary = document.getElementById('cube-mgmt-summary');
+        const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
+
+        let cubesData = []; // cube_managementテーブルのデータ配列
+
+        // キューブ管理モーダルを開く (安全なnullガード付き)
+        if (cubeMgmtBtn && cubeMgmtModal) {
+            cubeMgmtBtn.addEventListener('click', () => {
+                cubeMgmtModal.showModal();
+                fetchCubeManagementData();
+            });
+        }
+
+        if (cubeMgmtRefreshBtn) {
+            cubeMgmtRefreshBtn.addEventListener('click', fetchCubeManagementData);
+        }
+
+        // Supabaseの cube_management テーブルからデータを取得
+        async function fetchCubeManagementData() {
+            cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-base-content/60"><span class="loading loading-spinner loading-sm text-warning"></span> データを読み込み中...</div>`;
+
+            if (!supabaseClient) {
+                // フォールバック用サンプル
+                cubesData = [
+                    {id: '11eca1b3-870e-4e4f-8cc1-1dab8c56a420', cubeName: 'sel3', user_id: null, user_name: null, created_at: '2026-08-30 15:23:46'},
+                    {id: '261b5c83-3505-4322-b1e8-36cbb0476b1a', cubeName: '356M', user_id: null, user_name: null, created_at: '2026-09-19 17:10:47'},
+                    {id: 'cc334e41-3491-439f-a3e0-bff5be53b7e7', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた', created_at: '2026-08-30 15:21:00'},
+                    {id: 'd0cffdb0-8ae0-4b62-9a54-d074959d0421', cubeName: 'Mirror M', user_id: null, user_name: null, created_at: '2026-09-19 17:11:54'},
+                    {id: 'd6f8d2e8-cdb6-4cd9-9bc3-d679c255a446', cubeName: 'sel4', user_id: 'mock-3', user_name: 'あおい', created_at: '2026-08-30 15:23:52'}
+                ].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                renderCubeManagementUI();
+                return;
+            }
+
+            try {
+                const {data, error} = await supabaseClient
+                    .from('cube_management')
+                    .select('id, cubeName, user_id, user_name, supabase_Authid, created_at')
+                    .order('created_at', {ascending: true});
+
+                if (error) throw error;
+                cubesData = data || [];
+                renderCubeManagementUI();
+            } catch (err) {
+                console.error("キューブ管理データの取得に失敗しました:", err);
+                showToast("キューブ一覧の取得に失敗しました", "error");
+                cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-error">データの読み込みに失敗しました</div>`;
+            }
+        }
+
+        // 表示用のキューブ名を整形（sel1→1, maglev14_1→maglev14(1) など）
+        function formatCubeDisplayName(name) {
+            if (!name) return 'キューブ';
+            const trimmed = name.trim();
+            // sel1, sel2 ... → 数字のみ（1, 2 ...）
+            if (/^sel\d+$/i.test(trimmed)) {
+                return trimmed.replace(/^sel/i, '');
+            }
+            // maglev14_1, maglev14_2 → maglev14(1), maglev14(2)
+            if (/^maglev14_\d+$/i.test(trimmed)) {
+                return trimmed.replace(/^maglev14_(\d+)$/i, 'maglev14($1)');
+            }
+            if (/^maglev_\d+$/i.test(trimmed)) {
+                return trimmed.replace(/^maglev_(\d+)$/i, 'maglev14($1)');
+            }
+            return trimmed;
+        }
+
+        // キューブ管理UIの描画
+        function renderCubeManagementUI() {
+            cubeMgmtList.innerHTML = '';
+
+            if (cubesData.length === 0) {
+                cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-base-content/50">登録されているキューブがありません</div>`;
+                cubeMgmtSummary.textContent = `登録数: 0個`;
+                return;
+            }
+
+            const inUseCount = cubesData.filter(c => !!c.user_id).length;
+            cubeMgmtSummary.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span>全 <strong class="text-warning">${cubesData.length}</strong> 個中、<strong class="text-error">${inUseCount}</strong> 個貸出中</span>
+          <span class="badge badge-success badge-sm font-bold">空き: ${cubesData.length - inUseCount} 個</span>
+        </div>
+      `;
+
+            cubesData.forEach(cube => {
+                const isUsing = !!cube.user_id;
+                // usersListから照合、なければテーブル内のuser_nameを表示
+                const assignedUser = usersList.find(u => u.id === cube.user_id);
+                const userName = assignedUser ? assignedUser.name : (cube.user_name || (isUsing ? '（貸出中）' : ''));
+                const cubeLabel = formatCubeDisplayName(cube.cubeName) || `キューブ #${cube.id.slice(0, 6)}`;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all ${isUsing ? 'bg-warning/10 border-warning/40 shadow-sm' : 'bg-base-200/70 border-base-300'
+                    }`;
+
+                // 子どもの選択肢HTML生成
+                const userOptionsHtml = usersList.map(u => {
+                    const selected = u.id === cube.user_id ? 'selected' : '';
+                    return `<option value="${u.id}" ${selected}>${u.name}</option>`;
+                }).join('');
+
+                card.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
+            <div class="min-w-0">
+              <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
+                <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
+                <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
+                  ${isUsing ? '貸出中' : '空き'}
+                </span>
+              </div>
+              <div class="text-xs text-base-content/70 font-bold mt-0.5">
+                ${isUsing
+                        ? `使っている子: <span class="text-warning font-black text-sm underline decoration-warning/40 underline-offset-2">${userName}</span>`
+                        : '棚にあります（使えます）'}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <!-- 割り当て用セレクト -->
+            <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
+              <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
+              ${userOptionsHtml}
+            </select>
+
+            <!-- 返却（解除）ボタン -->
+            ${isUsing ? `
+              <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
+                返却 📥
+              </button>
+            ` : ''}
+          </div>
+        `;
+
+                cubeMgmtList.appendChild(card);
+            });
+
+            // 子どもの割り当て変更イベントリスナー
+            document.querySelectorAll('.cube-assign-select').forEach(select => {
+                select.addEventListener('change', async (e) => {
+                    const cubeId = e.target.dataset.cubeId;
+                    const newUserId = e.target.value || null;
+                    await updateCubeUser(cubeId, newUserId);
+                });
+            });
+
+            // 返却ボタンのイベントリスナー
+            document.querySelectorAll('.cube-release-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const cubeId = e.currentTarget.dataset.cubeId;
+                    await updateCubeUser(cubeId, null);
+                });
+            });
+        }
+
+        // キューブの使用者（user_id / user_name / supabase_Authid）を更新する処理
+        async function updateCubeUser(cubeId, userId) {
+            const assignedUser = usersList.find(u => u.id === userId);
+            const userName = assignedUser ? assignedUser.name : null;
+            let authUserId = currentUser ? currentUser.id : null;
+
+            if (supabaseClient) {
+                try {
+                    const updatePayload = {
+                        user_id: userId,
+                        user_name: userName
+                    };
+                    if (authUserId) {
+                        updatePayload.supabase_Authid = authUserId;
+                    }
+
+                    const {error} = await supabaseClient
+                        .from('cube_management')
+                        .update(updatePayload)
+                        .eq('id', cubeId);
+
+                    if (error) throw error;
+                } catch (err) {
+                    console.error(err);
+                    showToast(`更新に失敗しました: ${err.message || ''}`, 'error');
+                    return;
+                }
+            }
+
+            // ローカル配列を更新
+            const target = cubesData.find(c => String(c.id) === String(cubeId));
+            if (target) {
+                target.user_id = userId;
+                target.user_name = userName;
+            }
+
+            const cubeDisplayName = target ? formatCubeDisplayName(target.cubeName) : 'キューブ';
+            if (userId && assignedUser) {
+                showToast(`「${cubeDisplayName}」を【${assignedUser.name}】に貸出しました！ 🧩`, 'success');
+            } else {
+                showToast(`「${cubeDisplayName}」が返却されました 📥`, 'info');
+            }
+
+            renderCubeManagementUI();
+        }
 
         // 認証・モーダル関連DOM要素
         const settingsBtn = document.getElementById('settings-btn');
@@ -1249,8 +1520,8 @@
 
                 const item = document.createElement('div');
                 item.className = `flex flex-col p-2.5 rounded-xl border transition-all ${isUnlockedToday
-                        ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock'
-                        : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
+                    ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock'
+                    : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
                     }`;
                 item.innerHTML = `
           <div class="flex items-start gap-2.5">
@@ -1352,8 +1623,8 @@
                 }
             });
 
-            // 各自のベストタイムを昇順（速い順）にソートして上位10件を表示
-            const sorted = Array.from(bestRecordsMap.values()).sort((a, b) => a.time - b.time).slice(0, 10);
+            // 各自のベストタイムを昇順（速い順）にソートして全員分を表示（上限解除）
+            const sorted = Array.from(bestRecordsMap.values()).sort((a, b) => a.time - b.time);
 
             sorted.forEach((item, index) => {
                 const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
@@ -1595,6 +1866,14 @@
             toggleScrambleImages.checked = savedToggle;
             if (savedToggle) {
                 scrambleImagesWrapper.classList.remove('hidden');
+            }
+
+            // アコーディオン開閉状態の復元（初期状態は閉じて画面を広々使う）
+            if (achievementDetails) {
+                achievementDetails.open = localStorage.getItem('cube_achievement_open') === 'true';
+            }
+            if (leaderboardDetails) {
+                leaderboardDetails.open = localStorage.getItem('cube_leaderboard_open') === 'true';
             }
 
             refreshScramble();
