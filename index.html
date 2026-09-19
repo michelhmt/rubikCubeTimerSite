@@ -269,6 +269,26 @@
                 </div>
             </details>
 
+            <!-- スクランブル完成図カード (画面右下) -->
+            <div id="cube-preview-card"
+                class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
+                <div class="flex items-center justify-between w-full mb-1">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-lg">🧊</span>
+                        <span class="font-black text-xs sm:text-sm text-warning">スクランブル完成図</span>
+                    </div>
+                    <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 /
+                        手前:緑 / 右:赤</span>
+                </div>
+                <!-- 3D等角投影キューブプレビューコンテナ -->
+                <div id="cube-preview-svg-container" class="w-44 h-44 flex items-center justify-center my-1">
+                    <span class="loading loading-spinner loading-sm text-warning"></span>
+                </div>
+                <div class="text-[10px] text-base-content/40 text-center font-bold">
+                    回し終わったあとの形があっているか確認しよう！
+                </div>
+            </div>
+
         </aside>
     </div>
 
@@ -974,8 +994,163 @@
             currentScrambleMoves = generateScramble();
             scrambleDisplay.textContent = currentScrambleMoves.join(' ');
             renderScrambleImages();
+            updateCubePreview();
         }
         newScrambleBtn.addEventListener('click', refreshScramble);
+
+        // --- 3x3x3 ルービックキューブシミュレーター＆3D等角投影プレビュー ---
+        const CUBE_COLORS = {
+            W: '#ffffff', // Up: 白
+            Y: '#ffd500', // Down: 黄
+            G: '#009b48', // Front: 緑
+            B: '#0046ad', // Back: 青
+            O: '#ff5800', // Left: 橙
+            R: '#b71234'  // Right: 赤
+        };
+
+        // 初期状態のキューブモデル（各面9マス 0〜8）
+        function createSolvedCube() {
+            return {
+                U: Array(9).fill('W'),
+                D: Array(9).fill('Y'),
+                F: Array(9).fill('G'),
+                B: Array(9).fill('B'),
+                L: Array(9).fill('O'),
+                R: Array(9).fill('R')
+            };
+        }
+
+        // 面自体の時計回り90度回転
+        function rotateFaceCW(face) {
+            return [
+                face[6], face[3], face[0],
+                face[7], face[4], face[1],
+                face[8], face[5], face[2]
+            ];
+        }
+
+        // 1手の回転を適用
+        function applyCubeMove(cube, move) {
+            const baseMove = move[0];
+            const isPrime = move.includes("'");
+            const isDouble = move.includes('2');
+            const turns = isDouble ? 2 : isPrime ? 3 : 1;
+
+            for (let t = 0; t < turns; t++) {
+                cube[baseMove] = rotateFaceCW(cube[baseMove]);
+                const {U, D, F, B, L, R} = cube;
+
+                if (baseMove === 'U') {
+                    const temp = [F[0], F[1], F[2]];
+                    F[0] = R[0]; F[1] = R[1]; F[2] = R[2];
+                    R[0] = B[0]; R[1] = B[1]; R[2] = B[2];
+                    B[0] = L[0]; B[1] = L[1]; B[2] = L[2];
+                    L[0] = temp[0]; L[1] = temp[1]; L[2] = temp[2];
+                } else if (baseMove === 'D') {
+                    const temp = [F[6], F[7], F[8]];
+                    F[6] = L[6]; F[7] = L[7]; F[8] = L[8];
+                    L[6] = B[6]; L[7] = B[7]; L[8] = B[8];
+                    B[6] = R[6]; B[7] = R[7]; B[8] = R[8];
+                    R[6] = temp[0]; R[7] = temp[1]; R[8] = temp[2];
+                } else if (baseMove === 'F') {
+                    const temp = [U[6], U[7], U[8]];
+                    U[6] = L[8]; U[7] = L[5]; U[8] = L[2];
+                    L[2] = D[0]; L[5] = D[1]; L[8] = D[2];
+                    D[0] = R[6]; D[1] = R[3]; D[2] = R[0];
+                    R[0] = temp[0]; R[3] = temp[1]; R[6] = temp[2];
+                } else if (baseMove === 'B') {
+                    const temp = [U[0], U[1], U[2]];
+                    U[0] = R[2]; U[1] = R[5]; U[2] = R[8];
+                    R[2] = D[8]; R[5] = D[7]; R[8] = D[6];
+                    D[6] = L[0]; D[7] = L[3]; D[8] = L[6];
+                    L[0] = temp[2]; L[3] = temp[1]; L[6] = temp[0];
+                } else if (baseMove === 'L') {
+                    const temp = [U[0], U[3], U[6]];
+                    U[0] = B[8]; U[3] = B[5]; U[6] = B[2];
+                    B[2] = D[6]; B[5] = D[3]; B[8] = D[0];
+                    D[0] = F[0]; D[3] = F[3]; D[6] = F[6];
+                    F[0] = temp[0]; F[3] = temp[1]; F[6] = temp[2];
+                } else if (baseMove === 'R') {
+                    const temp = [U[2], U[5], U[8]];
+                    U[2] = F[2]; U[5] = F[5]; U[8] = F[8];
+                    F[2] = D[2]; F[5] = D[5]; F[8] = D[8];
+                    D[2] = B[6]; D[5] = B[3]; D[8] = B[0];
+                    B[0] = temp[2]; B[3] = temp[1]; B[6] = temp[0];
+                }
+            }
+        }
+
+        // スクランブル手順からキューブを再現
+        function simulateCube(moves) {
+            const cube = createSolvedCube();
+            moves.forEach(m => applyCubeMove(cube, m));
+            return cube;
+        }
+
+        // 3D等角投影ビュー（上面・正面・右面）をSVGで描画
+        function updateCubePreview() {
+            const container = document.getElementById('cube-preview-svg-container');
+            if (!container) return;
+
+            const cube = simulateCube(currentScrambleMoves);
+            const s = 20; // 1ピースの辺の長さ
+            const cos30 = Math.cos(Math.PI / 6); // 0.866025
+            const sin30 = 0.5;
+            const cx = 80;
+            const cy = 76;
+
+            const uc = {x: s * cos30, y: s * sin30};
+            const ur = {x: -s * cos30, y: s * sin30};
+            const udown = {x: 0, y: s};
+            const urc = {x: s * cos30, y: -s * sin30};
+
+            let svgPolygons = '';
+
+            // 1. 上面 (U 面: 白が上) - r: 0(Back)..2(Front), c: 0(Left)..2(Right)
+            const uOrig = {x: cx, y: cy - 6 * s * sin30};
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
+                    const p0 = {x: uOrig.x + c * uc.x + r * ur.x, y: uOrig.y + c * uc.y + r * ur.y};
+                    const p1 = {x: p0.x + uc.x, y: p0.y + uc.y};
+                    const p2 = {x: p1.x + ur.x, y: p1.y + ur.y};
+                    const p3 = {x: p0.x + ur.x, y: p0.y + ur.y};
+                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                }
+            }
+
+            // 2. 正面 (F 面: 緑が手前) - r: 0(Top)..2(Bottom), c: 0(Left)..2(Right)
+            const fOrig = {x: cx - 3 * s * cos30, y: cy - 3 * s * sin30};
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    const color = CUBE_COLORS[cube.F[r * 3 + c]] || '#009b48';
+                    const p0 = {x: fOrig.x + c * uc.x + r * udown.x, y: fOrig.y + c * uc.y + r * udown.y};
+                    const p1 = {x: p0.x + uc.x, y: p0.y + uc.y};
+                    const p2 = {x: p1.x + udown.x, y: p1.y + udown.y};
+                    const p3 = {x: p0.x + udown.x, y: p0.y + udown.y};
+                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                }
+            }
+
+            // 3. 右面 (R 面: 赤が右) - r: 0(Top)..2(Bottom), c: 0(Front)..2(Back)
+            const rOrig = {x: cx, y: cy};
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#b71234';
+                    const p0 = {x: rOrig.x + c * urc.x + r * udown.x, y: rOrig.y + c * urc.y + r * udown.y};
+                    const p1 = {x: p0.x + urc.x, y: p0.y + urc.y};
+                    const p2 = {x: p1.x + udown.x, y: p1.y + udown.y};
+                    const p3 = {x: p0.x + udown.x, y: p0.y + udown.y};
+                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                }
+            }
+
+            container.innerHTML = `
+        <svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">
+          ${svgPolygons}
+        </svg>
+      `;
+        }
 
         // トグル切り替えイベント
         toggleScrambleImages.addEventListener('change', (e) => {
@@ -1520,8 +1695,8 @@
 
                 const item = document.createElement('div');
                 item.className = `flex flex-col p-2.5 rounded-xl border transition-all ${isUnlockedToday
-                    ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock'
-                    : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
+                        ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock'
+                        : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
                     }`;
                 item.innerHTML = `
           <div class="flex items-start gap-2.5">
