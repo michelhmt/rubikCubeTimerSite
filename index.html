@@ -193,6 +193,15 @@
                 <!-- リキッドグリッド：カード枚数や解像度に応じて自動で幅・列数を最適配置 -->
                 <div id="timer-grid" class="liquid-timer-grid items-stretch">
                 </div>
+
+                <!-- スマホ・タブレット用 タッチ長押しスタートボタン -->
+                <div class="mt-4 flex justify-center w-full px-2">
+                    <button id="touch-start-btn"
+                        class="btn btn-warning btn-outline btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2 py-3">
+                        <span id="touch-btn-icon" class="text-xl">👆</span>
+                        <span id="touch-btn-text">長押し（0.3秒）でスタート準備</span>
+                    </button>
+                </div>
             </div>
 
             <!-- 下部コントロールパネル -->
@@ -303,6 +312,22 @@
             </div>
 
         </aside>
+    </div>
+
+    <!-- スマホ用 全画面タイマーオーバーレイ (計測中に画面のどこを触っても即座にストップ可能) -->
+    <div id="mobile-timer-overlay"
+        class="fixed inset-0 bg-base-300/95 backdrop-blur-md z-50 flex-col items-center justify-center p-6 select-none touch-none cursor-pointer hidden">
+        <div class="text-sm font-black text-warning/80 mb-2 flex items-center gap-1.5 animate-bounce">
+            <span>🛑</span> 画面のどこでもタップしてストップ！
+        </div>
+        <div id="overlay-timer-text"
+            class="timer-font text-6xl sm:text-7xl font-black text-warning tracking-wider my-6 filter drop-shadow">
+            00.000
+        </div>
+        <div id="overlay-scramble-hint"
+            class="text-xs text-base-content/60 font-bold bg-base-100/80 px-4 py-2 rounded-xl border border-base-200/80 max-w-xs text-center truncate shadow-sm">
+            --
+        </div>
     </div>
 
     <!-- トースト通知用コンテナ -->
