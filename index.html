@@ -576,6 +576,7 @@
         let isReady = false;
         let globalState = 'IDLE'; // 'IDLE' | 'HOLDING' | 'READY' | 'RUNNING'
         let currentScrambleMoves = []; // 現在の手順配列
+        let canStopTouch = false; // スタート直後のストップ誤爆防止フラグ
 
         // DOM要素
         const timerGrid = document.getElementById('timer-grid');
@@ -594,6 +595,12 @@
         const toggleScrambleImages = document.getElementById('toggle-scramble-images');
         const scrambleImagesWrapper = document.getElementById('scramble-images-wrapper');
         const scrambleImagesList = document.getElementById('scramble-images-list');
+        const touchStartBtn = document.getElementById('touch-start-btn');
+        const touchBtnIcon = document.getElementById('touch-btn-icon');
+        const touchBtnText = document.getElementById('touch-btn-text');
+        const mobileTimerOverlay = document.getElementById('mobile-timer-overlay');
+        const overlayTimerText = document.getElementById('overlay-timer-text');
+        const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
 
         // 実績 ＆ ランキングのアコーディオンDOM要素 (<details>)
         const achievementDetails = document.getElementById('achievement-details');
@@ -1530,10 +1537,67 @@
 
                 p.intervalId = setInterval(() => {
                     p.elapsedTime = Date.now() - p.startTime;
+                    const formatted = formatTime(p.elapsedTime);
                     const el = document.getElementById(`timer-${p.id}`);
-                    if (el) el.textContent = formatTime(p.elapsedTime);
+                    if (el) el.textContent = formatted;
+
+                    // 全画面オーバーレイが開いていればそちらのタイムも更新
+                    if (!mobileTimerOverlay.classList.contains('hidden') && p.id === 1) {
+                        overlayTimerText.textContent = formatted;
+                    }
                 }, 10);
             });
+
+            // スマホ・タッチ操作でのスタート時、またはモバイル画面幅時は全画面オーバーレイを表示
+            if (window.innerWidth < 1024 || isTouchStarted) {
+                showMobileFullscreenTimer();
+            }
+        }
+
+        let isTouchStarted = false; // タッチボタン起点でスタートしたかの判定
+
+        // 全画面タイマーオーバーレイの表示
+        function showMobileFullscreenTimer() {
+            if (!mobileTimerOverlay) return;
+            overlayTimerText.textContent = '00.000';
+            overlayScrambleHint.textContent = currentScrambleMoves.slice(0, 8).join(' ') + '...';
+            mobileTimerOverlay.classList.remove('hidden');
+            mobileTimerOverlay.classList.add('flex');
+
+            // スタート時の指離し直後にストップが誤爆しないよう250msの保護期間を設ける
+            canStopTouch = false;
+            setTimeout(() => {
+                canStopTouch = true;
+            }, 250);
+        }
+
+        // 全画面タイマーオーバーレイの非表示
+        function hideMobileFullscreenTimer() {
+            if (!mobileTimerOverlay) return;
+            mobileTimerOverlay.classList.add('hidden');
+            mobileTimerOverlay.classList.remove('flex');
+        }
+
+        // 全画面オーバーレイをどこでもタップしてストップ
+        function handleOverlayStop(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (!canStopTouch) return;
+
+            if (globalState === 'RUNNING') {
+                const runningPlayerIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
+                if (runningPlayerIndex !== -1) {
+                    stopIndividualTimer(runningPlayerIndex);
+                }
+            }
+            hideMobileFullscreenTimer();
+        }
+
+        if (mobileTimerOverlay) {
+            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, {passive: false});
+            mobileTimerOverlay.addEventListener('pointerdown', handleOverlayStop);
         }
 
         // 全員終了チェック共通処理
@@ -1541,11 +1605,83 @@
             const activePlayers = players.filter(p => !p.isCancelled);
             if (activePlayers.length > 0 && activePlayers.every(p => p.isFinished)) {
                 globalState = 'IDLE';
+                isTouchStarted = false;
+                hideMobileFullscreenTimer();
                 unlockNameSelectors();
                 statusBanner.textContent = '🎉 全員ゴール！それぞれのタイムに名前を割り当ててね';
-                statusBanner.className = 'text-center mb-3 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
+                statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
                 showToast('測定完了！名前を選んで保存してね ✍️', 'success');
+
+                // タッチスタートボタンの表示リセット
+                resetTouchButtonUI();
             }
+        }
+
+        function resetTouchButtonUI() {
+            if (!touchStartBtn) return;
+            touchStartBtn.className = "btn btn-warning btn-outline btn-md sm:btn-wide font-black shadow-md flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2";
+            touchBtnIcon.textContent = '👆';
+            touchBtnText.textContent = '長押し（0.3秒）でスタート準備';
+        }
+
+        // タッチスタートボタンの長押し制御（Pointer Events対応）
+        if (touchStartBtn) {
+            const startHold = (e) => {
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (globalState === 'RUNNING') {
+                    // 計測中にボタンを押したらストップ
+                    const runningIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
+                    if (runningIndex !== -1) stopIndividualTimer(runningIndex);
+                    return;
+                }
+
+                if (globalState === 'IDLE') {
+                    globalState = 'HOLDING';
+                    isReady = false;
+                    setAllTimerColor('text-error');
+                    touchStartBtn.className = "btn btn-error btn-md sm:btn-wide font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2";
+                    touchBtnIcon.textContent = '⏳';
+                    touchBtnText.textContent = 'そのまま長押し...';
+
+                    spacePressTimer = setTimeout(() => {
+                        isReady = true;
+                        globalState = 'READY';
+                        setAllTimerColor('text-success');
+                        touchStartBtn.className = "btn btn-success btn-md sm:btn-wide font-black text-slate-900 shadow-xl flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 animate-pulse";
+                        touchBtnIcon.textContent = '🟢';
+                        touchBtnText.textContent = '準備完了！指を離してスタート！';
+                    }, 300);
+                }
+            };
+
+            const endHold = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (globalState === 'HOLDING' || globalState === 'READY') {
+                    clearTimeout(spacePressTimer);
+
+                    if (isReady) {
+                        isTouchStarted = true;
+                        startAllTimers();
+                        touchStartBtn.className = "btn btn-error btn-md sm:btn-wide font-black text-slate-900 shadow-md flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 animate-pulse";
+                        touchBtnIcon.textContent = '🛑';
+                        touchBtnText.textContent = 'タップしてストップ！';
+                    } else {
+                        setAllTimerColor('text-base-content');
+                        globalState = 'IDLE';
+                        resetTouchButtonUI();
+                    }
+                }
+            };
+
+            touchStartBtn.addEventListener('pointerdown', startHold);
+            touchStartBtn.addEventListener('pointerup', endHold);
+            touchStartBtn.addEventListener('pointercancel', endHold);
+            touchStartBtn.addEventListener('contextmenu', e => e.preventDefault());
         }
 
         // プレイヤー個別のタイマー停止
@@ -1585,6 +1721,11 @@
             // カード上のステータス更新
             const statusDot = document.getElementById(`badge-status-${p.id}`);
             if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-success";
+
+            // 1人測定などの場合、タイマー停止に合わせて全画面オーバーレイを閉じる
+            if (players.filter(pl => !pl.isCancelled && !pl.isFinished).length === 0) {
+                hideMobileFullscreenTimer();
+            }
 
             // 全員終了チェック
             checkAllFinished();
