@@ -31,16 +31,58 @@
         /* リキッドグリッド：画面幅とカード枚数に応じて自動で幅が伸縮・最適折り返し */
         .liquid-timer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: 0.85rem;
             width: 100%;
         }
 
         @media (min-width: 1536px) {
             .liquid-timer-grid {
-                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-                gap: 1rem;
+                grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+                gap: 1.1rem;
             }
+        }
+
+        /* ライトモード時の文字・バッジ視認性向上スタイル */
+        [data-theme="light"] .text-warning {
+            color: #b45309 !important;
+            /* 引き締まったアンバー */
+        }
+
+        [data-theme="light"] .badge-warning {
+            background-color: #fef3c7 !important;
+            color: #92400e !important;
+            border-color: #fcd34d !important;
+        }
+
+        [data-theme="light"] .btn-warning {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+            border-color: #d97706 !important;
+        }
+
+        [data-theme="light"] .btn-outline.btn-warning {
+            background-color: transparent !important;
+            color: #b45309 !important;
+            border-color: #b45309 !important;
+        }
+
+        [data-theme="light"] .btn-outline.btn-warning:hover {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+
+        /* 全画面オーバーレイ内のSlotバッジ色（テーマ不問で視認性を確保） */
+        .overlay-slot-badge {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: currentColor;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        [data-theme="light"] .overlay-slot-badge {
+            background-color: rgba(0, 0, 0, 0.08);
+            color: currentColor;
+            border: 1px solid rgba(0, 0, 0, 0.2);
         }
 
         /* 実績カード用のアニメーション */
@@ -71,11 +113,11 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.15);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
         }
     </style>
@@ -83,31 +125,26 @@
 
 <body class="bg-base-300 text-base-content min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-    <!-- 画面横幅いっぱい（w-full）を使用するリキッドコンテナ -->
+    <!-- 画面横幅いっぱいを使用するリキッドコンテナ -->
     <div class="flex-1 flex flex-col lg:flex-row w-full p-2 sm:p-4 lg:p-6 gap-3 sm:gap-4 min-w-0">
 
-        <!-- 左・中央メイン領域：画面幅に合わせて最大限に広がる -->
+        <!-- 左・中央メイン領域 -->
         <section class="flex-1 flex flex-col justify-between min-w-0 w-full">
 
             <!-- ヘッダーとスクランブルエリア -->
             <header class="flex flex-col gap-3 min-w-0 w-full">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-2">
                     <div class="flex items-center gap-2">
                         <span class="text-3xl filter drop-shadow">🧩</span>
                         <div>
                             <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
-                            <p class="text-xs text-base-content/60 font-bold">スペースキー長押し（0.3秒）で準備完了 → 離してスタート！</p>
+                            <p class="text-xs text-base-content/60 font-bold hidden sm:block">
+                                スペースキー長押し（0.3秒）またはボタン長押しでスタート！</p>
                         </div>
                     </div>
-                    <!-- 右上コントロール群（サウンド切替 ＆ モードバッジ ＆ 歯車設定ボタン） -->
-                    <div class="flex items-center gap-2">
-                        <!-- サウンドON/OFFボタン -->
-                        <button id="sound-toggle-btn"
-                            class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
-                            title="ビープ音の切り替え（ON/OFF）">
-                            <span id="sound-icon" class="text-base">🔊</span>
-                        </button>
 
+                    <!-- 右上コントロール群 -->
+                    <div class="flex items-center gap-1.5 sm:gap-2">
                         <!-- キューブ管理ボタン -->
                         <button id="cube-mgmt-btn"
                             class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1.5 shadow-sm">
@@ -118,26 +155,30 @@
                                 <path d="M12 2.5 L20.5 7.4 L12 12.3 L3.5 7.4 Z" />
                                 <path d="M3.5 7.4 V16.6 L12 21.5 V12.3 Z" />
                                 <path d="M20.5 7.4 V16.6 L12 21.5 V12.3 Z" />
-                                <path d="M6.3 5.8 L14.8 10.7" />
-                                <path d="M9.2 4.1 L17.7 9.0" />
-                                <path d="M9.2 10.7 L17.7 5.8" />
-                                <path d="M6.3 9.0 L14.8 4.1" />
-                                <path d="M6.3 9.0 V18.2" />
-                                <path d="M9.2 10.7 V19.9" />
-                                <path d="M3.5 10.5 L12 15.4" />
-                                <path d="M3.5 13.5 L12 18.4" />
-                                <path d="M14.8 10.7 V19.9" />
-                                <path d="M17.7 9.0 V18.2" />
-                                <path d="M12 15.4 L20.5 10.5" />
-                                <path d="M12 18.4 L20.5 13.5" />
                             </svg>
                             <span class="hidden sm:inline">キューブ管理</span>
                         </button>
-                        <!-- モード表示バッジ（人数に応じて動的切り替え） -->
+
+                        <!-- モード表示バッジ -->
                         <div id="mode-badge"
-                            class="badge badge-outline badge-warning font-bold py-3 px-3 transition-colors hidden sm:inline-flex">
-                            マルチ測定モード
+                            class="badge badge-outline badge-info font-bold py-3 px-3 transition-colors hidden md:inline-flex">
+                            ソロモード
                         </div>
+
+                        <!-- サウンドON/OFFボタン -->
+                        <button id="sound-toggle-btn"
+                            class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
+                            title="サウンド切り替え">
+                            <span id="sound-icon" class="text-base">🔊</span>
+                        </button>
+
+                        <!-- テーマ切り替えトグル（Dark / Light） -->
+                        <button id="theme-toggle-btn"
+                            class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
+                            title="テーマ切り替え (ダーク/ライト)">
+                            <span id="theme-icon" class="text-base">☀️</span>
+                        </button>
+
                         <!-- 歯車（設定・ログイン）ボタン -->
                         <button id="settings-btn"
                             class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning relative"
@@ -155,7 +196,6 @@
                     <div class="flex items-center justify-between mb-1 gap-2 flex-wrap">
                         <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3
                             スクランブル</span>
-
                         <div class="flex items-center gap-3">
                             <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
                                 <span class="label-text text-xs font-bold text-base-content/70">🧭 イラストガイド</span>
@@ -175,43 +215,43 @@
 
                     <div id="scramble-images-wrapper" class="hidden mt-3 pt-3 border-t border-base-200 min-w-0 w-full">
                         <p class="text-[11px] text-base-content/50 font-bold mb-2 text-left flex items-center gap-1">
-                            <span>👉</span> まわす順番（左から右へ、折り返して順番にまわしてね）
+                            <span>👉</span> まわす順番（左から右へ順番にまわしてね）
                         </p>
                         <div id="scramble-images-list"
-                            class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1">
-                        </div>
+                            class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1"></div>
                     </div>
                 </div>
             </header>
 
-            <div class="my-3 sm:my-4 flex-1 flex flex-col justify-center min-w-0 w-full">
+            <!-- タイマーエリア -->
+            <div class="my-3 sm:my-4 flex-1 flex flex-col justify-center items-center min-w-0 w-full">
                 <!-- 状態ガイドバナー -->
                 <div id="status-banner"
-                    class="text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto transition-all">
-                    スペース長押し（0.3秒）でスタート準備
-                </div>
-                <!-- リキッドグリッド：カード枚数や解像度に応じて自動で幅・列数を最適配置 -->
-                <div id="timer-grid" class="liquid-timer-grid items-stretch">
+                    class="text-center mb-3 font-bold text-sm text-base-content/60 py-1.5 px-4 bg-base-200/50 rounded-xl max-w-md mx-auto transition-all">
+                    スペース長押し（0.3秒）またはボタン長押しでスタート準備
                 </div>
 
-                <!-- スマホ・タブレット用 タッチ長押しスタートボタン -->
-                <div class="mt-4 flex justify-center w-full px-2">
+                <!-- 長押しスタートボタン -->
+                <div class="w-full flex justify-center mb-4">
                     <button id="touch-start-btn"
                         class="btn btn-warning btn-outline btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2 py-3">
                         <span id="touch-btn-icon" class="text-xl">👆</span>
                         <span id="touch-btn-text">長押し（0.3秒）でスタート準備</span>
                     </button>
                 </div>
+
+                <!-- プレイヤーカードグリッド -->
+                <div id="timer-grid" class="liquid-timer-grid items-stretch w-full"></div>
             </div>
 
             <!-- 下部コントロールパネル -->
             <footer
                 class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
-                <!-- 人数切り替えボタン群 (1〜10人対応) -->
+                <!-- 人数切り替えボタン群 (デフォルト1人) -->
                 <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                     <div class="flex flex-wrap gap-1 p-1 bg-base-200/60 rounded-xl border border-base-300">
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5"
                             data-count="1">1人</button>
                         <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
                             data-count="2">2人</button>
@@ -219,7 +259,7 @@
                             data-count="3">3人</button>
                         <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
                             data-count="4">4人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5"
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
                             data-count="5">5人</button>
                         <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
                             data-count="6">6人</button>
@@ -247,9 +287,10 @@
             </footer>
         </section>
 
+        <!-- 右側サイドバー：実績 ＆ ランキング ＆ キューブプレビュー -->
         <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
 
-            <!-- 実績（バッジ）スペース -->
+            <!-- 実績アコーディオン -->
             <details id="achievement-details"
                 class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                 <summary
@@ -264,14 +305,12 @@
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col gap-2 max-h-[380px]">
                     <div id="today-kid-achievements-summary"
-                        class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2">
-                    </div>
-                    <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1">
-                    </div>
+                        class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2"></div>
+                    <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1"></div>
                 </div>
             </details>
 
-            <!-- 今日のランキング -->
+            <!-- 今日のランキングアコーディオン -->
             <details id="leaderboard-details"
                 class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                 <summary
@@ -292,7 +331,7 @@
                 </div>
             </details>
 
-            <!-- スクランブル完成図カード -->
+            <!-- スクランブル完成図プレビュー -->
             <div id="cube-preview-card"
                 class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
                 <div class="flex items-center justify-between w-full mb-1">
@@ -314,23 +353,69 @@
         </aside>
     </div>
 
-    <!-- スマホ用 全画面タイマーオーバーレイ (計測中に画面のどこを触っても即座にストップ可能) -->
+    <!-- 全画面タイマーオーバーレイ（右側にゴール順位縦並びリスト） -->
     <div id="mobile-timer-overlay"
-        class="fixed inset-0 bg-base-300/95 backdrop-blur-md z-50 flex-col items-center justify-center p-6 select-none touch-none cursor-pointer hidden">
-        <div class="text-sm font-black text-warning/80 mb-2 flex items-center gap-1.5 animate-bounce">
-            <span>🛑</span> 画面のどこでもタップしてストップ！
+        class="fixed inset-0 bg-base-300 z-50 hidden flex-col justify-between p-4 sm:p-6 lg:p-8 select-none touch-manipulation">
+        <!-- 上部ヘッダーバー -->
+        <div class="flex items-center justify-between w-full shrink-0 border-b border-base-content/10 pb-3">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl animate-pulse">🧩</span>
+                <div>
+                    <span id="overlay-remaining-badge"
+                        class="badge badge-warning font-black text-xs sm:text-sm py-2 px-3 shadow">
+                        残り: 1人 計測中
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div id="overlay-scramble-hint"
+                    class="font-mono text-xs text-base-content/40 hidden md:block max-w-md truncate"></div>
+                <button id="overlay-close-btn"
+                    class="btn btn-ghost btn-xs sm:btn-sm text-base-content/60 hover:text-base-content font-bold border border-base-content/20 rounded-lg">
+                    ✕ カード一覧に戻る
+                </button>
+            </div>
         </div>
-        <div id="overlay-timer-text"
-            class="timer-font text-6xl sm:text-7xl font-black text-warning tracking-wider my-6 filter drop-shadow">
-            00.000
+
+        <!-- 中央メインコンテンツ（左: 特大タイマー / 右: 確定ゴールリスト） -->
+        <div class="flex-1 flex flex-col lg:flex-row items-center justify-between my-2 gap-4 lg:gap-8 min-h-0 w-full">
+            <!-- 左・中央：特大デジタルタイマー -->
+            <div class="flex-1 flex flex-col items-center justify-center w-full min-h-0 py-4 pointer-events-none">
+                <div id="overlay-timer-text"
+                    class="timer-font text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-warning tracking-wider leading-none drop-shadow-lg">
+                    00.000
+                </div>
+                <div
+                    class="mt-4 text-xs sm:text-sm md:text-base font-bold text-base-content/50 bg-base-200/60 px-4 py-1.5 rounded-full border border-base-content/10 animate-pulse">
+                    ⚡️ 画面クリック または スペースキーでストップ！
+                </div>
+            </div>
+
+            <!-- 右側：ゴールした子の縦並びリスト -->
+            <div
+                class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
+                <div class="flex items-center justify-between border-b border-base-200 pb-2 mb-2 shrink-0">
+                    <span class="text-xs sm:text-sm font-black text-warning flex items-center gap-1.5">
+                        <span>🏁</span> ゴール順位リスト
+                    </span>
+                    <span id="overlay-status-summary"
+                        class="text-[11px] font-bold text-base-content/50">タップでストップ！</span>
+                </div>
+                <div id="overlay-finished-list" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
+                    <span
+                        class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>
+                </div>
+            </div>
         </div>
-        <div id="overlay-scramble-hint"
-            class="text-xs text-base-content/60 font-bold bg-base-100/80 px-4 py-2 rounded-xl border border-base-200/80 max-w-xs text-center truncate shadow-sm">
-            --
+
+        <!-- 下部ナビゲーションヒント -->
+        <div
+            class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
+            全員がゴールすると自動で名前入力画面に切り替わります（キーボード: ESCキーで手動終了）
         </div>
     </div>
 
-    <!-- トースト通知用コンテナ -->
+    <!-- トースト通知コンテナ -->
     <div id="toast-container" class="toast toast-top toast-center z-50 pointer-events-none"></div>
 
     <!-- 認証・ログイン用モーダル -->
@@ -345,14 +430,15 @@
                 </form>
             </div>
 
+            <!-- 未ログイン時のフォーム -->
             <div id="login-section" class="py-4 space-y-3">
                 <p class="text-xs text-base-content/70 font-semibold leading-relaxed">
-                    Supabaseへタイムを登録するためにログインしてください。一度ログインすると次回以降も自動で維持されます。
+                    Supabaseへタイムを保存・同期するためにログインしてください。ログイン状態は自動で維持されます。
                 </p>
                 <div class="space-y-2">
                     <div>
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">メールアドレス</label>
-                        <input type="email" id="auth-email" placeholder="gakudou@example.com"
+                        <input type="email" id="auth-email" placeholder="user@example.com"
                             class="input input-bordered input-sm w-full font-sans text-sm focus:border-warning" />
                     </div>
                     <div>
@@ -367,12 +453,9 @@
                     class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
                     🔑 ログインする
                 </button>
-                <div class="text-[10px] text-base-content/50 leading-tight pt-1">
-                    💡 ※初めてログインする場合は、Supabaseのダッシュボード（<strong>Authentication &gt;
-                        Users</strong>）で事前にメールアドレスとパスワードを登録しておいてください。
-                </div>
             </div>
 
+            <!-- ログイン済みの表示セクション -->
             <div id="logged-in-section" class="py-4 space-y-3 hidden">
                 <div class="p-3 bg-success/10 border border-success/30 rounded-xl flex items-center gap-3">
                     <span class="text-2xl">✅</span>
@@ -382,9 +465,6 @@
                             user@example.com</div>
                     </div>
                 </div>
-                <p class="text-[11px] text-base-content/60">
-                    次回以降も自動でログイン状態が引き継がれます。
-                </p>
                 <button id="submit-logout-btn" class="btn btn-outline btn-error btn-sm w-full font-bold">
                     🚪 ログアウト
                 </button>
@@ -401,26 +481,7 @@
             class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
             <div class="flex items-center justify-between pb-3 border-b border-base-200 shrink-0">
                 <h3 class="font-black text-lg sm:text-xl text-warning flex items-center gap-2">
-                    <svg class="w-5 h-5 text-warning shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2.5 L20.5 7.4 V16.6 L12 21.5 L3.5 16.6 V7.4 Z" fill="currentColor"
-                            fill-opacity="0.1" />
-                        <path d="M12 2.5 L20.5 7.4 L12 12.3 L3.5 7.4 Z" />
-                        <path d="M3.5 7.4 V16.6 L12 21.5 V12.3 Z" />
-                        <path d="M20.5 7.4 V16.6 L12 21.5 V12.3 Z" />
-                        <path d="M6.3 5.8 L14.8 10.7" />
-                        <path d="M9.2 4.1 L17.7 9.0" />
-                        <path d="M9.2 10.7 L17.7 5.8" />
-                        <path d="M6.3 9.0 L14.8 4.1" />
-                        <path d="M6.3 9.0 V18.2" />
-                        <path d="M9.2 10.7 V19.9" />
-                        <path d="M3.5 10.5 L12 15.4" />
-                        <path d="M3.5 13.5 L12 18.4" />
-                        <path d="M14.8 10.7 V19.9" />
-                        <path d="M17.7 9.0 V18.2" />
-                        <path d="M12 15.4 L20.5 10.5" />
-                        <path d="M12 18.4 L20.5 13.5" />
-                    </svg>
+                    <span class="text-2xl">🧩</span>
                     <span>キューブ管理スペース</span>
                 </h3>
                 <div class="flex items-center gap-2">
@@ -436,8 +497,8 @@
                     class="text-xs sm:text-sm font-bold text-base-content/70 mb-3 bg-base-200 p-3 rounded-xl border border-base-300 shrink-0">
                     データを読み込み中...
                 </div>
-                <div id="cube-mgmt-list" class="space-y-2.5 flex-1 overflow-y-auto pr-1">
-                </div>
+                <!-- キューブ一覧コンテナ -->
+                <div id="cube-mgmt-list" class="space-y-2.5 flex-1 overflow-y-auto pr-1"></div>
             </div>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -446,52 +507,11 @@
     </dialog>
 
     <script>
-        // --- Web Audio API サウンドシステム ---
+        // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
-        let isSoundEnabled = true;
+        let isSoundEnabled = localStorage.getItem('cube_sound_enabled') !== 'false';
 
-        // localStorageからサウンド設定の読み込み
-        try {
-            const savedSound = localStorage.getItem('cube_sound_enabled');
-            if (savedSound !== null) {
-                isSoundEnabled = savedSound === 'true';
-            }
-        } catch (e) {
-            console.warn(e);
-        }
-
-        const soundToggleBtn = document.getElementById('sound-toggle-btn');
-        const soundIcon = document.getElementById('sound-icon');
-
-        function updateSoundUI() {
-            if (!soundIcon) return;
-            soundIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
-            if (isSoundEnabled) {
-                soundToggleBtn.classList.remove('opacity-50');
-            } else {
-                soundToggleBtn.classList.add('opacity-50');
-            }
-        }
-        updateSoundUI();
-
-        if (soundToggleBtn) {
-            soundToggleBtn.addEventListener('click', () => {
-                isSoundEnabled = !isSoundEnabled;
-                try {
-                    localStorage.setItem('cube_sound_enabled', isSoundEnabled ? 'true' : 'false');
-                } catch (e) { }
-                updateSoundUI();
-                if (isSoundEnabled) {
-                    playBeep(880, 0.08, 'sine', 0.2); // ONにしたときに確認音を鳴らす
-                    showToast('ビープ音をONにしました 🔊', 'info');
-                } else {
-                    showToast('ビープ音をOFFにしました 🔇', 'info');
-                }
-            });
-        }
-
-        // ユーザーインタラクション時にAudioContextを初期化
-        function getAudioContext() {
+        function initAudioContext() {
             if (!audioCtx) {
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
                 if (AudioContextClass) {
@@ -501,56 +521,120 @@
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
-            return audioCtx;
         }
 
-        // 基本のビープ音再生関数（クリックノイズを抑えるエンベロープ付き）
-        function playBeep(freq = 880, duration = 0.08, type = 'sine', volume = 0.25) {
-            if (!isSoundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                if (!ctx) return;
-
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, ctx.currentTime);
-
-                // クリックノイズ防止のため微小フェード
-                gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + duration);
-            } catch (err) {
-                console.warn('ビープ音の再生エラー:', err);
-            }
-        }
-
-        // 計測開始音：「ピッ！」（高めのシャープなトーン）
+        // スタート音（ピッ！: 高めの周波数 988Hz）
         function playStartBeep() {
-            playBeep(987.77, 0.1, 'sine', 0.35); // B5音
-        }
-
-        // 個別ストップ音：「ピッ！」（歯切れのよいトーン、1位は特別感のあるピピッ）
-        function playStopBeep(rank = 1) {
-            if (rank === 1) {
-                // 1位: 軽快な「ピピッ！」
-                playBeep(880, 0.06, 'triangle', 0.3);
-                setTimeout(() => {
-                    playBeep(1174.66, 0.09, 'triangle', 0.35); // D6
-                }, 75);
-            } else {
-                // 2位以降: 確実なストップ音「ピッ」
-                playBeep(784, 0.08, 'triangle', 0.28); // G5
+            if (!isSoundEnabled) return;
+            initAudioContext();
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5
+                gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.12);
+            } catch (e) {
+                console.warn("ビープ音の再生に失敗しました", e);
             }
         }
 
+        // 個別ストップ音（ピッ！ 1位はピピッと華やかに）
+        function playStopBeep(rank = 1) {
+            if (!isSoundEnabled) return;
+            initAudioContext();
+            if (!audioCtx) return;
+            try {
+                if (rank === 1) {
+                    // 1位: ピピッ！
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
+                    gain1.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.start();
+                    osc1.stop(audioCtx.currentTime + 0.08);
+
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(1318.5, audioCtx.currentTime + 0.09); // E6
+                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime + 0.09);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start(audioCtx.currentTime + 0.09);
+                    osc2.stop(audioCtx.currentTime + 0.22);
+                } else {
+                    // 2位以降: ピッ！
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                    gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                }
+            } catch (e) {
+                console.warn("ストップ音の再生に失敗しました", e);
+            }
+        }
+
+        // --- テーマ切り替え処理 (Dark / Light) ---
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('cube_theme', theme);
+            if (themeIcon) {
+                themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        const savedTheme = localStorage.getItem('cube_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        applyTheme(savedTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') || 'dark';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            });
+        }
+
+        // --- サウンド切り替えボタン ---
+        const soundToggleBtn = document.getElementById('sound-toggle-btn');
+        const soundIcon = document.getElementById('sound-icon');
+
+        function updateSoundUI() {
+            if (soundIcon) {
+                soundIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
+            }
+        }
+        updateSoundUI();
+
+        if (soundToggleBtn) {
+            soundToggleBtn.addEventListener('click', () => {
+                isSoundEnabled = !isSoundEnabled;
+                localStorage.setItem('cube_sound_enabled', isSoundEnabled ? 'true' : 'false');
+                updateSoundUI();
+                initAudioContext();
+                showToast(isSoundEnabled ? 'サウンドをONにしました 🔊' : 'サウンドを消音にしました 🔇', 'info');
+            });
+        }
+
+        // --- Supabase設定 ---
         const SUPABASE_URL = "https://sqknnxyumrbiunsllzcl.supabase.co";
         const SUPABASE_KEY = "sb_publishable_QKQjNX4H8SLKclkvH8zrUg_DQOeLl_I";
         let supabaseClient = null;
@@ -566,26 +650,23 @@
         let localLeaderboard = [];
         try {
             const savedBoard = localStorage.getItem('cube_today_leaderboard');
-            if (savedBoard) {
-                localLeaderboard = JSON.parse(savedBoard);
-            }
+            if (savedBoard) localLeaderboard = JSON.parse(savedBoard);
         } catch (e) {
-            console.warn("ローカルランキングの読み込みに失敗しました", e);
+            console.warn("ローカルランキングの復元に失敗しました", e);
         }
 
-        // 直近で登録されたメンバーのID一覧
+        // 直近で登録されたメンバーID一覧
         let lastRegisteredUserIds = [];
         try {
             const savedRecentUsers = localStorage.getItem('cube_recent_user_ids');
-            if (savedRecentUsers) {
-                lastRegisteredUserIds = JSON.parse(savedRecentUsers);
-            }
+            if (savedRecentUsers) lastRegisteredUserIds = JSON.parse(savedRecentUsers);
         } catch (e) {
-            console.warn("前回メンバーの読み込みに失敗しました", e);
+            console.warn("前回メンバーの復元に失敗しました", e);
         }
 
         let expandedSlots = new Set();
 
+        // 実績マスター
         let ACHIEVEMENTS = [
             {id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩'},
             {id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️'},
@@ -601,18 +682,12 @@
         }
 
         let todayAchievementCounts = {};
-
         function loadTodayAchievements() {
             try {
                 const todayKey = getTodayKey();
                 const savedData = localStorage.getItem(`cube_achievements_${todayKey}`);
-                if (savedData) {
-                    todayAchievementCounts = JSON.parse(savedData);
-                } else {
-                    todayAchievementCounts = {};
-                }
+                todayAchievementCounts = savedData ? JSON.parse(savedData) : {};
             } catch (e) {
-                console.warn("実績データの読み込みに失敗しました", e);
                 todayAchievementCounts = {};
             }
         }
@@ -624,7 +699,6 @@
         function buildNameOptionsHtml(slotId, selectedUserId = null) {
             const isExpanded = expandedSlots.has(slotId);
             const hasRecent = lastRegisteredUserIds.length > 0;
-
             let displayUsers = usersList;
             let showExpandOption = false;
 
@@ -639,7 +713,6 @@
             }
 
             let html = `<option value="" disabled ${!selectedUserId ? 'selected' : ''}>名前をえらんでね</option>`;
-
             displayUsers.forEach(u => {
                 const isSelected = selectedUserId === u.id ? 'selected' : '';
                 html += `<option value="${u.id}" data-default-solve="${u.default_solvetype || 'CROSS'}" ${isSelected}>${u.name}</option>`;
@@ -648,31 +721,22 @@
             if (showExpandOption) {
                 html += `<option value="__SHOW_ALL__" class="text-warning font-bold">➕ 他の名前も表示...</option>`;
             }
-
             return html;
         }
 
-        const MOVE_IMAGE_INDEX = {
-            "U": 0, "U'": 1,
-            "B": 2, "B'": 3,
-            "R": 4, "R'": 5,
-            "L": 6, "L'": 7,
-            "F": 8, "F'": 9,
-            "D": 10, "D'": 11,
-            "U2": 12, "B2": 13,
-            "R2": 14, "L2": 15,
-            "F2": 16, "D2": 17
-        };
-        const IMAGE_PATH_BASE = 'scramblePic/';
-
-        let playerCount = 5;
+        // --- 状態変数 ---
+        let playerCount = 1; // デフォルト人数は1人
         let players = [];
         let spacePressTimer = null;
         let isReady = false;
-        let globalState = 'IDLE';
+        let globalState = 'IDLE'; // 'IDLE' | 'HOLDING' | 'READY' | 'RUNNING'
         let currentScrambleMoves = [];
+        let canStopTouch = false;
+        let isTouchStarted = false;
         let finishOrder = 0;
+        let currentUser = null;
 
+        // DOM要素
         const timerGrid = document.getElementById('timer-grid');
         const countButtons = document.querySelectorAll('.player-count-btn');
         const saveAllBtn = document.getElementById('save-all-btn');
@@ -689,7 +753,18 @@
         const toggleScrambleImages = document.getElementById('toggle-scramble-images');
         const scrambleImagesWrapper = document.getElementById('scramble-images-wrapper');
         const scrambleImagesList = document.getElementById('scramble-images-list');
+        const touchStartBtn = document.getElementById('touch-start-btn');
+        const touchBtnIcon = document.getElementById('touch-btn-icon');
+        const touchBtnText = document.getElementById('touch-btn-text');
+        const mobileTimerOverlay = document.getElementById('mobile-timer-overlay');
+        const overlayTimerText = document.getElementById('overlay-timer-text');
+        const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
+        const overlayRemainingBadge = document.getElementById('overlay-remaining-badge');
+        const overlayFinishedList = document.getElementById('overlay-finished-list');
+        const overlayStatusSummary = document.getElementById('overlay-status-summary');
+        const overlayCloseBtn = document.getElementById('overlay-close-btn');
 
+        // 実績・ランキングアコーディオン
         const achievementDetails = document.getElementById('achievement-details');
         const leaderboardDetails = document.getElementById('leaderboard-details');
 
@@ -698,19 +773,18 @@
                 localStorage.setItem('cube_achievement_open', achievementDetails.open ? 'true' : 'false');
             });
         }
-
         if (leaderboardDetails) {
             leaderboardDetails.addEventListener('toggle', () => {
                 localStorage.setItem('cube_leaderboard_open', leaderboardDetails.open ? 'true' : 'false');
             });
         }
 
+        // --- キューブ管理機能 ---
         const cubeMgmtBtn = document.getElementById('cube-mgmt-btn');
         const cubeMgmtModal = document.getElementById('cube-mgmt-modal');
         const cubeMgmtList = document.getElementById('cube-mgmt-list');
         const cubeMgmtSummary = document.getElementById('cube-mgmt-summary');
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
-
         let cubesData = [];
 
         if (cubeMgmtBtn && cubeMgmtModal) {
@@ -724,17 +798,51 @@
             cubeMgmtRefreshBtn.addEventListener('click', fetchCubeManagementData);
         }
 
+        function formatCubeDisplayName(name) {
+            if (!name) return 'キューブ';
+            const trimmed = name.trim();
+            if (/^sel\d+$/i.test(trimmed)) return trimmed.replace(/^sel/i, '');
+            if (/^maglev14_\d+$/i.test(trimmed)) return trimmed.replace(/^maglev14_(\d+)$/i, 'maglev14($1)');
+            if (/^maglev_\d+$/i.test(trimmed)) return trimmed.replace(/^maglev_(\d+)$/i, 'maglev14($1)');
+            return trimmed;
+        }
+
         async function fetchCubeManagementData() {
+            // 未ログイン状態（Supabaseセッションなし）の判定
+            if (!currentUser) {
+                cubeMgmtSummary.innerHTML = `<span class="text-error font-black">🔒 未ログイン状態です</span>`;
+                cubeMgmtList.innerHTML = `
+                    <div class="card bg-base-200/80 border border-base-300 p-5 text-center flex flex-col items-center gap-3">
+                        <span class="text-4xl">🔒</span>
+                        <div class="space-y-1">
+                            <h4 class="font-black text-base sm:text-lg text-warning">Supabaseにログインしていません</h4>
+                            <p class="text-xs text-base-content/70 max-w-sm mx-auto">
+                                キューブ管理機能を利用するには、アカウント設定からSupabaseにログインしてください。
+                            </p>
+                        </div>
+                        <button id="open-login-from-mgmt-btn" class="btn btn-warning btn-sm font-black text-slate-900 shadow mt-1">
+                            🔑 ログイン画面を開く
+                        </button>
+                    </div>
+                `;
+                const openLoginBtn = document.getElementById('open-login-from-mgmt-btn');
+                if (openLoginBtn) {
+                    openLoginBtn.addEventListener('click', () => {
+                        cubeMgmtModal.close();
+                        authModal.showModal();
+                    });
+                }
+                return;
+            }
+
             cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-base-content/60"><span class="loading loading-spinner loading-sm text-warning"></span> データを読み込み中...</div>`;
 
             if (!supabaseClient) {
                 cubesData = [
-                    {id: '11eca1b3-870e-4e4f-8cc1-1dab8c56a420', cubeName: 'sel3', user_id: null, user_name: null, created_at: '2026-08-30 15:23:46'},
-                    {id: '261b5c83-3505-4322-b1e8-36cbb0476b1a', cubeName: '356M', user_id: null, user_name: null, created_at: '2026-09-19 17:10:47'},
-                    {id: 'cc334e41-3491-439f-a3e0-bff5be53b7e7', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた', created_at: '2026-08-30 15:21:00'},
-                    {id: 'd0cffdb0-8ae0-4b62-9a54-d074959d0421', cubeName: 'Mirror M', user_id: null, user_name: null, created_at: '2026-09-19 17:11:54'},
-                    {id: 'd6f8d2e8-cdb6-4cd9-9bc3-d679c255a446', cubeName: 'sel4', user_id: 'mock-3', user_name: 'あおい', created_at: '2026-08-30 15:23:52'}
-                ].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    {id: '1', cubeName: 'sel3', user_id: null, user_name: null},
+                    {id: '2', cubeName: '356M', user_id: null, user_name: null},
+                    {id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた'}
+                ];
                 renderCubeManagementUI();
                 return;
             }
@@ -755,21 +863,6 @@
             }
         }
 
-        function formatCubeDisplayName(name) {
-            if (!name) return 'キューブ';
-            const trimmed = name.trim();
-            if (/^sel\d+$/i.test(trimmed)) {
-                return trimmed.replace(/^sel/i, '');
-            }
-            if (/^maglev14_\d+$/i.test(trimmed)) {
-                return trimmed.replace(/^maglev14_(\d+)$/i, 'maglev14($1)');
-            }
-            if (/^maglev_\d+$/i.test(trimmed)) {
-                return trimmed.replace(/^maglev_(\d+)$/i, 'maglev14($1)');
-            }
-            return trimmed;
-        }
-
         function renderCubeManagementUI() {
             cubeMgmtList.innerHTML = '';
 
@@ -782,8 +875,8 @@
             const inUseCount = cubesData.filter(c => !!c.user_id).length;
             cubeMgmtSummary.innerHTML = `
                 <div class="flex items-center justify-between">
-                  <span>全 <strong class="text-warning">${cubesData.length}</strong> 個中、<strong class="text-error">${inUseCount}</strong> 個貸出中</span>
-                  <span class="badge badge-success badge-sm font-bold">空き: ${cubesData.length - inUseCount} 個</span>
+                    <span>全 <strong class="text-warning">${cubesData.length}</strong> 個中、<strong class="text-error">${inUseCount}</strong> 個貸出中</span>
+                    <span class="badge badge-success badge-sm font-bold">空き: ${cubesData.length - inUseCount} 個</span>
                 </div>
             `;
 
@@ -802,37 +895,32 @@
                 }).join('');
 
                 card.innerHTML = `
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
-                    <div class="min-w-0">
-                      <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
-                        <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
-                        <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
-                          ${isUsing ? '貸出中' : '空き'}
-                        </span>
-                      </div>
-                      <div class="text-xs text-base-content/70 font-bold mt-0.5">
-                        ${isUsing
-                        ? `使っている子: <span class="text-warning font-black text-sm underline decoration-warning/40 underline-offset-2">${userName}</span>`
-                        : '棚にあります（使えます）'}
-                      </div>
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
+                        <div class="min-w-0">
+                            <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
+                                <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
+                                <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
+                                    ${isUsing ? '貸出中' : '空き'}
+                                </span>
+                            </div>
+                            <div class="text-xs text-base-content/70 font-bold mt-0.5">
+                                ${isUsing ? `使っている子: <span class="text-warning font-black underline decoration-warning/40 underline-offset-2">${userName}</span>` : '棚にあります（使えます）'}
+                            </div>
+                        </div>
                     </div>
-                  </div>
-
-                  <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                    <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
-                      <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
-                      ${userOptionsHtml}
-                    </select>
-
-                    ${isUsing ? `
-                      <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
-                        返却 📥
-                      </button>
-                    ` : ''}
-                  </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                        <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
+                            <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
+                            ${userOptionsHtml}
+                        </select>
+                        ${isUsing ? `
+                            <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
+                                返却 📥
+                            </button>
+                        ` : ''}
+                    </div>
                 `;
-
                 cubeMgmtList.appendChild(card);
             });
 
@@ -859,13 +947,8 @@
 
             if (supabaseClient) {
                 try {
-                    const updatePayload = {
-                        user_id: userId,
-                        user_name: userName
-                    };
-                    if (authUserId) {
-                        updatePayload.supabase_Authid = authUserId;
-                    }
+                    const updatePayload = {user_id: userId, user_name: userName};
+                    if (authUserId) updatePayload.supabase_Authid = authUserId;
 
                     const {error} = await supabaseClient
                         .from('cube_management')
@@ -892,10 +975,10 @@
             } else {
                 showToast(`「${cubeDisplayName}」が返却されました 📥`, 'info');
             }
-
             renderCubeManagementUI();
         }
 
+        // --- 認証機能 ---
         const settingsBtn = document.getElementById('settings-btn');
         const authModal = document.getElementById('auth-modal');
         const authStatusDot = document.getElementById('auth-status-dot');
@@ -907,8 +990,6 @@
         const submitLogoutBtn = document.getElementById('submit-logout-btn');
         const loggedInEmailText = document.getElementById('logged-in-email');
         const authErrorMsg = document.getElementById('auth-error-msg');
-
-        let currentUser = null;
 
         function updateAuthUI(user) {
             currentUser = user;
@@ -924,13 +1005,11 @@
                 authEmailInput.value = '';
                 authPasswordInput.value = '';
                 authErrorMsg.classList.add('hidden');
-                authErrorMsg.textContent = '';
             }
         }
 
         async function initAuth() {
             if (!supabaseClient) return;
-
             try {
                 const {data: {session}, error} = await supabaseClient.auth.getSession();
                 if (error) throw error;
@@ -944,7 +1023,7 @@
                     }
                 });
             } catch (err) {
-                console.warn("セッション確認中にエラーが発生しました:", err);
+                console.warn("セッション確認エラー:", err);
             }
         }
 
@@ -956,15 +1035,13 @@
         submitLoginBtn.addEventListener('click', async () => {
             const email = authEmailInput.value.trim();
             const password = authPasswordInput.value;
-
             if (!email || !password) {
                 authErrorMsg.textContent = 'メールアドレスとパスワードを入力してください';
                 authErrorMsg.classList.remove('hidden');
                 return;
             }
-
             if (!supabaseClient) {
-                authErrorMsg.textContent = 'Supabaseクライアントが初期化されていません';
+                authErrorMsg.textContent = 'Supabaseクライアントが未初期化です';
                 authErrorMsg.classList.remove('hidden');
                 return;
             }
@@ -974,27 +1051,13 @@
             authErrorMsg.classList.add('hidden');
 
             try {
-                const {data, error} = await supabaseClient.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
+                const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
                 if (error) throw error;
-
                 authModal.close();
                 showToast('🔑 ログインに成功しました！', 'success');
                 updateAuthUI(data.user);
             } catch (err) {
-                console.warn("ログイン失敗:", err.message);
-                let message = 'ログインに失敗しました。';
-                if (err.message && err.message.toLowerCase().includes('invalid login credentials')) {
-                    message = '⚠️ メールアドレスまたはパスワードが正しくありません。Supabaseの Authentication > Users にアカウントが作成されているかご確認ください。';
-                } else if (err.message && err.message.toLowerCase().includes('email not confirmed')) {
-                    message = '⚠️ メールアドレスの確認（認証）が完了していません。Supabaseの管理画面で「Auto Confirm」を有効にするか、届いた認証メールをご確認ください。';
-                } else if (err.message) {
-                    message = `⚠️ ${err.message}`;
-                }
-                authErrorMsg.textContent = message;
+                authErrorMsg.textContent = `⚠️ ${err.message || 'ログインに失敗しました'}`;
                 authErrorMsg.classList.remove('hidden');
             } finally {
                 submitLoginBtn.disabled = false;
@@ -1004,12 +1067,10 @@
 
         submitLogoutBtn.addEventListener('click', async () => {
             if (!supabaseClient) return;
-
             submitLogoutBtn.disabled = true;
             try {
                 const {error} = await supabaseClient.auth.signOut();
                 if (error) throw error;
-
                 authModal.close();
                 showToast('ログアウトしました', 'info');
                 updateAuthUI(null);
@@ -1027,14 +1088,9 @@
             const minutes = Math.floor(totalSec / 60);
             const seconds = Math.floor(totalSec % 60);
             const millis = Math.floor(ms % 1000);
-
             const secStr = seconds.toString().padStart(2, '0');
             const msStr = millis.toString().padStart(3, '0');
-
-            if (minutes > 0) {
-                return `${minutes}:${secStr}.${msStr}`;
-            }
-            return `${secStr}.${msStr}`;
+            return minutes > 0 ? `${minutes}:${secStr}.${msStr}` : `${secStr}.${msStr}`;
         }
 
         function showToast(message, type = 'info') {
@@ -1042,7 +1098,6 @@
             toast.className = `alert alert-${type} shadow-lg py-2 px-4 text-sm font-bold flex items-center gap-2 pointer-events-auto transition-all transform duration-300`;
             toast.innerHTML = `<span>${message}</span>`;
             toastContainer.appendChild(toast);
-
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(-10px)';
@@ -1056,7 +1111,6 @@
             const length = 20;
             let scramble = [];
             let lastMove = '';
-
             for (let i = 0; i < length; i++) {
                 let move;
                 do {
@@ -1069,27 +1123,28 @@
             return scramble;
         }
 
+        const MOVE_IMAGE_INDEX = {
+            "U": 0, "U'": 1, "B": 2, "B'": 3, "R": 4, "R'": 5,
+            "L": 6, "L'": 7, "F": 8, "F'": 9, "D": 10, "D'": 11,
+            "U2": 12, "B2": 13, "R2": 14, "L2": 15, "F2": 16, "D2": 17
+        };
+        const IMAGE_PATH_BASE = 'scramblePic/';
+
         function renderScrambleImages() {
             if (!toggleScrambleImages.checked || currentScrambleMoves.length === 0) return;
-
             scrambleImagesList.innerHTML = '';
             currentScrambleMoves.forEach((move, idx) => {
                 const imgIndex = MOVE_IMAGE_INDEX[move];
                 const card = document.createElement('div');
                 card.className = "flex-shrink-0 flex flex-col items-center bg-base-200 border border-base-300 rounded-xl p-2 min-w-[120px] sm:min-w-[136px] shadow-sm";
-
                 card.innerHTML = `
-                  <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
-                    <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
-                    <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
-                  </div>
-                  <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
-                    <img 
-                      src="${IMAGE_PATH_BASE}${imgIndex}.png" 
-                      alt="${move}" 
-                      class="w-full h-full object-contain pointer-events-none"
-                    />
-                  </div>
+                    <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
+                        <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
+                        <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
+                    </div>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
+                        <img src="${IMAGE_PATH_BASE}${imgIndex}.png" alt="${move}" class="w-full h-full object-contain pointer-events-none" />
+                    </div>
                 `;
                 scrambleImagesList.appendChild(card);
             });
@@ -1103,44 +1158,27 @@
         }
         newScrambleBtn.addEventListener('click', refreshScramble);
 
-        const CUBE_COLORS = {
-            W: '#ffffff',
-            Y: '#ffd500',
-            G: '#009b48',
-            B: '#0046ad',
-            O: '#ff5800',
-            R: '#b71234'
-        };
+        // --- 3x3x3 キューブ描画 ---
+        const CUBE_COLORS = {W: '#ffffff', Y: '#ffd500', G: '#009b48', B: '#0046ad', O: '#ff5800', R: '#b71234'};
 
         function createSolvedCube() {
             return {
-                U: Array(9).fill('W'),
-                D: Array(9).fill('Y'),
-                F: Array(9).fill('G'),
-                B: Array(9).fill('B'),
-                L: Array(9).fill('O'),
-                R: Array(9).fill('R')
+                U: Array(9).fill('W'), D: Array(9).fill('Y'),
+                F: Array(9).fill('G'), B: Array(9).fill('B'),
+                L: Array(9).fill('O'), R: Array(9).fill('R')
             };
         }
 
         function rotateFaceCW(face) {
-            return [
-                face[6], face[3], face[0],
-                face[7], face[4], face[1],
-                face[8], face[5], face[2]
-            ];
+            return [face[6], face[3], face[0], face[7], face[4], face[1], face[8], face[5], face[2]];
         }
 
         function applyCubeMove(cube, move) {
             const baseMove = move[0];
-            const isPrime = move.includes("'");
-            const isDouble = move.includes('2');
-            const turns = isDouble ? 2 : isPrime ? 3 : 1;
-
+            const turns = move.includes('2') ? 2 : move.includes("'") ? 3 : 1;
             for (let t = 0; t < turns; t++) {
                 cube[baseMove] = rotateFaceCW(cube[baseMove]);
                 const {U, D, F, B, L, R} = cube;
-
                 if (baseMove === 'U') {
                     const temp = [F[0], F[1], F[2]];
                     F[0] = R[0]; F[1] = R[1]; F[2] = R[2];
@@ -1181,23 +1219,16 @@
             }
         }
 
-        function simulateCube(moves) {
-            const cube = createSolvedCube();
-            moves.forEach(m => applyCubeMove(cube, m));
-            return cube;
-        }
-
         function updateCubePreview() {
             const container = document.getElementById('cube-preview-svg-container');
             if (!container) return;
+            const cube = createSolvedCube();
+            currentScrambleMoves.forEach(m => applyCubeMove(cube, m));
 
-            const cube = simulateCube(currentScrambleMoves);
             const s = 20;
             const cos30 = Math.cos(Math.PI / 6);
             const sin30 = 0.5;
-            const cx = 80;
-            const cy = 76;
-
+            const cx = 80, cy = 76;
             const uc = {x: s * cos30, y: s * sin30};
             const ur = {x: -s * cos30, y: s * sin30};
             const udown = {x: 0, y: s};
@@ -1205,6 +1236,7 @@
 
             let svgPolygons = '';
 
+            // 上面 (U)
             const uOrig = {x: cx, y: cy - 6 * s * sin30};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1217,6 +1249,7 @@
                 }
             }
 
+            // 正面 (F)
             const fOrig = {x: cx - 3 * s * cos30, y: cy - 3 * s * sin30};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1229,6 +1262,7 @@
                 }
             }
 
+            // 右面 (R)
             const rOrig = {x: cx, y: cy};
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
@@ -1241,17 +1275,12 @@
                 }
             }
 
-            container.innerHTML = `
-                <svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">
-                  ${svgPolygons}
-                </svg>
-            `;
+            container.innerHTML = `<svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">${svgPolygons}</svg>`;
         }
 
         toggleScrambleImages.addEventListener('change', (e) => {
             const isEnabled = e.target.checked;
             localStorage.setItem('cube_show_scramble_images', isEnabled ? 'true' : 'false');
-
             if (isEnabled) {
                 scrambleImagesWrapper.classList.remove('hidden');
                 renderScrambleImages();
@@ -1260,6 +1289,7 @@
             }
         });
 
+        // --- プレイヤー初期化 ---
         function initPlayers(count) {
             playerCount = count;
             players = [];
@@ -1294,7 +1324,6 @@
                 players.push(p);
 
                 const optionsHtml = buildNameOptionsHtml(p.id);
-
                 const solveTypeOptionsHtml = SOLVE_TYPES.map((type, idx) =>
                     `<option value="${type}" ${idx === 0 ? 'selected' : ''}>🎯 ${type}</option>`
                 ).join('');
@@ -1303,47 +1332,47 @@
                 card.id = `player-card-${p.id}`;
                 card.className = "card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 flex flex-col justify-between items-center relative overflow-hidden transition-all duration-300 w-full";
                 card.innerHTML = `
-                  <div class="w-full flex items-center justify-between mb-2 gap-1.5">
-                    <span id="rank-badge-${p.id}" class="badge badge-sm badge-neutral font-black shrink-0">Slot ${p.id}</span>
-                    <div id="badge-status-${p.id}" class="w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0"></div>
-                    <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
-                  </div>
-
-                  <div class="w-full mb-2">
-                    <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
-                    <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
-                      ${optionsHtml}
-                    </select>
-                  </div>
-
-                  <div class="w-full mb-2">
-                    <label class="text-[11px] font-bold text-base-content/60 block mb-1">🎯 ソルブタイプ:</label>
-                    <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" disabled>
-                      ${solveTypeOptionsHtml}
-                    </select>
-                  </div>
-
-                  <div id="stats-badge-${p.id}" class="w-full bg-base-200/70 border border-base-300 rounded-lg py-1 px-2 mb-2 flex items-center justify-around text-[11px] font-bold text-base-content/80 min-h-[28px] hidden">
-                    <div class="flex items-center gap-1">
-                      <span class="text-warning text-xs">👑 PB:</span>
-                      <span id="pb-val-${p.id}" class="font-mono text-warning font-black">--</span>
+                    <div class="w-full flex items-center justify-between mb-2 gap-1.5">
+                        <span id="rank-badge-${p.id}" class="badge badge-sm badge-neutral font-black shrink-0">Slot ${p.id}</span>
+                        <div id="badge-status-${p.id}" class="w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0"></div>
+                        <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
                     </div>
-                    <div class="h-3 w-px bg-base-content/20"></div>
-                    <div class="flex items-center gap-1">
-                      <span class="text-info text-xs">📊 ao5:</span>
-                      <span id="ao5-val-${p.id}" class="font-mono text-info font-black">--</span>
+
+                    <div class="w-full mb-2">
+                        <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
+                        <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
+                            ${optionsHtml}
+                        </select>
                     </div>
-                  </div>
-                  
-                  <div class="my-1.5 sm:my-2 w-full text-center">
-                    <div id="timer-${p.id}" class="timer-font text-4xl sm:text-5xl lg:text-6xl font-black text-base-content tracking-wider select-none truncate">
-                      00.000
+
+                    <div class="w-full mb-2">
+                        <label class="text-[11px] font-bold text-base-content/60 block mb-1">🎯 ソルブタイプ:</label>
+                        <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" disabled>
+                            ${solveTypeOptionsHtml}
+                        </select>
                     </div>
-                  </div>
-                  
-                  <button id="stop-btn-${p.id}" class="stop-btn btn btn-neutral btn-sm w-full font-black text-base-content/50 cursor-not-allowed shadow transition-all duration-200" data-id="${p.id}" disabled>
-                    待機中
-                  </button>
+
+                    <div id="stats-badge-${p.id}" class="w-full bg-base-200/70 border border-base-300 rounded-lg py-1 px-2 mb-2 flex items-center justify-around text-[11px] font-bold text-base-content/80 min-h-[28px] hidden">
+                        <div class="flex items-center gap-1">
+                            <span class="text-warning text-xs">👑 PB:</span>
+                            <span id="pb-val-${p.id}" class="font-mono text-warning font-black">--</span>
+                        </div>
+                        <div class="h-3 w-px bg-base-content/20"></div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-info text-xs">📊 ao5:</span>
+                            <span id="ao5-val-${p.id}" class="font-mono text-info font-black">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="my-1.5 sm:my-2 w-full text-center">
+                        <div id="timer-${p.id}" class="timer-font text-4xl sm:text-5xl lg:text-6xl font-black text-base-content tracking-wider select-none truncate">
+                            00.000
+                        </div>
+                    </div>
+                    
+                    <button id="stop-btn-${p.id}" class="stop-btn btn btn-neutral btn-sm w-full font-black text-base-content/50 cursor-not-allowed shadow transition-all duration-200" data-id="${p.id}" disabled>
+                        待機中
+                    </button>
                 `;
                 timerGrid.appendChild(card);
             }
@@ -1391,19 +1420,14 @@
 
                     const selectedUserId = val;
                     const userObj = usersList.find(u => u.id === selectedUserId);
-
                     if (userObj) {
                         players[pIndex].userId = userObj.id;
                         players[pIndex].name = userObj.name;
-
                         if (userObj.default_solvetype) {
                             players[pIndex].solveType = userObj.default_solvetype;
                             const solveSelect = document.getElementById(`solve-type-${slotId}`);
-                            if (solveSelect) {
-                                solveSelect.value = userObj.default_solvetype;
-                            }
+                            if (solveSelect) solveSelect.value = userObj.default_solvetype;
                         }
-
                         updatePlayerStatsDisplay(slotId, userObj.id, players[pIndex].solveType);
                     }
                 };
@@ -1414,7 +1438,6 @@
             const statsBadge = document.getElementById(`stats-badge-${slotId}`);
             const pbVal = document.getElementById(`pb-val-${slotId}`);
             const ao5Val = document.getElementById(`ao5-val-${slotId}`);
-
             if (!userId || !statsBadge || !pbVal || !ao5Val) {
                 if (statsBadge) statsBadge.classList.add('hidden');
                 return;
@@ -1425,7 +1448,6 @@
             ao5Val.textContent = '...';
 
             let solves = [];
-
             if (supabaseClient) {
                 try {
                     const {data, error} = await supabaseClient
@@ -1436,9 +1458,7 @@
                         .order('created_at', {ascending: false})
                         .limit(100);
 
-                    if (!error && data) {
-                        solves = data.map(d => d.time_ms);
-                    }
+                    if (!error && data) solves = data.map(d => d.time_ms);
                 } catch (e) {
                     console.warn("PB/ao5の取得に失敗しました", e);
                 }
@@ -1455,16 +1475,14 @@
             }
 
             if (solves.length > 0) {
-                const bestMs = Math.min(...solves);
-                pbVal.textContent = formatTime(bestMs);
+                pbVal.textContent = formatTime(Math.min(...solves));
             } else {
                 pbVal.textContent = 'なし';
             }
 
             if (solves.length >= 5) {
-                const last5 = solves.slice(0, 5);
-                const sorted5 = [...last5].sort((a, b) => a - b);
-                const middle3 = sorted5.slice(1, 4);
+                const last5 = solves.slice(0, 5).sort((a, b) => a - b);
+                const middle3 = last5.slice(1, 4);
                 const avgMs = Math.round(middle3.reduce((sum, v) => sum + v, 0) / 3);
                 ao5Val.textContent = formatTime(avgMs);
             } else {
@@ -1475,7 +1493,6 @@
         function cancelPlayerSlot(index) {
             const p = players[index];
             if (!p || p.isCancelled) return;
-
             p.isCancelled = true;
             if (p.intervalId) {
                 clearInterval(p.intervalId);
@@ -1487,15 +1504,10 @@
             if (card) {
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.85)';
-                setTimeout(() => {
-                    card.classList.add('hidden');
-                }, 250);
+                setTimeout(() => {card.classList.add('hidden');}, 250);
             }
             showToast(`スロット ${p.id} を除外しました`, 'info');
-
-            if (globalState === 'RUNNING') {
-                checkAllFinished();
-            }
+            if (globalState === 'RUNNING') checkAllFinished();
         }
 
         function startAllTimers() {
@@ -1503,17 +1515,15 @@
             isReady = false;
             finishOrder = 0;
             setAllTimerColor('text-warning');
-            statusBanner.textContent = '⏱ 計測中！解き終わったらスペースキーでストップ';
+            statusBanner.textContent = '⏱ 計測中！解き終わったらスペースキーまたは画面タップでストップ';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-warning py-1 px-3 bg-warning/10 rounded-lg max-w-md mx-auto animate-pulse';
 
-            // 🚀 スタート時のビープ音を再生！
             playStartBeep();
 
             const now = Date.now();
             const currentScrambleText = currentScrambleMoves.join(' ');
             players.forEach((p) => {
                 if (p.isCancelled) return;
-
                 p.scramble = currentScrambleText;
                 p.startTime = now;
                 p.elapsedTime = 0;
@@ -1555,26 +1565,148 @@
                     const formatted = formatTime(p.elapsedTime);
                     const el = document.getElementById(`timer-${p.id}`);
                     if (el) el.textContent = formatted;
+
+                    if (!mobileTimerOverlay.classList.contains('hidden')) {
+                        overlayTimerText.textContent = formatted;
+                    }
                 }, 10);
+            });
+
+            showMobileFullscreenTimer();
+        }
+
+        function showMobileFullscreenTimer() {
+            if (!mobileTimerOverlay) return;
+            overlayTimerText.textContent = '00.000';
+            overlayScrambleHint.textContent = currentScrambleMoves.slice(0, 8).join(' ') + '...';
+            overlayFinishedList.innerHTML = '<span class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>';
+            updateOverlayRemainingBadge();
+            mobileTimerOverlay.classList.remove('hidden');
+            mobileTimerOverlay.classList.add('flex');
+
+            canStopTouch = false;
+            setTimeout(() => {canStopTouch = true;}, 250);
+        }
+
+        function updateOverlayRemainingBadge() {
+            if (!overlayRemainingBadge) return;
+            const remainingCount = players.filter(p => !p.isCancelled && !p.isFinished).length;
+            overlayRemainingBadge.textContent = `残り: ${remainingCount}人 計測中`;
+            if (overlayStatusSummary) {
+                overlayStatusSummary.textContent = remainingCount > 0 ? 'タップでストップ！' : '全員ゴール！';
+            }
+        }
+
+        function hideMobileFullscreenTimer() {
+            if (!mobileTimerOverlay) return;
+            mobileTimerOverlay.classList.add('hidden');
+            mobileTimerOverlay.classList.remove('flex');
+        }
+
+        function handleOverlayStop(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (!canStopTouch) return;
+
+            if (globalState === 'RUNNING') {
+                const runningPlayerIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
+                if (runningPlayerIndex !== -1) {
+                    stopIndividualTimer(runningPlayerIndex);
+                }
+            }
+        }
+
+        if (mobileTimerOverlay) {
+            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, {passive: false});
+            mobileTimerOverlay.addEventListener('pointerdown', handleOverlayStop);
+        }
+
+        if (overlayCloseBtn) {
+            overlayCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hideMobileFullscreenTimer();
             });
         }
 
         function checkAllFinished() {
+            updateOverlayRemainingBadge();
             const activePlayers = players.filter(p => !p.isCancelled);
             if (activePlayers.length > 0 && activePlayers.every(p => p.isFinished)) {
                 globalState = 'IDLE';
+                isTouchStarted = false;
+                hideMobileFullscreenTimer();
                 unlockNameSelectors();
                 statusBanner.textContent = '🎉 全員ゴール！それぞれのタイムに名前を割り当ててね';
                 statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
                 showToast('測定完了！名前を選んで保存してね ✍️', 'success');
-
-                // 全員ゴール時のファンファーレ的ビープ音
-                setTimeout(() => {
-                    playBeep(523.25, 0.08, 'sine', 0.25);
-                    setTimeout(() => playBeep(659.25, 0.08, 'sine', 0.25), 80);
-                    setTimeout(() => playBeep(783.99, 0.12, 'sine', 0.3), 160);
-                }, 200);
+                resetTouchButtonUI();
             }
+        }
+
+        function resetTouchButtonUI() {
+            if (!touchStartBtn) return;
+            touchStartBtn.className = "btn btn-warning btn-outline btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2 py-3";
+            touchBtnIcon.textContent = '👆';
+            touchBtnText.textContent = '長押し（0.3秒）でスタート準備';
+        }
+
+        if (touchStartBtn) {
+            const startHold = (e) => {
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (globalState === 'RUNNING') {
+                    const runningIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
+                    if (runningIndex !== -1) stopIndividualTimer(runningIndex);
+                    return;
+                }
+
+                if (globalState === 'IDLE') {
+                    globalState = 'HOLDING';
+                    isReady = false;
+                    setAllTimerColor('text-error');
+                    touchStartBtn.className = "btn btn-error btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3";
+                    touchBtnIcon.textContent = '⏳';
+                    touchBtnText.textContent = 'そのまま長押し...';
+
+                    spacePressTimer = setTimeout(() => {
+                        isReady = true;
+                        globalState = 'READY';
+                        setAllTimerColor('text-success');
+                        touchStartBtn.className = "btn btn-success btn-md sm:btn-wide w-full max-w-md font-black text-slate-900 shadow-xl flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3 animate-pulse";
+                        touchBtnIcon.textContent = '🟢';
+                        touchBtnText.textContent = '準備完了！指を離してスタート！';
+                    }, 300);
+                }
+            };
+
+            const endHold = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (globalState === 'HOLDING' || globalState === 'READY') {
+                    clearTimeout(spacePressTimer);
+                    if (isReady) {
+                        isTouchStarted = true;
+                        startAllTimers();
+                        touchStartBtn.className = "btn btn-error btn-md sm:btn-wide w-full max-w-md font-black text-slate-900 shadow-md flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3 animate-pulse";
+                        touchBtnIcon.textContent = '🛑';
+                        touchBtnText.textContent = 'タップしてストップ！';
+                    } else {
+                        setAllTimerColor('text-base-content');
+                        globalState = 'IDLE';
+                        resetTouchButtonUI();
+                    }
+                }
+            };
+
+            touchStartBtn.addEventListener('pointerdown', startHold);
+            touchStartBtn.addEventListener('pointerup', endHold);
+            touchStartBtn.addEventListener('pointercancel', endHold);
+            touchStartBtn.addEventListener('contextmenu', e => e.preventDefault());
         }
 
         function stopIndividualTimer(index) {
@@ -1587,7 +1719,6 @@
             finishOrder++;
             p.rank = finishOrder;
 
-            // 🛑 ストップ時のビープ音を再生！（着順に応じた音）
             playStopBeep(finishOrder);
 
             const stopBtn = document.getElementById(`stop-btn-${p.id}`);
@@ -1612,6 +1743,26 @@
 
             const statusDot = document.getElementById(`badge-status-${p.id}`);
             if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-success";
+
+            // 全画面オーバーレイの右側リストに追加
+            if (overlayFinishedList) {
+                if (finishOrder === 1) overlayFinishedList.innerHTML = '';
+                const formattedTime = formatTime(p.elapsedTime);
+                const medalEmoji = finishOrder === 1 ? '🥇' : finishOrder === 2 ? '🥈' : finishOrder === 3 ? '🥉' : '';
+                const itemEl = document.createElement('div');
+                itemEl.className = `flex items-center justify-between p-2 sm:p-2.5 rounded-2xl border text-xs sm:text-sm font-black transition-all ${finishOrder === 1 ? 'bg-warning/15 border-warning/50 text-warning shadow-md' : 'bg-base-200/80 border-base-300 text-base-content'}`;
+                itemEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="w-14 sm:w-16 flex items-center gap-1 shrink-0">
+                            <span class="w-5 text-center shrink-0">${medalEmoji}</span>
+                            <span class="font-black">${finishOrder}位</span>
+                        </div>
+                        <span class="badge badge-sm overlay-slot-badge font-bold shrink-0">Slot ${p.id}</span>
+                    </div>
+                    <span class="timer-font text-sm sm:text-base font-black">${formattedTime}</span>
+                `;
+                overlayFinishedList.appendChild(itemEl);
+            }
 
             checkAllFinished();
         }
@@ -1644,13 +1795,15 @@
             });
         }
 
+        // キーボード操作
         document.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape') {
+                hideMobileFullscreenTimer();
+                return;
+            }
             if (e.code !== 'Space' || e.repeat) return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
             e.preventDefault();
-
-            // ユーザー操作時にAudioContextの再開を確実に実行
-            getAudioContext();
 
             if (globalState === 'IDLE') {
                 globalState = 'HOLDING';
@@ -1664,14 +1817,10 @@
                     setAllTimerColor('text-success');
                     statusBanner.textContent = '🟢 準備完了！手を離すとスタート！';
                     statusBanner.className = 'text-center mb-3 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto animate-pulse';
-                    // 準備完了のサイン音（ごく短い確認音）
-                    playBeep(587.33, 0.05, 'sine', 0.15);
                 }, 300);
             } else if (globalState === 'RUNNING') {
                 const runningPlayerIndex = players.findIndex(p => !p.isFinished && !p.isCancelled);
-                if (runningPlayerIndex !== -1) {
-                    stopIndividualTimer(runningPlayerIndex);
-                }
+                if (runningPlayerIndex !== -1) stopIndividualTimer(runningPlayerIndex);
             }
         });
 
@@ -1681,18 +1830,18 @@
 
             if (globalState === 'HOLDING' || globalState === 'READY') {
                 clearTimeout(spacePressTimer);
-
                 if (isReady) {
                     startAllTimers();
                 } else {
                     setAllTimerColor('text-base-content');
                     globalState = 'IDLE';
-                    statusBanner.textContent = 'スペース長押し（0.3秒）でスタート準備';
+                    statusBanner.textContent = 'スペース長押し（0.3秒）またはボタン長押しでスタート準備';
                     statusBanner.className = 'text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto';
                 }
             }
         });
 
+        // 人数変更ボタン
         countButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetBtn = e.currentTarget;
@@ -1702,7 +1851,6 @@
                     b.classList.remove('btn-warning');
                     b.classList.add('btn-neutral');
                 });
-
                 targetBtn.classList.remove('btn-neutral');
                 targetBtn.classList.add('btn-warning');
 
@@ -1711,6 +1859,7 @@
             });
         });
 
+        // リセット
         resetAllBtn.addEventListener('click', () => {
             players.forEach(p => {
                 if (p.intervalId) clearInterval(p.intervalId);
@@ -1722,6 +1871,8 @@
             isReady = false;
             initPlayers(playerCount);
             refreshScramble();
+            resetTouchButtonUI();
+            hideMobileFullscreenTimer();
             showToast('タイマーをリセットしました', 'warning');
         });
 
@@ -1744,42 +1895,35 @@
                 if (isUnlockedToday) {
                     earnersHtml = `
                         <div class="mt-1.5 flex flex-wrap gap-1 items-center">
-                          <span class="text-[10px] text-base-content/60 font-bold">今日の達成者:</span>
-                          ${earnersEntries.map(([name, count]) => `
-                            <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
-                              <span>${name}</span>
-                              <span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">
-                                ${count}回
-                              </span>
-                            </span>
-                          `).join('')}
+                            <span class="text-[10px] text-base-content/60 font-bold">今日の達成者:</span>
+                            ${earnersEntries.map(([name, count]) => `
+                                <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
+                                    <span>${name}</span>
+                                    <span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>
+                                </span>
+                            `).join('')}
                         </div>
                     `;
                 } else {
-                    earnersHtml = `
-                        <div class="mt-1 text-[10px] text-base-content/40 italic">きょうはまだ誰も達成していません</div>
-                    `;
+                    earnersHtml = `<div class="mt-1 text-[10px] text-base-content/40 italic">きょうはまだ誰も達成していません</div>`;
                 }
 
                 const item = document.createElement('div');
-                item.className = `flex flex-col p-2.5 rounded-xl border transition-all ${isUnlockedToday
-                    ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock'
-                    : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'
-                    }`;
+                item.className = `flex flex-col p-2.5 rounded-xl border transition-all ${isUnlockedToday ? 'bg-warning/10 border-warning/30 text-base-content badge-unlock' : 'bg-base-200/50 border-base-300 opacity-50 text-base-content'}`;
                 item.innerHTML = `
-                  <div class="flex items-start gap-2.5">
-                    <div class="text-2xl shrink-0">${ach.icon}</div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center justify-between">
-                        <div class="text-xs font-black text-warning">${ach.title}</div>
-                        <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
-                          ${isUnlockedToday ? `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨` : '🔒 未解除'}
-                        </span>
-                      </div>
-                      <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
-                      ${earnersHtml}
+                    <div class="flex items-start gap-2.5">
+                        <div class="text-2xl shrink-0">${ach.icon}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs font-black text-warning">${ach.title}</div>
+                                <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
+                                    ${isUnlockedToday ? `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨` : '🔒 未解除'}
+                                </span>
+                            </div>
+                            <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
+                            ${earnersHtml}
+                        </div>
                     </div>
-                  </div>
                 `;
                 achievementList.appendChild(item);
             });
@@ -1806,10 +1950,7 @@
         function unlockAchievement(id, playerName) {
             const ach = ACHIEVEMENTS.find(a => a.id === id);
             if (!ach || !playerName) return;
-
-            if (!todayAchievementCounts[id]) {
-                todayAchievementCounts[id] = {};
-            }
+            if (!todayAchievementCounts[id]) todayAchievementCounts[id] = {};
 
             const currentCount = todayAchievementCounts[id][playerName] || 0;
             const newCount = currentCount + 1;
@@ -1819,7 +1960,7 @@
                 const todayKey = getTodayKey();
                 localStorage.setItem(`cube_achievements_${todayKey}`, JSON.stringify(todayAchievementCounts));
             } catch (e) {
-                console.warn("実績の保存に失敗しました", e);
+                console.warn("実績保存エラー", e);
             }
 
             renderAchievements();
@@ -1830,7 +1971,6 @@
             if (timeSec < 60) unlockAchievement('sub_60', playerName);
             if (timeSec < 30) unlockAchievement('sub_30', playerName);
             if (timeSec < 20) unlockAchievement('sub_20', playerName);
-
             const millisPart = Math.floor((timeSec * 1000) % 1000);
             if (millisPart >= 111 && millisPart % 111 === 0) {
                 unlockAchievement('lucky_double', playerName);
@@ -1858,28 +1998,25 @@
             });
 
             const sorted = Array.from(bestRecordsMap.values()).sort((a, b) => a.time - b.time);
-
             sorted.forEach((item, index) => {
                 const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
-                const solveTypeBadge = item.solveType
-                    ? `<span class="badge badge-outline badge-xs text-[9px] font-bold text-warning ml-1">${item.solveType}</span>`
-                    : '';
+                const solveTypeBadge = item.solveType ? `<span class="badge badge-outline badge-xs text-[9px] font-bold text-warning ml-1">${item.solveType}</span>` : '';
                 const count = solveCountMap.get(item.name) || 1;
-                const countBadge = `<span class="badge badge-neutral badge-xs text-[9px] font-bold text-base-content/70 px-1 py-0.5 ml-1 shrink-0" title="きょう測定した回数">${count}回測定</span>`;
+                const countBadge = `<span class="badge badge-neutral badge-xs text-[9px] font-bold text-base-content/70 px-1 py-0.5 ml-1 shrink-0">${count}回測定</span>`;
 
                 const row = document.createElement('div');
                 row.className = `flex items-center justify-between p-2 rounded-lg bg-base-200 border border-base-300 text-xs font-black transition-all duration-300 ${index === 0 ? 'border-warning/50 bg-warning/5' : ''}`;
                 row.innerHTML = `
-                  <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
-                    <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
-                    <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
-                    ${solveTypeBadge}
-                    ${countBadge}
-                  </div>
-                  <div class="flex items-center gap-2 shrink-0 ml-auto">
-                    <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
-                    <span class="text-[10px] text-base-content/40 font-normal">${item.date || ''}</span>
-                  </div>
+                    <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
+                        <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
+                        <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
+                        ${solveTypeBadge}
+                        ${countBadge}
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 ml-auto">
+                        <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
+                        <span class="text-[10px] text-base-content/40 font-normal">${item.date || ''}</span>
+                    </div>
                 `;
                 leaderboardList.appendChild(row);
             });
@@ -1890,14 +2027,7 @@
                 usersList = [
                     {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
                     {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'},
-                    {id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面'},
-                    {id: 'mock-4', name: 'さくら', isActive: true, default_solvetype: 'OLL'},
-                    {id: 'mock-5', name: 'そうた', isActive: true, default_solvetype: 'PLL(CFOP)'},
-                    {id: 'mock-6', name: 'れん', isActive: true, default_solvetype: 'CROSS'},
-                    {id: 'mock-7', name: 'ひな', isActive: true, default_solvetype: '完全一面'},
-                    {id: 'mock-8', name: 'りく', isActive: true, default_solvetype: 'F2L'},
-                    {id: 'mock-9', name: 'ゆあ', isActive: true, default_solvetype: 'PLL(LBL)'},
-                    {id: 'mock-10', name: 'こうき', isActive: true, default_solvetype: 'CROSS'}
+                    {id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面'}
                 ];
                 initPlayers(playerCount);
                 return;
@@ -1911,18 +2041,12 @@
                     .order('name', {ascending: true});
 
                 if (error) throw error;
-
-                if (data && data.length > 0) {
-                    usersList = data;
-                } else {
-                    usersList = [];
-                }
+                usersList = data || [];
             } catch (err) {
-                console.warn("Supabaseからのusers取得に失敗しました。フォールバックデータを使用します。", err);
+                console.warn("users取得失敗、フォールバック使用", err);
                 usersList = [
                     {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
-                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'},
-                    {id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面'}
+                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'}
                 ];
             }
             initPlayers(playerCount);
@@ -1941,30 +2065,7 @@
                     .order('time_ms', {ascending: true})
                     .limit(100);
 
-                if (error) {
-                    const fallbackRes = await supabaseClient
-                        .from('cube_solves')
-                        .select('user_id, time_ms, solve_type, created_at')
-                        .gte('created_at', todayStart.toISOString())
-                        .order('time_ms', {ascending: true})
-                        .limit(100);
-
-                    if (fallbackRes.data) {
-                        localLeaderboard = fallbackRes.data.map(item => {
-                            const matchedUser = usersList.find(u => u.id === item.user_id);
-                            return {
-                                name: matchedUser ? matchedUser.name : '不明',
-                                time: item.time_ms / 1000,
-                                solveType: item.solve_type || 'CROSS',
-                                date: new Date(item.created_at).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
-                            };
-                        });
-                        localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
-                        renderLeaderboard();
-                    }
-                    return;
-                }
-
+                if (error) throw error;
                 if (data && data.length > 0) {
                     localLeaderboard = data.map(item => ({
                         name: item.users ? item.users.name : (usersList.find(u => u.id === item.user_id)?.name || '不明'),
@@ -1976,13 +2077,12 @@
                     renderLeaderboard();
                 }
             } catch (err) {
-                console.warn("Supabaseからのランキング取得をスキップしました:", err);
+                console.warn("ランキング取得スキップ:", err);
             }
         }
 
         saveAllBtn.addEventListener('click', async () => {
             const finishedPlayers = players.filter(p => !p.isCancelled && p.elapsedTime > 0);
-
             if (finishedPlayers.length === 0) {
                 showToast('まずはタイムを測定してください', 'error');
                 return;
@@ -2032,7 +2132,7 @@
             try {
                 localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
             } catch (e) {
-                console.warn("ローカルストレージへの保存に失敗しました", e);
+                console.warn("ローカル保存エラー", e);
             }
             renderLeaderboard();
 
@@ -2040,7 +2140,7 @@
             try {
                 localStorage.setItem('cube_recent_user_ids', JSON.stringify(lastRegisteredUserIds));
             } catch (e) {
-                console.warn("前回メンバーの保存に失敗しました", e);
+                console.warn("前回メンバー保存エラー", e);
             }
 
             finishedPlayers.forEach(p => {
@@ -2070,7 +2170,7 @@
 
             initPlayers(playerCount);
             refreshScramble();
-            statusBanner.textContent = 'スペース長押し（0.3秒）でスタート準備';
+            statusBanner.textContent = 'スペース長押し（0.3秒）またはボタン長押しでスタート準備';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto';
         });
 
@@ -2080,9 +2180,7 @@
 
             const savedToggle = localStorage.getItem('cube_show_scramble_images') === 'true';
             toggleScrambleImages.checked = savedToggle;
-            if (savedToggle) {
-                scrambleImagesWrapper.classList.remove('hidden');
-            }
+            if (savedToggle) scrambleImagesWrapper.classList.remove('hidden');
 
             if (achievementDetails) {
                 achievementDetails.open = localStorage.getItem('cube_achievement_open') === 'true';
@@ -2092,7 +2190,6 @@
             }
 
             refreshScramble();
-
             await initAuth();
             await fetchActiveUsersFromSupabase();
             await fetchTodayLeaderboardFromSupabase();
