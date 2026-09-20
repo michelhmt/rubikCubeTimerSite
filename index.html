@@ -532,6 +532,77 @@
         </form>
     </dialog>
 
+    <!-- オンライン対戦用モーダル -->
+    <dialog id="online-battle-modal" class="modal">
+        <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-md w-11/12">
+            <div class="flex items-center justify-between pb-3 border-b border-base-200">
+                <h3 class="font-black text-lg text-info flex items-center gap-2">
+                    <span class="text-2xl">🌐</span>
+                    <span>オンライン対戦ルーム</span>
+                </h3>
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+                </form>
+            </div>
+
+            <!-- 入室前セクション -->
+            <div id="online-join-section" class="py-4 space-y-3">
+                <p class="text-xs text-base-content/70 font-semibold leading-relaxed">
+                    同じ合言葉（ルーム名）を入力した友達と、まったく同じスクランブルでリアルタイムに対戦できます！
+                </p>
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 あなたの名前（ニックネーム）</label>
+                        <input type="text" id="online-nickname-input" placeholder="例: たろう"
+                            class="input input-bordered input-sm w-full font-bold focus:border-info" />
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-base-content/60 block mb-1">🔑 合言葉（ルーム名）</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="online-room-input" placeholder="例: battle-1"
+                                class="input input-bordered input-sm flex-1 font-mono font-bold focus:border-info" />
+                            <button id="online-random-room-btn" type="button"
+                                class="btn btn-sm btn-outline btn-ghost text-xs font-bold shrink-0">🎲 自動</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="online-join-btn" class="btn btn-info btn-sm w-full font-black text-slate-900 mt-2 shadow">
+                    🚀 ルームに入室して対戦する！
+                </button>
+            </div>
+
+            <!-- 入室中セクション -->
+            <div id="online-room-section" class="py-4 space-y-3 hidden">
+                <div class="flex items-center justify-between p-2.5 bg-info/10 border border-info/30 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-success animate-pulse"></span>
+                        <span id="online-room-title" class="font-black text-info text-sm">🔑 room</span>
+                    </div>
+                    <span class="badge badge-info badge-sm font-bold">参加中: <span id="online-user-count"
+                            class="ml-1">1</span>人</span>
+                </div>
+
+                <div class="flex gap-2">
+                    <button id="online-broadcast-scramble-btn"
+                        class="btn btn-warning btn-sm flex-1 font-black text-slate-900 shadow">
+                        🎲 共通スクランブルを配る
+                    </button>
+                    <button id="online-leave-btn" class="btn btn-outline btn-error btn-sm font-bold shrink-0">
+                        🚪 退出
+                    </button>
+                </div>
+
+                <div>
+                    <span class="text-[11px] font-bold text-base-content/60 block mb-1.5">参加メンバー ＆ タイム:</span>
+                    <div id="online-room-members-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
     <script>
         // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
@@ -713,6 +784,20 @@
                 const todayKey = getTodayKey();
                 const savedData = localStorage.getItem(`cube_achievements_${todayKey}`);
                 todayAchievementCounts = savedData ? JSON.parse(savedData) : {};
+
+                // 「はじめの一歩」のみ1回（達成）に正規化
+                let isDataModified = false;
+                if (todayAchievementCounts['first_solve'] && typeof todayAchievementCounts['first_solve'] === 'object') {
+                    Object.keys(todayAchievementCounts['first_solve']).forEach(name => {
+                        if (todayAchievementCounts['first_solve'][name] > 1) {
+                            todayAchievementCounts['first_solve'][name] = 1;
+                            isDataModified = true;
+                        }
+                    });
+                }
+                if (isDataModified) {
+                    localStorage.setItem(`cube_achievements_${todayKey}`, JSON.stringify(todayAchievementCounts));
+                }
             } catch (e) {
                 todayAchievementCounts = {};
             }
@@ -2037,6 +2122,7 @@
                 statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
                 showToast('測定完了！名前を選んで保存してね ✍️', 'success');
                 resetTouchButtonUI();
+                refreshScramble();
             }
         }
 
@@ -2315,7 +2401,10 @@
                             ${earnersEntries.map(([name, count]) => `
                                 <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
                                     <span>${name}</span>
-                                    <span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>
+                                    ${ach.id === 'first_solve'
+                            ? '<span class="text-[9px]">✨</span>'
+                            : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
+                        }
                                 </span>
                             `).join('')}
                         </div>
@@ -2333,7 +2422,11 @@
                             <div class="flex items-center justify-between">
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
-                                    ${isUnlockedToday ? `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨` : '🔒 未解除'}
+                                    ${isUnlockedToday
+                        ? (ach.id === 'first_solve'
+                            ? `${earnersEntries.length} 人が達成 ✨`
+                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
+                        : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -2369,6 +2462,10 @@
             if (!todayAchievementCounts[id]) todayAchievementCounts[id] = {};
 
             const currentCount = todayAchievementCounts[id][playerName] || 0;
+
+            // 「はじめの一歩」のみ1日1回まで
+            if (id === 'first_solve' && currentCount >= 1) return;
+
             const newCount = currentCount + 1;
             todayAchievementCounts[id][playerName] = newCount;
 
@@ -2380,7 +2477,11 @@
             }
 
             renderAchievements();
-            showToast(`🎉【${playerName}】が「${ach.title}」を達成！ (きょう ${newCount} 回目)`, 'warning');
+            if (id === 'first_solve') {
+                showToast(`🎉【${playerName}】が「${ach.title}」を達成！ ✨`, 'warning');
+            } else {
+                showToast(`🎉【${playerName}】が「${ach.title}」を達成！ (きょう ${newCount} 回目)`, 'warning');
+            }
         }
 
         function checkSolveAchievements(timeSec, playerName) {
