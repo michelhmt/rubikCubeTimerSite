@@ -610,7 +610,7 @@
 
     <script>
         // アプリケーション・バージョン管理（修正ごとにマイナーアップデート）
-        const APP_VERSION = 'v1.3.0';
+        const APP_VERSION = 'v1.4.0';
 
         let audioCtx = null;
         let isSoundEnabled = localStorage.getItem('cube_sound_enabled') !== 'false';
@@ -910,13 +910,12 @@
         const onlineBroadcastScrambleBtn = document.getElementById('online-broadcast-scramble-btn');
         const onlineRoomMembersList = document.getElementById('online-room-members-list');
 
-        // メイン画面の常時表示オンライン対戦ライブバー要素
-        const onlineBattleLiveBar = document.getElementById('online-battle-live-bar');
-        const liveBarRoomName = document.getElementById('live-bar-room-name');
-        const liveBarUserCount = document.getElementById('live-bar-user-count');
-        const liveBarMembersGrid = document.getElementById('live-bar-members-grid');
-        const liveBarScrambleBtn = document.getElementById('live-bar-scramble-btn');
-        const liveBarLeaveBtn = document.getElementById('live-bar-leave-btn');
+        // オンライン対戦 VSカード用要素
+        const onlineVsCardContainer = document.getElementById('online-vs-card-container');
+        const vsRoomBadge = document.getElementById('vs-room-badge');
+        const vsMatchDisplay = document.getElementById('vs-match-display');
+        const vsNewScrambleBtn = document.getElementById('vs-new-scramble-btn');
+        const vsLeaveBtn = document.getElementById('vs-leave-btn');
 
         let onlineChannel = null;
         let onlineRoomName = null;
@@ -1047,9 +1046,9 @@
                     onlineJoinSection.classList.add('hidden');
                     onlineRoomSection.classList.remove('hidden');
                     onlineRoomTitle.textContent = `🔑 ${roomName}`;
-                    if (onlineBattleLiveBar) {
-                        onlineBattleLiveBar.classList.remove('hidden');
-                        if (liveBarRoomName) liveBarRoomName.textContent = roomName;
+                    if (onlineVsCardContainer) {
+                        onlineVsCardContainer.classList.remove('hidden');
+                        if (vsRoomBadge) vsRoomBadge.textContent = `🔑 ${roomName}`;
                     }
                     renderOnlineRoomMembers();
                     showToast(`対戦ルーム「${roomName}」に参加しました！ 🏁`, "success");
@@ -1057,56 +1056,128 @@
             });
         }
 
-        function renderOnlineBattleLiveBar() {
-            if (!liveBarMembersGrid) return;
-            liveBarMembersGrid.innerHTML = '';
-
+        function renderOnlineVsCard() {
+            if (!vsMatchDisplay || !onlineVsCardContainer) return;
             const members = Object.values(onlineRoomMembers);
-            if (liveBarUserCount) liveBarUserCount.textContent = members.length;
+
+            if (members.length === 0) {
+                vsMatchDisplay.innerHTML = `<div class="text-xs text-base-content/50 py-2">参加者を待っています...</div>`;
+                return;
+            }
 
             // タイムがある人を優先して速い順にソート
-            members.sort((a, b) => {
+            const sorted = [...members].sort((a, b) => {
                 if (a.timeMs && b.timeMs) return a.timeMs - b.timeMs;
                 if (a.timeMs) return -1;
                 if (b.timeMs) return 1;
                 return 0;
             });
 
-            members.forEach((m, idx) => {
-                const isMe = m.id === myOnlineId;
-                const isFinished = !!m.timeMs;
-                const badge = document.createElement('div');
+            // 1位のタイムがあるか確認
+            const bestTime = sorted.find(m => !!m.timeMs)?.timeMs || null;
 
-                let medal = `${idx + 1}位`;
-                if (isFinished) {
-                    if (idx === 0) medal = '🥇 1位';
-                    else if (idx === 1) medal = '🥈 2位';
-                    else if (idx === 2) medal = '🥉 3位';
-                }
+            // 2人の対戦形式（xx vs oo）
+            if (members.length === 2) {
+                const p1 = members[0];
+                const p2 = members[1];
 
-                badge.className = `flex items-center gap-2 py-1.5 px-3 rounded-xl border text-xs transition-all shadow-sm ${isFinished
-                    ? (idx === 0
-                        ? 'bg-warning/20 border-warning text-warning font-black ring-1 ring-warning/50'
-                        : 'bg-base-100 border-base-300 text-base-content font-bold')
-                    : 'bg-base-200/60 border-base-300 text-base-content/60 font-medium'
-                    }`;
+                const renderPlayerCard = (p) => {
+                    const isMe = p.id === myOnlineId;
+                    const isDone = !!p.timeMs;
+                    const isWinner = isDone && bestTime && p.timeMs === bestTime;
+                    const isFinishedBoth = p1.timeMs && p2.timeMs;
 
-                badge.innerHTML = `
-                    <div class="flex items-center gap-1.5">
-                        <span class="${isFinished ? 'font-black' : 'text-base-content/40'}">${isFinished ? medal : '⏳ 計測中'}</span>
-                        <span class="font-black text-sm text-base-content">${m.name}</span>
-                        ${isMe ? '<span class="badge badge-info badge-xs text-[9px] px-1">自分</span>' : ''}
+                    let statusBadge = `<span class="badge badge-ghost badge-xs text-base-content/60 font-bold">待機中</span>`;
+                    if (isDone) {
+                        if (isWinner && isFinishedBoth) {
+                            statusBadge = `<span class="badge badge-warning badge-xs font-black shadow-sm animate-bounce">👑 WINNER!</span>`;
+                        } else if (isDone) {
+                            statusBadge = `<span class="badge badge-success badge-xs font-black">ゴール！</span>`;
+                        }
+                    } else if (globalState === 'RUNNING') {
+                        statusBadge = `<span class="badge badge-info badge-xs font-bold animate-pulse">⏱️ 計測中</span>`;
+                    }
+
+                    return `
+                        <div class="flex-1 p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-300 flex flex-col justify-between items-center text-center relative ${isWinner && isFinishedBoth
+                            ? 'bg-warning/15 border-warning/70 shadow-lg shadow-warning/10 ring-2 ring-warning/30'
+                            : isDone
+                                ? 'bg-base-100 border-success/40'
+                                : 'bg-base-100/70 border-base-300'
+                        }">
+                            <div class="w-full flex items-center justify-between gap-1 mb-1">
+                                <div class="flex items-center gap-1 min-w-0">
+                                    <span class="text-sm sm:text-base">${isWinner && isFinishedBoth ? '👑' : '👤'}</span>
+                                    <span class="font-black text-xs sm:text-sm text-base-content truncate">${p.name}</span>
+                                    ${isMe ? '<span class="badge badge-info badge-xs text-[9px] px-1 font-bold shrink-0">あなた</span>' : ''}
+                                </div>
+                                <div class="shrink-0">${statusBadge}</div>
+                            </div>
+
+                            <div class="my-1 sm:my-2 w-full">
+                                <div class="timer-font text-2xl sm:text-4xl lg:text-5xl font-black tracking-wider ${isDone ? 'text-warning' : 'text-base-content/30'
+                        }">
+                                    ${isDone ? formatTime(p.timeMs) : '--.---'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                vsMatchDisplay.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 sm:gap-4 w-full">
+                        ${renderPlayerCard(p1)}
+                        <div class="shrink-0 flex flex-col items-center justify-center px-1">
+                            <span class="text-xs sm:text-sm font-black text-warning tracking-widest px-2 py-1 rounded-lg bg-base-300/80 border border-base-content/10 shadow-inner">
+                                VS
+                            </span>
+                        </div>
+                        ${renderPlayerCard(p2)}
                     </div>
-                    <span class="timer-font text-sm sm:text-base font-black ${isFinished ? 'text-warning' : 'text-base-content/40'}">
-                        ${isFinished ? formatTime(m.timeMs) : '--.---'}
-                    </span>
                 `;
-                liveBarMembersGrid.appendChild(badge);
-            });
+            } else {
+                // 1人または3人以上のマルチ対戦グリッド表示
+                let cardsHtml = '';
+                sorted.forEach((p, idx) => {
+                    const isMe = p.id === myOnlineId;
+                    const isDone = !!p.timeMs;
+                    const isWinner = isDone && idx === 0 && members.filter(m => m.timeMs).length > 1;
+
+                    let rankIcon = `${idx + 1}位`;
+                    if (isDone) {
+                        if (idx === 0) rankIcon = '🥇 1位';
+                        else if (idx === 1) rankIcon = '🥈 2位';
+                        else if (idx === 2) rankIcon = '🥉 3位';
+                    }
+
+                    cardsHtml += `
+                        <div class="flex-1 min-w-[130px] sm:min-w-[170px] p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-between text-center ${isWinner
+                            ? 'bg-warning/20 border-warning shadow-md ring-1 ring-warning/50'
+                            : isDone
+                                ? 'bg-base-100 border-base-300'
+                                : 'bg-base-200/50 border-base-300/60'
+                        }">
+                            <div class="w-full flex items-center justify-between text-[11px] font-bold mb-1">
+                                <span class="truncate max-w-[80px]">${p.name} ${isMe ? '(自分)' : ''}</span>
+                                <span class="${isDone ? 'text-warning font-black' : 'text-base-content/40'}">${isDone ? rankIcon : '待機中'}</span>
+                            </div>
+                            <div class="timer-font text-xl sm:text-2xl font-black ${isDone ? 'text-warning' : 'text-base-content/30'} my-0.5">
+                                ${isDone ? formatTime(p.timeMs) : '--.---'}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                vsMatchDisplay.innerHTML = `
+                    <div class="w-full flex flex-wrap items-stretch justify-center gap-2">
+                        ${cardsHtml}
+                    </div>
+                `;
+            }
         }
 
         function renderOnlineRoomMembers() {
-            renderOnlineBattleLiveBar();
+            renderOnlineVsCard();
 
             if (!onlineRoomMembersList) return;
             onlineRoomMembersList.innerHTML = '';
@@ -1184,19 +1255,19 @@
                 onlineStatusDot.className = "w-2 h-2 rounded-full bg-slate-500";
                 onlineJoinSection.classList.remove('hidden');
                 onlineRoomSection.classList.add('hidden');
-                if (onlineBattleLiveBar) onlineBattleLiveBar.classList.add('hidden');
+                if (onlineVsCardContainer) onlineVsCardContainer.classList.add('hidden');
                 showToast("対戦ルームを退出しました", "info");
             });
         }
 
-        if (liveBarLeaveBtn) {
-            liveBarLeaveBtn.addEventListener('click', () => {
+        if (vsLeaveBtn) {
+            vsLeaveBtn.addEventListener('click', () => {
                 if (onlineLeaveBtn) onlineLeaveBtn.click();
             });
         }
 
-        if (liveBarScrambleBtn) {
-            liveBarScrambleBtn.addEventListener('click', () => {
+        if (vsNewScrambleBtn) {
+            vsNewScrambleBtn.addEventListener('click', () => {
                 if (onlineBroadcastScrambleBtn) onlineBroadcastScrambleBtn.click();
             });
         }
