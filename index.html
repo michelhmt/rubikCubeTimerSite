@@ -145,6 +145,14 @@
 
                     <!-- 右上コントロール群 -->
                     <div class="flex items-center gap-1.5 sm:gap-2">
+                        <!-- オンライン対戦ボタン -->
+                        <button id="online-battle-btn"
+                            class="btn btn-sm btn-info font-black text-slate-900 flex items-center gap-1.5 shadow-sm">
+                            <span class="text-base">🌐</span>
+                            <span class="hidden sm:inline">オンライン対戦</span>
+                            <span id="online-status-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                        </button>
+
                         <!-- キューブ管理ボタン -->
                         <button id="cube-mgmt-btn"
                             class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1.5 shadow-sm">
@@ -493,30 +501,83 @@
         </form>
     </dialog>
 
-    <!-- キューブ管理用モーダル -->
-    <dialog id="cube-mgmt-modal" class="modal">
-        <div
-            class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
+    <!-- オンライン対戦用モーダル -->
+    <dialog id="online-battle-modal" class="modal">
+        <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-md w-11/12 flex flex-col p-4 sm:p-6">
             <div class="flex items-center justify-between pb-3 border-b border-base-200 shrink-0">
-                <h3 class="font-black text-lg sm:text-xl text-warning flex items-center gap-2">
-                    <span class="text-2xl">🧩</span>
-                    <span>キューブ管理スペース</span>
+                <h3 class="font-black text-lg sm:text-xl text-info flex items-center gap-2">
+                    <span class="text-2xl">🌐</span>
+                    <span>リアルタイム オンライン対戦</span>
                 </h3>
-                <div class="flex items-center gap-2">
-                    <button id="cube-mgmt-refresh-btn" class="btn btn-ghost btn-xs text-base-content/70">🔄 更新</button>
-                    <form method="dialog">
-                        <button class="btn btn-sm btn-circle btn-ghost">✕</button>
-                    </form>
-                </div>
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+                </form>
             </div>
 
-            <div class="py-3 flex-1 flex flex-col min-h-0">
-                <div id="cube-mgmt-summary"
-                    class="text-xs sm:text-sm font-bold text-base-content/70 mb-3 bg-base-200 p-3 rounded-xl border border-base-300 shrink-0">
-                    データを読み込み中...
+            <!-- 1. 入室・ルーム作成セクション -->
+            <div id="online-join-section" class="py-4 space-y-4">
+                <p class="text-xs text-base-content/70 leading-relaxed font-bold">
+                    合言葉（ルームID）を友達と合わせるだけで、離れた場所からでも同じスクランブルでリアルタイムバトルができます！
+                </p>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs font-black text-base-content/70 block mb-1">👤 ニックネーム</label>
+                        <input type="text" id="online-nickname-input" placeholder="例: たろう"
+                            class="input input-bordered input-sm w-full font-bold focus:border-info text-sm"
+                            maxlength="10" />
+                    </div>
+                    <div>
+                        <label class="text-xs font-black text-base-content/70 block mb-1">🔑 合言葉（ルーム名）</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="online-room-input" placeholder="例: battle-1" value="battle-1"
+                                class="input input-bordered input-sm flex-1 font-mono font-bold focus:border-info text-sm" />
+                            <button type="button" id="online-random-room-btn"
+                                class="btn btn-sm btn-ghost border border-base-300 font-bold text-xs"
+                                title="ランダムな番号を生成">
+                                🎲 ランダム
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <!-- キューブ一覧コンテナ -->
-                <div id="cube-mgmt-list" class="space-y-2.5 flex-1 overflow-y-auto pr-1"></div>
+
+                <button id="online-join-btn"
+                    class="btn btn-info btn-sm w-full font-black text-slate-900 shadow-lg mt-2">
+                    🚀 ルームに入室して対戦する！
+                </button>
+            </div>
+
+            <!-- 2. ルーム対戦中のセクション -->
+            <div id="online-room-section" class="py-3 flex flex-col min-h-0 hidden space-y-3">
+                <div
+                    class="flex items-center justify-between bg-info/10 border border-info/30 p-2.5 rounded-xl shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span id="online-room-title" class="font-black text-sm text-info font-mono">🔑 battle-1</span>
+                        <span class="badge badge-info badge-xs font-bold"><span
+                                id="online-user-count">1</span>人参加中</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button id="online-add-bot-btn" class="btn btn-xs btn-outline btn-info font-bold"
+                            title="1人でテストできる対戦ボットを追加">🤖 練習相手追加</button>
+                        <button id="online-leave-btn" class="btn btn-xs btn-outline btn-error font-bold">退出</button>
+                    </div>
+                </div>
+
+                <!-- 共通スクランブル配布ボタン -->
+                <button id="online-broadcast-scramble-btn"
+                    class="btn btn-warning btn-sm w-full font-black text-slate-900 shadow flex items-center justify-center gap-1.5 shrink-0">
+                    <span>🎲</span>
+                    <span>共通スクランブルを全員に配る</span>
+                </button>
+
+                <!-- 参加者＆リアルタイム順位リスト -->
+                <div class="space-y-1.5">
+                    <span class="text-xs font-black text-base-content/60 flex items-center justify-between">
+                        <span>対戦相手のタイム＆順位</span>
+                        <span id="online-connection-type" class="text-[10px] text-base-content/40">解き終わると自動で反映</span>
+                    </span>
+                    <div id="online-room-members-list" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+                </div>
             </div>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -777,10 +838,8 @@
         const touchBtnText = document.getElementById('touch-btn-text');
         const mobileTimerOverlay = document.getElementById('mobile-timer-overlay');
         const overlayTimerText = document.getElementById('overlay-timer-text');
-        const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
-        const overlayRemainingBadge = document.getElementById('overlay-remaining-badge');
-        const overlayFinishedList = document.getElementById('overlay-finished-list');
-        const overlayStatusSummary = document.getElementById('overlay-status-summary');
+        const overlayStatusHint = document.getElementById('overlay-status-hint');
+        const overlaySubHint = document.getElementById('overlay-sub-hint');
         const overlayCloseBtn = document.getElementById('overlay-close-btn');
 
         // 実績・ランキングアコーディオン
@@ -805,6 +864,521 @@
         const cubeMgmtSummary = document.getElementById('cube-mgmt-summary');
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
         let cubesData = [];
+
+        // --- オンライン対戦機能 (Supabase Realtime Channel) ---
+        const onlineBattleBtn = document.getElementById('online-battle-btn');
+        const onlineBattleModal = document.getElementById('online-battle-modal');
+        const onlineStatusDot = document.getElementById('online-status-dot');
+        const onlineJoinSection = document.getElementById('online-join-section');
+        const onlineRoomSection = document.getElementById('online-room-section');
+        const onlineNicknameInput = document.getElementById('online-nickname-input');
+        const onlineRoomInput = document.getElementById('online-room-input');
+        const onlineRandomRoomBtn = document.getElementById('online-random-room-btn');
+        const onlineJoinBtn = document.getElementById('online-join-btn');
+        const onlineLeaveBtn = document.getElementById('online-leave-btn');
+        const onlineRoomTitle = document.getElementById('online-room-title');
+        const onlineUserCount = document.getElementById('online-user-count');
+        const onlineBroadcastScrambleBtn = document.getElementById('online-broadcast-scramble-btn');
+        const onlineRoomMembersList = document.getElementById('online-room-members-list');
+        const onlineAddBotBtn = document.getElementById('online-add-bot-btn');
+        const onlineConnectionType = document.getElementById('online-connection-type');
+
+        let onlineChannel = null;
+        let onlineBroadcastChannel = null;
+        let onlineRoomName = null;
+        let myOnlineId = 'user_' + Math.random().toString(36).substring(2, 9);
+        let myOnlineNickname = localStorage.getItem('cube_online_nickname') || '';
+        let onlineRoomMembers = {}; // { [id]: { id, name, timeMs, status } }
+
+        if (onlineNicknameInput) {
+            onlineNicknameInput.value = myOnlineNickname;
+        }
+
+        if (onlineRandomRoomBtn) {
+            onlineRandomRoomBtn.addEventListener('click', () => {
+                const randomCode = Math.floor(100 + Math.random() * 900);
+                onlineRoomInput.value = `battle-${randomCode}`;
+            });
+        }
+
+        if (onlineBattleBtn && onlineBattleModal) {
+            onlineBattleBtn.addEventListener('click', () => {
+                onlineBattleModal.showModal();
+            });
+        }
+
+        // 環境がWebSocket通信を許可しているか判定
+        function canUseWebSocket() {
+            try {
+                if (typeof WebSocket === 'undefined') return false;
+                // CanvasなどのサンドボックスiframeではWebSocketが禁止されている
+                if (window.location && window.location.hostname && (
+                    window.location.hostname.includes('usercontent.goog') ||
+                    window.location.hostname.includes('scf.')
+                )) {
+                    return false;
+                }
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function setupOnlineChannel(roomName, nickname) {
+            // 既存接続のクリーンアップ
+            if (onlineChannel && supabaseClient) {
+                try {
+                    supabaseClient.removeChannel(onlineChannel);
+                } catch (e) { }
+                onlineChannel = null;
+            }
+            if (onlineBroadcastChannel) {
+                try {
+                    onlineBroadcastChannel.close();
+                } catch (e) { }
+                onlineBroadcastChannel = null;
+            }
+
+            onlineRoomName = roomName;
+            myOnlineNickname = nickname;
+            localStorage.setItem('cube_online_nickname', nickname);
+            onlineRoomMembers = {};
+
+            // 自身をメンバーに追加
+            onlineRoomMembers[myOnlineId] = {
+                id: myOnlineId,
+                name: myOnlineNickname,
+                timeMs: null,
+                status: 'ready'
+            };
+
+            const useWs = canUseWebSocket() && !!supabaseClient;
+
+            if (!useWs) {
+                // Canvas環境やWebSocket非対応時は BroadcastChannel によるローカル/タブ間同期にフォールバック
+                setupBroadcastChannelFallback(roomName);
+                return;
+            }
+
+            try {
+                onlineChannel = supabaseClient.channel(`room_${roomName}`, {
+                    config: {
+                        presence: {key: myOnlineId}
+                    }
+                });
+
+                // 1. Presence (誰が入退室したか)
+                onlineChannel
+                    .on('presence', {event: 'sync'}, () => {
+                        const state = onlineChannel.presenceState();
+                        Object.keys(state).forEach(key => {
+                            const userPresence = state[key][0];
+                            if (userPresence) {
+                                if (!onlineRoomMembers[key]) {
+                                    onlineRoomMembers[key] = {
+                                        id: key,
+                                        name: userPresence.name || 'ゲスト',
+                                        timeMs: userPresence.timeMs || null,
+                                        status: userPresence.status || 'ready'
+                                    };
+                                } else {
+                                    onlineRoomMembers[key].name = userPresence.name || onlineRoomMembers[key].name;
+                                }
+                            }
+                        });
+                        renderOnlineRoomMembers();
+                    })
+                    .on('presence', {event: 'join'}, ({key, newPresences}) => {
+                        const p = newPresences[0];
+                        if (p && key !== myOnlineId) {
+                            onlineRoomMembers[key] = {
+                                id: key,
+                                name: p.name || 'ゲスト',
+                                timeMs: null,
+                                status: 'ready'
+                            };
+                            showToast(`👋「${p.name}」が対戦ルームに入室しました！`, "info");
+                            renderOnlineRoomMembers();
+                        }
+                    })
+                    .on('presence', {event: 'leave'}, ({key}) => {
+                        if (onlineRoomMembers[key]) {
+                            delete onlineRoomMembers[key];
+                            renderOnlineRoomMembers();
+                        }
+                    });
+
+                // 2. Broadcast (スクランブル配信・タイム更新)
+                onlineChannel
+                    .on('broadcast', {event: 'new_scramble'}, ({payload}) => {
+                        handleIncomingScramble(payload);
+                    })
+                    .on('broadcast', {event: 'solve_finish'}, ({payload}) => {
+                        handleIncomingFinish(payload);
+                    });
+
+                onlineChannel.subscribe(async (status, err) => {
+                    if (status === 'SUBSCRIBED') {
+                        await onlineChannel.track({
+                            name: myOnlineNickname,
+                            status: 'ready',
+                            timeMs: null
+                        });
+                        onOnlineRoomConnected(roomName, 'Supabase Realtime');
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.warn("Realtime channel failed, falling back to BroadcastChannel", err);
+                        setupBroadcastChannelFallback(roomName);
+                    }
+                });
+            } catch (err) {
+                console.warn("WebSocket接続に失敗したため、BroadcastChannelへ切り替えます", err);
+                setupBroadcastChannelFallback(roomName);
+            }
+        }
+
+        // BroadcastChannel によるタブ間・同一端末同期フォールバック
+        function setupBroadcastChannelFallback(roomName) {
+            try {
+                if (typeof BroadcastChannel !== 'undefined') {
+                    onlineBroadcastChannel = new BroadcastChannel(`cube_room_${roomName}`);
+                    onlineBroadcastChannel.onmessage = (event) => {
+                        const data = event.data;
+                        if (!data) return;
+                        if (data.type === 'presence_hello') {
+                            if (data.senderId !== myOnlineId) {
+                                onlineRoomMembers[data.senderId] = {
+                                    id: data.senderId,
+                                    name: data.name,
+                                    timeMs: null,
+                                    status: 'ready'
+                                };
+                                renderOnlineRoomMembers();
+                                // 返信して自分も相手に知らせる
+                                onlineBroadcastChannel.postMessage({
+                                    type: 'presence_ack',
+                                    senderId: myOnlineId,
+                                    name: myOnlineNickname
+                                });
+                            }
+                        } else if (data.type === 'presence_ack') {
+                            if (data.senderId !== myOnlineId) {
+                                onlineRoomMembers[data.senderId] = {
+                                    id: data.senderId,
+                                    name: data.name,
+                                    timeMs: null,
+                                    status: 'ready'
+                                };
+                                renderOnlineRoomMembers();
+                            }
+                        } else if (data.type === 'new_scramble') {
+                            handleIncomingScramble(data.payload);
+                        } else if (data.type === 'solve_finish') {
+                            handleIncomingFinish(data.payload);
+                        } else if (data.type === 'leave') {
+                            if (onlineRoomMembers[data.senderId]) {
+                                delete onlineRoomMembers[data.senderId];
+                                renderOnlineRoomMembers();
+                            }
+                        }
+                    };
+
+                    // 入室通知をブロードキャスト
+                    onlineBroadcastChannel.postMessage({
+                        type: 'presence_hello',
+                        senderId: myOnlineId,
+                        name: myOnlineNickname
+                    });
+                }
+            } catch (e) {
+                console.warn("BroadcastChannel 初期化スキップ", e);
+            }
+
+            onOnlineRoomConnected(roomName, 'ローカル通信 (Canvas対応モード)');
+        }
+
+        function onOnlineRoomConnected(roomName, modeLabel) {
+            if (onlineStatusDot) {
+                onlineStatusDot.className = "w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(34,197,94,0.8)]";
+            }
+            if (onlineJoinSection) onlineJoinSection.classList.add('hidden');
+            if (onlineRoomSection) onlineRoomSection.classList.remove('hidden');
+            if (onlineRoomTitle) onlineRoomTitle.textContent = `🔑 ${roomName}`;
+            if (onlineConnectionType) onlineConnectionType.textContent = `${modeLabel}で接続中`;
+            renderOnlineRoomMembers();
+            showToast(`対戦ルーム「${roomName}」に参加しました！ 🏁`, "success");
+        }
+
+        function handleIncomingScramble(payload) {
+            if (payload && payload.scramble) {
+                currentScrambleMoves = payload.scramble.split(' ');
+                scrambleDisplay.textContent = payload.scramble;
+                renderScrambleImages();
+                updateCubePreview();
+
+                Object.keys(onlineRoomMembers).forEach(k => {
+                    onlineRoomMembers[k].timeMs = null;
+                    onlineRoomMembers[k].status = 'ready';
+                });
+                renderOnlineRoomMembers();
+                showToast(`🎲 全員に新しいスクランブルが配られました！`, "success");
+            }
+        }
+
+        function handleIncomingFinish(payload) {
+            if (payload && payload.userId && payload.timeMs) {
+                if (!onlineRoomMembers[payload.userId]) {
+                    onlineRoomMembers[payload.userId] = {
+                        id: payload.userId,
+                        name: payload.name || '対戦相手',
+                        timeMs: payload.timeMs,
+                        status: 'finished'
+                    };
+                } else {
+                    onlineRoomMembers[payload.userId].timeMs = payload.timeMs;
+                    onlineRoomMembers[payload.userId].status = 'finished';
+                }
+                renderOnlineRoomMembers();
+                showToast(`⚡️【${payload.name}】がゴール！ (${formatTime(payload.timeMs)})`, "warning");
+            }
+        }
+
+        function renderOnlineRoomMembers() {
+            if (!onlineRoomMembersList) return;
+            onlineRoomMembersList.innerHTML = '';
+
+            const members = Object.values(onlineRoomMembers);
+            if (onlineUserCount) onlineUserCount.textContent = members.length;
+
+            // タイム順にソート（タイムがある人優先で速い順）
+            members.sort((a, b) => {
+                if (a.timeMs && b.timeMs) return a.timeMs - b.timeMs;
+                if (a.timeMs) return -1;
+                if (b.timeMs) return 1;
+                return 0;
+            });
+
+            members.forEach((m, idx) => {
+                const isMe = m.id === myOnlineId;
+                const card = document.createElement('div');
+                card.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${isMe ? 'bg-info/10 border-info/40 font-black' : 'bg-base-200/80 border-base-300 font-bold'
+                    }`;
+
+                let rankBadge = `<span class="badge badge-neutral badge-xs px-1.5">${idx + 1}</span>`;
+                if (m.timeMs) {
+                    if (idx === 0) rankBadge = '🥇';
+                    else if (idx === 1) rankBadge = '🥈';
+                    else if (idx === 2) rankBadge = '🥉';
+                }
+
+                let timeDisplay = `<span class="badge badge-ghost badge-xs text-base-content/50">待機中</span>`;
+                if (m.timeMs) {
+                    timeDisplay = `<span class="timer-font text-sm sm:text-base font-black text-warning">${formatTime(m.timeMs)}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="text-sm shrink-0">${rankBadge}</span>
+                        <div class="truncate">
+                            <span>${m.name}</span>
+                            ${isMe ? '<span class="badge badge-info badge-xs ml-1 text-[10px]">あなた</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-2">
+                        ${timeDisplay}
+                    </div>
+                `;
+                onlineRoomMembersList.appendChild(card);
+            });
+        }
+
+        // --- オンライン対戦機能の初期化 ---
+        async function initOnlineMultiplayer() {
+            try {
+                if (onlineNicknameInput && !onlineNicknameInput.value) {
+                    const savedNick = localStorage.getItem('cube_online_nickname');
+                    if (savedNick) onlineNicknameInput.value = savedNick;
+                }
+            } catch (e) {
+                console.warn("オンライン対戦初期化エラー:", e);
+            }
+        }
+
+        if (onlineJoinBtn) {
+            onlineJoinBtn.addEventListener('click', () => {
+                const nick = (onlineNicknameInput.value || '').trim() || 'キューバー';
+                const room = (onlineRoomInput.value || '').trim() || 'battle-1';
+                setupOnlineChannel(room, nick);
+            });
+        }
+
+        if (onlineLeaveBtn) {
+            onlineLeaveBtn.addEventListener('click', () => {
+                if (onlineChannel && supabaseClient) {
+                    try {
+                        supabaseClient.removeChannel(onlineChannel);
+                    } catch (e) { }
+                    onlineChannel = null;
+                }
+                if (onlineBroadcastChannel) {
+                    try {
+                        onlineBroadcastChannel.postMessage({
+                            type: 'leave',
+                            senderId: myOnlineId
+                        });
+                        onlineBroadcastChannel.close();
+                    } catch (e) { }
+                    onlineBroadcastChannel = null;
+                }
+                onlineRoomName = null;
+                onlineStatusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+                onlineJoinSection.classList.remove('hidden');
+                onlineRoomSection.classList.add('hidden');
+                showToast("対戦ルームを退出しました", "info");
+            });
+        }
+
+        if (onlineBroadcastScrambleBtn) {
+            onlineBroadcastScrambleBtn.addEventListener('click', () => {
+                const newScrambleText = generateScramble().join(' ');
+                currentScrambleMoves = newScrambleText.split(' ');
+                scrambleDisplay.textContent = newScrambleText;
+                renderScrambleImages();
+                updateCubePreview();
+
+                if (onlineChannel) {
+                    onlineChannel.send({
+                        type: 'broadcast',
+                        event: 'new_scramble',
+                        payload: {scramble: newScrambleText}
+                    });
+                }
+                if (onlineBroadcastChannel) {
+                    onlineBroadcastChannel.postMessage({
+                        type: 'new_scramble',
+                        payload: {scramble: newScrambleText}
+                    });
+                }
+
+                Object.keys(onlineRoomMembers).forEach(k => {
+                    onlineRoomMembers[k].timeMs = null;
+                    onlineRoomMembers[k].status = 'ready';
+                });
+                renderOnlineRoomMembers();
+                showToast("全員に共通スクランブルを配りました！ 🎲", "success");
+            });
+        }
+
+        if (onlineAddBotBtn) {
+            onlineAddBotBtn.addEventListener('click', () => {
+                const botNames = ['ルービック君🤖', 'キューブ名人🤖', 'スピード太郎🤖', 'ミラクル花子🤖'];
+                const randomName = botNames[Math.floor(Math.random() * botNames.length)];
+                const botId = 'bot_' + Math.random().toString(36).substring(2, 7);
+
+                // ランダムなタイム（18秒〜45秒）をシミュレーション
+                const randomTimeMs = Math.floor(18000 + Math.random() * 27000);
+                onlineRoomMembers[botId] = {
+                    id: botId,
+                    name: randomName,
+                    timeMs: randomTimeMs,
+                    status: 'finished'
+                };
+                renderOnlineRoomMembers();
+                showToast(`🤖 ${randomName}（${formatTime(randomTimeMs)}）が参加しました！`, "info");
+            });
+        }
+
+        function broadcastMyOnlineSolve(timeMs) {
+            if (!onlineRoomMembers[myOnlineId]) return;
+            onlineRoomMembers[myOnlineId].timeMs = timeMs;
+            onlineRoomMembers[myOnlineId].status = 'finished';
+            renderOnlineRoomMembers();
+
+            if (onlineChannel) {
+                onlineChannel.send({
+                    type: 'broadcast',
+                    event: 'solve_finish',
+                    payload: {
+                        userId: myOnlineId,
+                        name: myOnlineNickname,
+                        timeMs: timeMs
+                    }
+                });
+            }
+            if (onlineBroadcastChannel) {
+                onlineBroadcastChannel.postMessage({
+                    type: 'solve_finish',
+                    payload: {
+                        userId: myOnlineId,
+                        name: myOnlineNickname,
+                        timeMs: timeMs
+                    }
+                });
+            }
+        }
+
+        if (onlineJoinBtn) {
+            onlineJoinBtn.addEventListener('click', () => {
+                const nick = (onlineNicknameInput.value || '').trim() || 'キューバー';
+                const room = (onlineRoomInput.value || '').trim() || 'battle-1';
+                setupOnlineChannel(room, nick);
+            });
+        }
+
+        if (onlineLeaveBtn) {
+            onlineLeaveBtn.addEventListener('click', () => {
+                if (onlineChannel) {
+                    supabaseClient.removeChannel(onlineChannel);
+                    onlineChannel = null;
+                }
+                onlineRoomName = null;
+                onlineStatusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+                onlineJoinSection.classList.remove('hidden');
+                onlineRoomSection.classList.add('hidden');
+                showToast("対戦ルームを退出しました", "info");
+            });
+        }
+
+        if (onlineBroadcastScrambleBtn) {
+            onlineBroadcastScrambleBtn.addEventListener('click', () => {
+                if (!onlineChannel) return;
+                const newScrambleText = generateScramble().join(' ');
+                currentScrambleMoves = newScrambleText.split(' ');
+                scrambleDisplay.textContent = newScrambleText;
+                renderScrambleImages();
+                updateCubePreview();
+
+                // ルーム内の全員へ共通スクランブルを配信
+                onlineChannel.send({
+                    type: 'broadcast',
+                    event: 'new_scramble',
+                    payload: {scramble: newScrambleText}
+                });
+
+                Object.keys(onlineRoomMembers).forEach(k => {
+                    onlineRoomMembers[k].timeMs = null;
+                    onlineRoomMembers[k].status = 'ready';
+                });
+                renderOnlineRoomMembers();
+                showToast("全員に共通スクランブルを配りました！ 🎲", "success");
+            });
+        }
+
+        function broadcastMyOnlineSolve(timeMs) {
+            if (!onlineChannel) return;
+            onlineRoomMembers[myOnlineId].timeMs = timeMs;
+            onlineRoomMembers[myOnlineId].status = 'finished';
+            renderOnlineRoomMembers();
+
+            onlineChannel.send({
+                type: 'broadcast',
+                event: 'solve_finish',
+                payload: {
+                    userId: myOnlineId,
+                    name: myOnlineNickname,
+                    timeMs: timeMs
+                }
+            });
+        }
 
         if (cubeMgmtBtn && cubeMgmtModal) {
             cubeMgmtBtn.addEventListener('click', () => {
@@ -1217,7 +1791,14 @@
         });
 
         // --- 3x3x3 キューブ描画 ---
-        const CUBE_COLORS = {W: '#ffffff', Y: '#ffd500', G: '#009b48', B: '#0046ad', O: '#ff5800', R: '#b71234'};
+        const CUBE_COLORS = {
+            W: '#ffffff', // 上面 (白)
+            Y: '#ffd000', // 下面 (黄)
+            G: '#00a651', // 正面 (緑)
+            B: '#0051ba', // 背面 (青)
+            O: '#ff5900', // 左面 (橙)
+            R: '#dc2626'  // 右面 (赤)
+        };
 
         function createSolvedCube() {
             return {
@@ -1283,57 +1864,68 @@
             const cube = createSolvedCube();
             currentScrambleMoves.forEach(m => applyCubeMove(cube, m));
 
-            const s = 20;
-            const cos30 = Math.cos(Math.PI / 6);
-            const sin30 = 0.5;
-            const cx = 80, cy = 76;
-            const uc = {x: s * cos30, y: s * sin30};
-            const ur = {x: -s * cos30, y: s * sin30};
-            const udown = {x: 0, y: s};
-            const urc = {x: s * cos30, y: -s * sin30};
+            // キューブの等角投影（アイソメトリック）幾何パラメータ
+            const s = 19; // 1ステッカーの一辺サイズ
+            const w = s * Math.cos(Math.PI / 6); // 水平オフセット ≈ 16.45px
+            const h = s * Math.sin(Math.PI / 6); // 垂直傾斜オフセット ≈ 9.5px
+            const cx = 80;
+            const cy = 78;
 
-            let svgPolygons = '';
+            let stickerSvg = '';
 
-            // 上面 (U)
-            const uOrig = {x: cx, y: cy - 6 * s * sin30};
+            // 1. 上面 (U: Whiteベース)
+            // 奥(r=0)から手前(r=2)、左(c=0)から右(c=2)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
-                    const p0 = {x: uOrig.x + c * uc.x + r * ur.x, y: uOrig.y + c * uc.y + r * ur.y};
-                    const p1 = {x: p0.x + uc.x, y: p0.y + uc.y};
-                    const p2 = {x: p1.x + ur.x, y: p1.y + ur.y};
-                    const p3 = {x: p0.x + ur.x, y: p0.y + ur.y};
-                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                    // 上面の各頂点座標
+                    const p0 = {x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h};
+                    const p1 = {x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h};
+                    const p2 = {x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h};
+                    const p3 = {x: cx + (c - (r + 1)) * w, y: cy - 3 * s + (c + (r + 1)) * h};
+                    stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
 
-            // 正面 (F)
-            const fOrig = {x: cx - 3 * s * cos30, y: cy - 3 * s * sin30};
+            // 2. 正面 (F: Greenベース・左手前面)
+            // 上(r=0)から下(r=2)、左(c=0)から右(c=2)
+            const fOrigX = cx - 3 * w;
+            const fOrigY = cy - 1.5 * s;
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
-                    const color = CUBE_COLORS[cube.F[r * 3 + c]] || '#009b48';
-                    const p0 = {x: fOrig.x + c * uc.x + r * udown.x, y: fOrig.y + c * uc.y + r * udown.y};
-                    const p1 = {x: p0.x + uc.x, y: p0.y + uc.y};
-                    const p2 = {x: p1.x + udown.x, y: p1.y + udown.y};
-                    const p3 = {x: p0.x + udown.x, y: p0.y + udown.y};
-                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                    const color = CUBE_COLORS[cube.F[r * 3 + c]] || '#00a651';
+                    const p0 = {x: fOrigX + c * w, y: fOrigY + c * h + r * s};
+                    const p1 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + r * s};
+                    const p2 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + (r + 1) * s};
+                    const p3 = {x: fOrigX + c * w, y: fOrigY + c * h + (r + 1) * s};
+                    stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
 
-            // 右面 (R)
-            const rOrig = {x: cx, y: cy};
+            // 3. 右面 (R: Redベース・右手前面)
+            // 上(r=0)から下(r=2)、左(c=0)から右(c=2)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
-                    const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#b71234';
-                    const p0 = {x: rOrig.x + c * urc.x + r * udown.x, y: rOrig.y + c * urc.y + r * udown.y};
-                    const p1 = {x: p0.x + urc.x, y: p0.y + urc.y};
-                    const p2 = {x: p1.x + udown.x, y: p1.y + udown.y};
-                    const p3 = {x: p0.x + udown.x, y: p0.y + udown.y};
-                    svgPolygons += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.6" stroke-linejoin="round" />`;
+                    const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#dc2626';
+                    const p0 = {x: cx + c * w, y: cy - c * h + r * s};
+                    const p1 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + r * s};
+                    const p2 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + (r + 1) * s};
+                    const p3 = {x: cx + c * w, y: cy - c * h + (r + 1) * s};
+                    stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
 
-            container.innerHTML = `<svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-md">${svgPolygons}</svg>`;
+            // キューブ外枠の黒いシルエットベゼル
+            const bezel = `
+                <polygon points="${cx},${cy - 3 * s - 2} ${cx + 3 * w + 2},${cy - 1.5 * s - 1} ${cx + 3 * w + 2},${cy + 1.5 * s + 1} ${cx},${cy + 3 * s + 2} ${cx - 3 * w - 2},${cy + 1.5 * s + 1} ${cx - 3 * w - 2},${cy - 1.5 * s - 1}" fill="#18181b" stroke="#18181b" stroke-width="2.5" stroke-linejoin="round" />
+            `;
+
+            container.innerHTML = `
+                <svg viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-lg">
+                    ${bezel}
+                    ${stickerSvg}
+                </svg>
+            `;
         }
 
         toggleScrambleImages.addEventListener('change', (e) => {
@@ -1624,41 +2216,47 @@
                     const el = document.getElementById(`timer-${p.id}`);
                     if (el) el.textContent = formatted;
 
-                    if (!mobileTimerOverlay.classList.contains('hidden')) {
+                    if (overlayTimerText && !mobileTimerOverlay.classList.contains('hidden')) {
                         overlayTimerText.textContent = formatted;
                     }
                 }, 10);
             });
 
-            showMobileFullscreenTimer();
-        }
-
-        function showMobileFullscreenTimer() {
-            if (!mobileTimerOverlay) return;
-            overlayTimerText.textContent = '00.000';
-            overlayScrambleHint.textContent = currentScrambleMoves.slice(0, 8).join(' ') + '...';
-            overlayFinishedList.innerHTML = '<span class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>';
-            updateOverlayRemainingBadge();
-            mobileTimerOverlay.classList.remove('hidden');
-            mobileTimerOverlay.classList.add('flex');
-
+            if (overlayStatusHint) overlayStatusHint.textContent = '⏱ 計測中！';
+            if (overlaySubHint) overlaySubHint.textContent = '⚡️ 画面のどこでもタップでストップ！';
             canStopTouch = false;
             setTimeout(() => {canStopTouch = true;}, 250);
         }
 
-        function updateOverlayRemainingBadge() {
-            if (!overlayRemainingBadge) return;
-            const remainingCount = players.filter(p => !p.isCancelled && !p.isFinished).length;
-            overlayRemainingBadge.textContent = `残り: ${remainingCount}人 計測中`;
-            if (overlayStatusSummary) {
-                overlayStatusSummary.textContent = remainingCount > 0 ? 'タップでストップ！' : '全員ゴール！';
+        function showMobileFullscreenHolding() {
+            if (!mobileTimerOverlay) return;
+            overlayTimerText.textContent = '00.000';
+            overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-error tracking-wider leading-none drop-shadow-2xl transition-colors';
+            if (overlayStatusHint) {
+                overlayStatusHint.textContent = '長押し中...（0.3秒で緑色になったら準備OK）';
+                overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-error mb-3 sm:mb-6 animate-pulse';
             }
+            if (overlaySubHint) overlaySubHint.textContent = '指を離すとスタート！';
+            mobileTimerOverlay.classList.remove('hidden');
+            mobileTimerOverlay.classList.add('flex');
+
+            // ブラウザのフルスクリーンAPI（可能な環境のみ）
+            try {
+                if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => { });
+                }
+            } catch (e) { }
         }
 
         function hideMobileFullscreenTimer() {
             if (!mobileTimerOverlay) return;
             mobileTimerOverlay.classList.add('hidden');
             mobileTimerOverlay.classList.remove('flex');
+            try {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => { });
+                }
+            } catch (e) { }
         }
 
         function handleOverlayStop(e) {
@@ -1689,7 +2287,6 @@
         }
 
         function checkAllFinished() {
-            updateOverlayRemainingBadge();
             const activePlayers = players.filter(p => !p.isCancelled);
             if (activePlayers.length > 0 && activePlayers.every(p => p.isFinished)) {
                 globalState = 'IDLE';
@@ -1726,17 +2323,20 @@
                     globalState = 'HOLDING';
                     isReady = false;
                     setAllTimerColor('text-error');
-                    touchStartBtn.className = "btn btn-error btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3";
-                    touchBtnIcon.textContent = '⏳';
-                    touchBtnText.textContent = 'そのまま長押し...';
+                    showMobileFullscreenHolding();
 
                     spacePressTimer = setTimeout(() => {
                         isReady = true;
                         globalState = 'READY';
                         setAllTimerColor('text-success');
-                        touchStartBtn.className = "btn btn-success btn-md sm:btn-wide w-full max-w-md font-black text-slate-900 shadow-xl flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3 animate-pulse";
-                        touchBtnIcon.textContent = '🟢';
-                        touchBtnText.textContent = '準備完了！指を離してスタート！';
+                        if (overlayTimerText) {
+                            overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-success tracking-wider leading-none drop-shadow-2xl transition-colors animate-pulse';
+                        }
+                        if (overlayStatusHint) {
+                            overlayStatusHint.textContent = '🟢 準備完了！指を離すとスタート！';
+                            overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-success mb-3 sm:mb-6 animate-pulse';
+                        }
+                        if (navigator.vibrate) navigator.vibrate(40);
                     }, 300);
                 }
             };
@@ -1750,12 +2350,10 @@
                     if (isReady) {
                         isTouchStarted = true;
                         startAllTimers();
-                        touchStartBtn.className = "btn btn-error btn-md sm:btn-wide w-full max-w-md font-black text-slate-900 shadow-md flex items-center justify-center gap-2 select-none touch-none text-sm sm:text-base border-2 py-3 animate-pulse";
-                        touchBtnIcon.textContent = '🛑';
-                        touchBtnText.textContent = 'タップしてストップ！';
                     } else {
                         setAllTimerColor('text-base-content');
                         globalState = 'IDLE';
+                        hideMobileFullscreenTimer();
                         resetTouchButtonUI();
                     }
                 }
@@ -1778,6 +2376,11 @@
             p.rank = finishOrder;
 
             playStopBeep(finishOrder);
+
+            // オンライン対戦中なら、自分のタイムを友達へ即時送信！
+            if (onlineChannel && index === 0) {
+                broadcastMyOnlineSolve(p.elapsedTime);
+            }
 
             const stopBtn = document.getElementById(`stop-btn-${p.id}`);
             if (stopBtn) {
@@ -2253,6 +2856,7 @@
 
             refreshScramble();
             await initAuth();
+            await initOnlineMultiplayer();
             await fetchActiveUsersFromSupabase();
             await fetchTodayLeaderboardFromSupabase();
         });
