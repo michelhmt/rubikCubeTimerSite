@@ -14,7 +14,9 @@
     <!-- Google Fonts: 丸ゴシック & モノスペース -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
@@ -45,21 +47,25 @@
         [data-theme="light"] .text-warning {
             color: #b45309 !important;
         }
+
         [data-theme="light"] .badge-warning {
             background-color: #fef3c7 !important;
             color: #92400e !important;
             border-color: #fcd34d !important;
         }
+
         [data-theme="light"] .btn-warning {
             background-color: #f59e0b !important;
             color: #ffffff !important;
             border-color: #d97706 !important;
         }
+
         [data-theme="light"] .btn-outline.btn-warning {
             background-color: transparent !important;
             color: #b45309 !important;
             border-color: #b45309 !important;
         }
+
         [data-theme="light"] .btn-outline.btn-warning:hover {
             background-color: #f59e0b !important;
             color: #ffffff !important;
@@ -71,6 +77,7 @@
             color: currentColor;
             border: 1px solid rgba(255, 255, 255, 0.25);
         }
+
         [data-theme="light"] .overlay-slot-badge {
             background-color: rgba(0, 0, 0, 0.08);
             color: currentColor;
@@ -79,9 +86,19 @@
 
         /* 実績カード用のアニメーション */
         @keyframes badgeUnlock {
-            0% { transform: scale(0.8); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .badge-unlock {
@@ -93,9 +110,11 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.15);
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
@@ -117,7 +136,11 @@
                     <div class="flex items-center gap-2">
                         <span class="text-3xl filter drop-shadow">🧩</span>
                         <div>
-                            <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
+                                <span
+                                    class="badge badge-warning badge-xs sm:badge-sm font-black tracking-wider">v1.3.0</span>
+                            </div>
                             <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                 スペースキー長押し（0.3秒）またはボタン長押しでスタート！</p>
                         </div>
@@ -178,22 +201,34 @@
                     </div>
                 </div>
 
-                <div class="card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 text-center min-w-0 w-full overflow-hidden">
+                <div
+                    class="card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 text-center min-w-0 w-full overflow-hidden">
                     <div class="flex items-center justify-between mb-1 gap-2 flex-wrap">
-                        <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3 スクランブル</span>
+                        <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3
+                            スクランブル</span>
                         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
                             <!-- スクランブル文字サイズ調整ボタングループ -->
-                            <div class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
+                            <div
+                                class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
                                 <span class="text-[10px] font-black text-base-content/60 px-1">文字:</span>
-                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="sm" title="小さめ">小</button>
-                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="md" title="標準">中</button>
-                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="lg" title="大きめ">大</button>
-                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="xl" title="特大（遠くから見やすい）">特大</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="sm" title="小さめ">小</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="md" title="標準">中</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="lg" title="大きめ">大</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="xl" title="特大（遠くから見やすい）">特大</button>
                             </div>
 
                             <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
                                 <span class="label-text text-xs font-bold text-base-content/70">🧭 イラストガイド</span>
-                                <input type="checkbox" id="toggle-scramble-images" class="toggle toggle-warning toggle-xs" />
+                                <input type="checkbox" id="toggle-scramble-images"
+                                    class="toggle toggle-warning toggle-xs" />
                             </label>
                             <button id="new-scramble-btn" class="btn btn-ghost btn-xs text-primary font-bold">
                                 🔄 新しい配置
@@ -210,7 +245,8 @@
                         <p class="text-[11px] text-base-content/50 font-bold mb-2 text-left flex items-center gap-1">
                             <span>👉</span> まわす順番（左から右へ順番にまわしてね）
                         </p>
-                        <div id="scramble-images-list" class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1"></div>
+                        <div id="scramble-images-list"
+                            class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1"></div>
                     </div>
                 </div>
             </header>
@@ -235,21 +271,32 @@
                 <div id="timer-grid" class="liquid-timer-grid items-stretch w-full"></div>
             </div>
 
-            <footer class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
+            <footer
+                class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
                 <!-- 人数切り替えボタン群 (デフォルト1人) -->
                 <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                     <div class="flex flex-wrap gap-1 p-1 bg-base-200/60 rounded-xl border border-base-300">
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5" data-count="1">1人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="2">2人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="3">3人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="4">4人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="5">5人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="6">6人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="7">7人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="8">8人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="9">9人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="10">10人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5"
+                            data-count="1">1人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="2">2人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="3">3人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="4">4人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="5">5人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="6">6人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="7">7人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="8">8人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="9">9人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
+                            data-count="10">10人</button>
                     </div>
                 </div>
 
@@ -269,29 +316,36 @@
         <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
 
             <!-- 実績アコーディオン -->
-            <details id="achievement-details" class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
-                <summary class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+            <details id="achievement-details"
+                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary
+                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">🏆</span>
                         <span class="font-black text-sm sm:text-base text-warning">かくとく実績</span>
                         <span id="achievement-count" class="badge badge-xs badge-warning font-bold">0回</span>
                     </div>
-                    <span class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                    <span
+                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col gap-2 max-h-[380px]">
-                    <div id="today-kid-achievements-summary" class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2"></div>
+                    <div id="today-kid-achievements-summary"
+                        class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2"></div>
                     <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1"></div>
                 </div>
             </details>
 
             <!-- 今日のランキングアコーディオン -->
-            <details id="leaderboard-details" class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
-                <summary class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+            <details id="leaderboard-details"
+                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary
+                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">⚡️</span>
                         <span class="font-black text-sm sm:text-base text-info">きょうのベスト</span>
                     </div>
-                    <span class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                    <span
+                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col max-h-[350px]">
                     <div id="leaderboard-list" class="overflow-y-auto space-y-1.5 flex-1 pr-1 mt-1">
@@ -303,13 +357,15 @@
             </details>
 
             <!-- スクランブル完成図プレビュー -->
-            <div id="cube-preview-card" class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
+            <div id="cube-preview-card"
+                class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
                 <div class="flex items-center justify-between w-full mb-1">
                     <div class="flex items-center gap-1.5">
                         <span class="text-lg">🧊</span>
                         <span class="font-black text-xs sm:text-sm text-warning">スクランブル完成図</span>
                     </div>
-                    <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 / 手前:緑 / 右:赤</span>
+                    <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 /
+                        手前:緑 / 右:赤</span>
                 </div>
                 <div id="cube-preview-svg-container" class="w-44 h-44 flex items-center justify-center my-1">
                     <span class="loading loading-spinner loading-sm text-warning"></span>
@@ -353,33 +409,45 @@
                     class="timer-font text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-warning tracking-wider leading-none drop-shadow-lg">
                     00.000
                 </div>
-                <div class="mt-4 text-xs sm:text-sm md:text-base font-bold text-base-content/50 bg-base-200/60 px-4 py-1.5 rounded-full border border-base-content/10 animate-pulse">
+                <div
+                    class="mt-4 text-xs sm:text-sm md:text-base font-bold text-base-content/50 bg-base-200/60 px-4 py-1.5 rounded-full border border-base-content/10 animate-pulse">
                     ⚡️ 画面クリック または スペースキーでストップ！
                 </div>
             </div>
 
             <!-- 右側：ゴールした子の縦並びリスト -->
-            <div class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
+            <div
+                class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
                 <div class="flex items-center justify-between border-b border-base-200 pb-2 mb-2 shrink-0">
                     <span class="text-xs sm:text-sm font-black text-warning flex items-center gap-1.5">
                         <span>🏁</span> ゴール順位リスト
                     </span>
-                    <span id="overlay-status-summary" class="text-[11px] font-bold text-base-content/50">タップでストップ！</span>
+                    <span id="overlay-status-summary"
+                        class="text-[11px] font-bold text-base-content/50">タップでストップ！</span>
                 </div>
                 <div id="overlay-finished-list" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
-                    <span class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>
+                    <span
+                        class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>
                 </div>
             </div>
         </div>
 
         <!-- 下部ナビゲーションヒント -->
-        <div class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
+        <div
+            class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
             全員がゴールすると自動で名前入力画面に切り替わります（キーボード: ESCキーで手動終了）
         </div>
     </div>
 
     <!-- トースト通知コンテナ -->
     <div id="toast-container" class="toast toast-top toast-center z-50 pointer-events-none"></div>
+
+    <!-- 画面右下の固定バージョン表示バッジ -->
+    <div
+        class="fixed bottom-2 right-2 z-40 bg-base-100/90 backdrop-blur border border-base-300 px-2.5 py-1 rounded-lg text-[11px] font-mono font-black text-warning shadow-md pointer-events-none select-none flex items-center gap-1">
+        <span>🏷️</span>
+        <span>v1.3.0</span>
+    </div>
 
     <!-- 認証・ログイン用モーダル -->
     <dialog id="auth-modal" class="modal">
@@ -410,8 +478,10 @@
                             class="input input-bordered input-sm w-full font-sans text-sm focus:border-warning" />
                     </div>
                 </div>
-                <div id="auth-error-msg" class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
-                <button id="submit-login-btn" class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
+                <div id="auth-error-msg"
+                    class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
+                <button id="submit-login-btn"
+                    class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
                     🔑 ログインする
                 </button>
             </div>
@@ -422,7 +492,8 @@
                     <span class="text-2xl">✅</span>
                     <div class="min-w-0">
                         <div class="text-xs font-black text-success">ログイン中</div>
-                        <div id="logged-in-email" class="text-xs font-bold text-base-content/80 truncate">user@example.com</div>
+                        <div id="logged-in-email" class="text-xs font-bold text-base-content/80 truncate">
+                            user@example.com</div>
                     </div>
                 </div>
                 <button id="submit-logout-btn" class="btn btn-outline btn-error btn-sm w-full font-bold">
@@ -437,7 +508,8 @@
 
     <!-- キューブ管理用モーダル -->
     <dialog id="cube-mgmt-modal" class="modal">
-        <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
+        <div
+            class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
             <div class="flex items-center justify-between pb-3 border-b border-base-200 shrink-0">
                 <h3 class="font-black text-lg sm:text-xl text-warning flex items-center gap-2">
                     <span class="text-2xl">🧩</span>
@@ -511,7 +583,8 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-success animate-pulse"></span>
                         <span id="online-room-title" class="font-black text-info text-sm">🔑 room</span>
                     </div>
-                    <span class="badge badge-info badge-sm font-bold">参加中: <span id="online-user-count" class="ml-1">1</span>人</span>
+                    <span class="badge badge-info badge-sm font-bold">参加中: <span id="online-user-count"
+                            class="ml-1">1</span>人</span>
                 </div>
 
                 <div class="flex gap-2">
@@ -536,6 +609,9 @@
     </dialog>
 
     <script>
+        // アプリケーション・バージョン管理（修正ごとにマイナーアップデート）
+        const APP_VERSION = 'v1.3.0';
+
         let audioCtx = null;
         let isSoundEnabled = localStorage.getItem('cube_sound_enabled') !== 'false';
 
@@ -834,6 +910,14 @@
         const onlineBroadcastScrambleBtn = document.getElementById('online-broadcast-scramble-btn');
         const onlineRoomMembersList = document.getElementById('online-room-members-list');
 
+        // メイン画面の常時表示オンライン対戦ライブバー要素
+        const onlineBattleLiveBar = document.getElementById('online-battle-live-bar');
+        const liveBarRoomName = document.getElementById('live-bar-room-name');
+        const liveBarUserCount = document.getElementById('live-bar-user-count');
+        const liveBarMembersGrid = document.getElementById('live-bar-members-grid');
+        const liveBarScrambleBtn = document.getElementById('live-bar-scramble-btn');
+        const liveBarLeaveBtn = document.getElementById('live-bar-leave-btn');
+
         let onlineChannel = null;
         let onlineRoomName = null;
         let myOnlineId = 'user_' + Math.random().toString(36).substring(2, 9);
@@ -963,13 +1047,67 @@
                     onlineJoinSection.classList.add('hidden');
                     onlineRoomSection.classList.remove('hidden');
                     onlineRoomTitle.textContent = `🔑 ${roomName}`;
+                    if (onlineBattleLiveBar) {
+                        onlineBattleLiveBar.classList.remove('hidden');
+                        if (liveBarRoomName) liveBarRoomName.textContent = roomName;
+                    }
                     renderOnlineRoomMembers();
                     showToast(`対戦ルーム「${roomName}」に参加しました！ 🏁`, "success");
                 }
             });
         }
 
+        function renderOnlineBattleLiveBar() {
+            if (!liveBarMembersGrid) return;
+            liveBarMembersGrid.innerHTML = '';
+
+            const members = Object.values(onlineRoomMembers);
+            if (liveBarUserCount) liveBarUserCount.textContent = members.length;
+
+            // タイムがある人を優先して速い順にソート
+            members.sort((a, b) => {
+                if (a.timeMs && b.timeMs) return a.timeMs - b.timeMs;
+                if (a.timeMs) return -1;
+                if (b.timeMs) return 1;
+                return 0;
+            });
+
+            members.forEach((m, idx) => {
+                const isMe = m.id === myOnlineId;
+                const isFinished = !!m.timeMs;
+                const badge = document.createElement('div');
+
+                let medal = `${idx + 1}位`;
+                if (isFinished) {
+                    if (idx === 0) medal = '🥇 1位';
+                    else if (idx === 1) medal = '🥈 2位';
+                    else if (idx === 2) medal = '🥉 3位';
+                }
+
+                badge.className = `flex items-center gap-2 py-1.5 px-3 rounded-xl border text-xs transition-all shadow-sm ${isFinished
+                    ? (idx === 0
+                        ? 'bg-warning/20 border-warning text-warning font-black ring-1 ring-warning/50'
+                        : 'bg-base-100 border-base-300 text-base-content font-bold')
+                    : 'bg-base-200/60 border-base-300 text-base-content/60 font-medium'
+                    }`;
+
+                badge.innerHTML = `
+                    <div class="flex items-center gap-1.5">
+                        <span class="${isFinished ? 'font-black' : 'text-base-content/40'}">${isFinished ? medal : '⏳ 計測中'}</span>
+                        <span class="font-black text-sm text-base-content">${m.name}</span>
+                        ${isMe ? '<span class="badge badge-info badge-xs text-[9px] px-1">自分</span>' : ''}
+                    </div>
+                    <span class="timer-font text-sm sm:text-base font-black ${isFinished ? 'text-warning' : 'text-base-content/40'}">
+                        ${isFinished ? formatTime(m.timeMs) : '--.---'}
+                    </span>
+                `;
+                liveBarMembersGrid.appendChild(badge);
+            });
+        }
+
         function renderOnlineRoomMembers() {
+            renderOnlineBattleLiveBar();
+
             if (!onlineRoomMembersList) return;
             onlineRoomMembersList.innerHTML = '';
 
@@ -986,9 +1124,8 @@
             members.forEach((m, idx) => {
                 const isMe = m.id === myOnlineId;
                 const card = document.createElement('div');
-                card.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${
-                    isMe ? 'bg-info/10 border-info/40 font-black' : 'bg-base-200/80 border-base-300 font-bold'
-                }`;
+                card.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${isMe ? 'bg-info/10 border-info/40 font-black' : 'bg-base-200/80 border-base-300 font-bold'
+                    }`;
 
                 let rankBadge = `<span class="badge badge-neutral badge-xs px-1.5">${idx + 1}</span>`;
                 if (m.timeMs) {
@@ -1047,7 +1184,20 @@
                 onlineStatusDot.className = "w-2 h-2 rounded-full bg-slate-500";
                 onlineJoinSection.classList.remove('hidden');
                 onlineRoomSection.classList.add('hidden');
+                if (onlineBattleLiveBar) onlineBattleLiveBar.classList.add('hidden');
                 showToast("対戦ルームを退出しました", "info");
+            });
+        }
+
+        if (liveBarLeaveBtn) {
+            liveBarLeaveBtn.addEventListener('click', () => {
+                if (onlineLeaveBtn) onlineLeaveBtn.click();
+            });
+        }
+
+        if (liveBarScrambleBtn) {
+            liveBarScrambleBtn.addEventListener('click', () => {
+                if (onlineBroadcastScrambleBtn) onlineBroadcastScrambleBtn.click();
             });
         }
 
@@ -2330,10 +2480,10 @@
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
                                     ${isUnlockedToday
-                            ? (ach.id === 'first_solve'
-                                ? `${earnersEntries.length} 人が達成 ✨`
-                                : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
-                            : '🔒 未解除'}
+                        ? (ach.id === 'first_solve'
+                            ? `${earnersEntries.length} 人が達成 ✨`
+                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
+                        : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -2597,6 +2747,11 @@
         });
 
         window.addEventListener('load', async () => {
+            console.log(`%c🧩 マルチキューブタイマー ${APP_VERSION} 起動完了`, 'color: #f59e0b; font-weight: bold; font-size: 12px;');
+            document.querySelectorAll('.app-version-text').forEach(el => {
+                el.textContent = APP_VERSION;
+            });
+
             renderAchievements();
             renderLeaderboard();
 
