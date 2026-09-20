@@ -2619,12 +2619,12 @@
 
             // キーボードの C で人数増加、D で人数減少
             if (globalState === 'IDLE' && document.activeElement.tagName !== 'SELECT' && document.activeElement.tagName !== 'INPUT') {
-                if (e.key === 'c' || e.key === 'C') {
+                if (e.key === 'd' || e.key === 'D') {
                     e.preventDefault();
                     if (playerCount < 10) setPlayerCount(playerCount + 1);
                     return;
                 }
-                if (e.key === 'd' || e.key === 'D') {
+                if (e.key === 'c' || e.key === 'C') {
                     e.preventDefault();
                     if (playerCount > 1) setPlayerCount(playerCount - 1);
                     return;
