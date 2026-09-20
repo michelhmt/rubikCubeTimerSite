@@ -196,7 +196,25 @@
                     <div class="flex items-center justify-between mb-1 gap-2 flex-wrap">
                         <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3
                             スクランブル</span>
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                            <!-- スクランブル文字サイズ調整ボタングループ -->
+                            <div
+                                class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
+                                <span class="text-[10px] font-black text-base-content/60 px-1">文字:</span>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="sm" title="小さめ">小</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="md" title="標準">中</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="lg" title="大きめ">大</button>
+                                <button type="button"
+                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
+                                    data-size="xl" title="特大（遠くから見やすい）">特大</button>
+                            </div>
+
                             <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
                                 <span class="label-text text-xs font-bold text-base-content/70">🧭 イラストガイド</span>
                                 <input type="checkbox" id="toggle-scramble-images"
@@ -209,7 +227,7 @@
                     </div>
 
                     <div id="scramble-display"
-                        class="text-base sm:text-xl md:text-2xl font-black tracking-wider text-success break-words py-1">
+                        class="text-base sm:text-xl md:text-2xl font-black tracking-wider text-success break-words py-1 transition-all duration-150">
                         R2 U B2 D L2 F2 U' L2 U2 R2
                     </div>
 
@@ -753,6 +771,7 @@
         const toggleScrambleImages = document.getElementById('toggle-scramble-images');
         const scrambleImagesWrapper = document.getElementById('scramble-images-wrapper');
         const scrambleImagesList = document.getElementById('scramble-images-list');
+        const scrambleSizeBtns = document.querySelectorAll('.scramble-size-btn');
         const touchStartBtn = document.getElementById('touch-start-btn');
         const touchBtnIcon = document.getElementById('touch-btn-icon');
         const touchBtnText = document.getElementById('touch-btn-text');
@@ -1157,6 +1176,45 @@
             updateCubePreview();
         }
         newScrambleBtn.addEventListener('click', refreshScramble);
+
+        // --- スクランブル文字サイズ調整機能 ---
+        const SCRAMBLE_SIZE_CLASSES = {
+            sm: ['text-sm', 'sm:text-base', 'md:text-lg', 'py-0.5'],
+            md: ['text-base', 'sm:text-xl', 'md:text-2xl', 'py-1'],
+            lg: ['text-xl', 'sm:text-2xl', 'md:text-3xl', 'lg:text-4xl', 'py-1.5', 'leading-snug'],
+            xl: ['text-2xl', 'sm:text-3xl', 'md:text-4xl', 'lg:text-5xl', 'py-2', 'leading-normal']
+        };
+        const ALL_SCRAMBLE_SIZE_CLASSES = [
+            'text-sm', 'sm:text-base', 'md:text-lg',
+            'text-base', 'sm:text-xl', 'md:text-2xl',
+            'text-xl', 'sm:text-2xl', 'md:text-3xl', 'lg:text-4xl',
+            'text-2xl', 'sm:text-3xl', 'md:text-4xl', 'lg:text-5xl',
+            'py-0.5', 'py-1', 'py-1.5', 'py-2', 'leading-snug', 'leading-normal'
+        ];
+
+        function applyScrambleFontSize(sizeKey) {
+            if (!SCRAMBLE_SIZE_CLASSES[sizeKey]) sizeKey = 'md';
+            if (scrambleDisplay) {
+                scrambleDisplay.classList.remove(...ALL_SCRAMBLE_SIZE_CLASSES);
+                scrambleDisplay.classList.add(...SCRAMBLE_SIZE_CLASSES[sizeKey]);
+            }
+
+            scrambleSizeBtns.forEach(btn => {
+                if (btn.dataset.size === sizeKey) {
+                    btn.className = "scramble-size-btn btn btn-xs btn-warning px-1.5 min-h-0 h-6 text-[11px] font-black shadow-sm";
+                } else {
+                    btn.className = "scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold text-base-content/70";
+                }
+            });
+            localStorage.setItem('cube_scramble_font_size', sizeKey);
+        }
+
+        scrambleSizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const size = btn.dataset.size;
+                applyScrambleFontSize(size);
+            });
+        });
 
         // --- 3x3x3 キューブ描画 ---
         const CUBE_COLORS = {W: '#ffffff', Y: '#ffd500', G: '#009b48', B: '#0046ad', O: '#ff5800', R: '#b71234'};
@@ -2177,6 +2235,10 @@
         window.addEventListener('load', async () => {
             renderAchievements();
             renderLeaderboard();
+
+            // 保存されたスクランブル文字サイズの適用
+            const savedScrambleSize = localStorage.getItem('cube_scramble_font_size') || 'md';
+            applyScrambleFontSize(savedScrambleSize);
 
             const savedToggle = localStorage.getItem('cube_show_scramble_images') === 'true';
             toggleScrambleImages.checked = savedToggle;
