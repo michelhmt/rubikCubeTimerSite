@@ -14,9 +14,7 @@
     <!-- Google Fonts: 丸ゴシック & モノスペース -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Share+Tech+Mono&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -46,39 +44,33 @@
         /* ライトモード時の文字・バッジ視認性向上スタイル */
         [data-theme="light"] .text-warning {
             color: #b45309 !important;
-            /* 引き締まったアンバー */
         }
-
         [data-theme="light"] .badge-warning {
             background-color: #fef3c7 !important;
             color: #92400e !important;
             border-color: #fcd34d !important;
         }
-
         [data-theme="light"] .btn-warning {
             background-color: #f59e0b !important;
             color: #ffffff !important;
             border-color: #d97706 !important;
         }
-
         [data-theme="light"] .btn-outline.btn-warning {
             background-color: transparent !important;
             color: #b45309 !important;
             border-color: #b45309 !important;
         }
-
         [data-theme="light"] .btn-outline.btn-warning:hover {
             background-color: #f59e0b !important;
             color: #ffffff !important;
         }
 
-        /* 全画面オーバーレイ内のSlotバッジ色（テーマ不問で視認性を確保） */
+        /* 全画面オーバーレイ内のSlotバッジ色 */
         .overlay-slot-badge {
             background-color: rgba(255, 255, 255, 0.12);
             color: currentColor;
             border: 1px solid rgba(255, 255, 255, 0.25);
         }
-
         [data-theme="light"] .overlay-slot-badge {
             background-color: rgba(0, 0, 0, 0.08);
             color: currentColor;
@@ -87,19 +79,9 @@
 
         /* 実績カード用のアニメーション */
         @keyframes badgeUnlock {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            70% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .badge-unlock {
@@ -111,11 +93,9 @@
             width: 6px;
             height: 6px;
         }
-
         ::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.15);
         }
-
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
@@ -198,35 +178,22 @@
                     </div>
                 </div>
 
-                <!-- スクランブル表示カード -->
-                <div
-                    class="card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 text-center min-w-0 w-full overflow-hidden">
+                <div class="card bg-base-100 shadow-md border border-base-200 p-3 sm:p-4 text-center min-w-0 w-full overflow-hidden">
                     <div class="flex items-center justify-between mb-1 gap-2 flex-wrap">
-                        <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3
-                            スクランブル</span>
+                        <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3 スクランブル</span>
                         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
                             <!-- スクランブル文字サイズ調整ボタングループ -->
-                            <div
-                                class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
+                            <div class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
                                 <span class="text-[10px] font-black text-base-content/60 px-1">文字:</span>
-                                <button type="button"
-                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                    data-size="sm" title="小さめ">小</button>
-                                <button type="button"
-                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                    data-size="md" title="標準">中</button>
-                                <button type="button"
-                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                    data-size="lg" title="大きめ">大</button>
-                                <button type="button"
-                                    class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                    data-size="xl" title="特大（遠くから見やすい）">特大</button>
+                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="sm" title="小さめ">小</button>
+                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="md" title="標準">中</button>
+                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="lg" title="大きめ">大</button>
+                                <button type="button" class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold" data-size="xl" title="特大（遠くから見やすい）">特大</button>
                             </div>
 
                             <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
                                 <span class="label-text text-xs font-bold text-base-content/70">🧭 イラストガイド</span>
-                                <input type="checkbox" id="toggle-scramble-images"
-                                    class="toggle toggle-warning toggle-xs" />
+                                <input type="checkbox" id="toggle-scramble-images" class="toggle toggle-warning toggle-xs" />
                             </label>
                             <button id="new-scramble-btn" class="btn btn-ghost btn-xs text-primary font-bold">
                                 🔄 新しい配置
@@ -243,13 +210,11 @@
                         <p class="text-[11px] text-base-content/50 font-bold mb-2 text-left flex items-center gap-1">
                             <span>👉</span> まわす順番（左から右へ順番にまわしてね）
                         </p>
-                        <div id="scramble-images-list"
-                            class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1"></div>
+                        <div id="scramble-images-list" class="flex flex-wrap gap-2 justify-center sm:justify-start w-full py-1"></div>
                     </div>
                 </div>
             </header>
 
-            <!-- タイマーエリア -->
             <div class="my-3 sm:my-4 flex-1 flex flex-col justify-center items-center min-w-0 w-full">
                 <!-- 状態ガイドバナー -->
                 <div id="status-banner"
@@ -270,33 +235,21 @@
                 <div id="timer-grid" class="liquid-timer-grid items-stretch w-full"></div>
             </div>
 
-            <!-- 下部コントロールパネル -->
-            <footer
-                class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
+            <footer class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
                 <!-- 人数切り替えボタン群 (デフォルト1人) -->
                 <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                     <div class="flex flex-wrap gap-1 p-1 bg-base-200/60 rounded-xl border border-base-300">
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5"
-                            data-count="1">1人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="2">2人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="3">3人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="4">4人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="5">5人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="6">6人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="7">7人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="8">8人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="9">9人</button>
-                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5"
-                            data-count="10">10人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5" data-count="1">1人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="2">2人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="3">3人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="4">4人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="5">5人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="6">6人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="7">7人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="8">8人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="9">9人</button>
+                        <button class="player-count-btn btn btn-xs sm:btn-sm btn-neutral px-2.5" data-count="10">10人</button>
                     </div>
                 </div>
 
@@ -313,40 +266,32 @@
             </footer>
         </section>
 
-        <!-- 右側サイドバー：実績 ＆ ランキング ＆ キューブプレビュー -->
         <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
 
             <!-- 実績アコーディオン -->
-            <details id="achievement-details"
-                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
-                <summary
-                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+            <details id="achievement-details" class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">🏆</span>
                         <span class="font-black text-sm sm:text-base text-warning">かくとく実績</span>
                         <span id="achievement-count" class="badge badge-xs badge-warning font-bold">0回</span>
                     </div>
-                    <span
-                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                    <span class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col gap-2 max-h-[380px]">
-                    <div id="today-kid-achievements-summary"
-                        class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2"></div>
+                    <div id="today-kid-achievements-summary" class="flex flex-wrap gap-1 items-center pt-1 border-b border-base-200/40 pb-2"></div>
                     <div id="achievement-list" class="overflow-y-auto space-y-2 flex-1 pr-1"></div>
                 </div>
             </details>
 
             <!-- 今日のランキングアコーディオン -->
-            <details id="leaderboard-details"
-                class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
-                <summary
-                    class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
+            <details id="leaderboard-details" class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
+                <summary class="p-3.5 cursor-pointer list-none flex items-center justify-between hover:bg-base-200/50 transition-colors select-none">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">⚡️</span>
                         <span class="font-black text-sm sm:text-base text-info">きょうのベスト</span>
                     </div>
-                    <span
-                        class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
+                    <span class="text-xs text-base-content/40 transition-transform duration-200 group-open:rotate-180">▼</span>
                 </summary>
                 <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col max-h-[350px]">
                     <div id="leaderboard-list" class="overflow-y-auto space-y-1.5 flex-1 pr-1 mt-1">
@@ -358,15 +303,13 @@
             </details>
 
             <!-- スクランブル完成図プレビュー -->
-            <div id="cube-preview-card"
-                class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
+            <div id="cube-preview-card" class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
                 <div class="flex items-center justify-between w-full mb-1">
                     <div class="flex items-center gap-1.5">
                         <span class="text-lg">🧊</span>
                         <span class="font-black text-xs sm:text-sm text-warning">スクランブル完成図</span>
                     </div>
-                    <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 /
-                        手前:緑 / 右:赤</span>
+                    <span class="text-[10px] text-base-content/60 font-bold bg-base-200 px-1.5 py-0.5 rounded">上:白 / 手前:緑 / 右:赤</span>
                 </div>
                 <div id="cube-preview-svg-container" class="w-44 h-44 flex items-center justify-center my-1">
                     <span class="loading loading-spinner loading-sm text-warning"></span>
@@ -379,7 +322,6 @@
         </aside>
     </div>
 
-    <!-- 全画面タイマーオーバーレイ（右側にゴール順位縦並びリスト） -->
     <div id="mobile-timer-overlay"
         class="fixed inset-0 bg-base-300 z-50 hidden flex-col justify-between p-4 sm:p-6 lg:p-8 select-none touch-manipulation">
         <!-- 上部ヘッダーバー -->
@@ -411,32 +353,27 @@
                     class="timer-font text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-warning tracking-wider leading-none drop-shadow-lg">
                     00.000
                 </div>
-                <div
-                    class="mt-4 text-xs sm:text-sm md:text-base font-bold text-base-content/50 bg-base-200/60 px-4 py-1.5 rounded-full border border-base-content/10 animate-pulse">
+                <div class="mt-4 text-xs sm:text-sm md:text-base font-bold text-base-content/50 bg-base-200/60 px-4 py-1.5 rounded-full border border-base-content/10 animate-pulse">
                     ⚡️ 画面クリック または スペースキーでストップ！
                 </div>
             </div>
 
             <!-- 右側：ゴールした子の縦並びリスト -->
-            <div
-                class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
+            <div class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
                 <div class="flex items-center justify-between border-b border-base-200 pb-2 mb-2 shrink-0">
                     <span class="text-xs sm:text-sm font-black text-warning flex items-center gap-1.5">
                         <span>🏁</span> ゴール順位リスト
                     </span>
-                    <span id="overlay-status-summary"
-                        class="text-[11px] font-bold text-base-content/50">タップでストップ！</span>
+                    <span id="overlay-status-summary" class="text-[11px] font-bold text-base-content/50">タップでストップ！</span>
                 </div>
                 <div id="overlay-finished-list" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
-                    <span
-                        class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>
+                    <span class="text-xs sm:text-sm text-base-content/40 italic py-4 text-center block">解き終わったらストップ！</span>
                 </div>
             </div>
         </div>
 
         <!-- 下部ナビゲーションヒント -->
-        <div
-            class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
+        <div class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
             全員がゴールすると自動で名前入力画面に切り替わります（キーボード: ESCキーで手動終了）
         </div>
     </div>
@@ -473,10 +410,8 @@
                             class="input input-bordered input-sm w-full font-sans text-sm focus:border-warning" />
                     </div>
                 </div>
-                <div id="auth-error-msg"
-                    class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
-                <button id="submit-login-btn"
-                    class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
+                <div id="auth-error-msg" class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
+                <button id="submit-login-btn" class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
                     🔑 ログインする
                 </button>
             </div>
@@ -487,8 +422,7 @@
                     <span class="text-2xl">✅</span>
                     <div class="min-w-0">
                         <div class="text-xs font-black text-success">ログイン中</div>
-                        <div id="logged-in-email" class="text-xs font-bold text-base-content/80 truncate">
-                            user@example.com</div>
+                        <div id="logged-in-email" class="text-xs font-bold text-base-content/80 truncate">user@example.com</div>
                     </div>
                 </div>
                 <button id="submit-logout-btn" class="btn btn-outline btn-error btn-sm w-full font-bold">
@@ -503,8 +437,7 @@
 
     <!-- キューブ管理用モーダル -->
     <dialog id="cube-mgmt-modal" class="modal">
-        <div
-            class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
+        <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-xl w-11/12 h-[88vh] max-h-[88vh] flex flex-col p-4 sm:p-6">
             <div class="flex items-center justify-between pb-3 border-b border-base-200 shrink-0">
                 <h3 class="font-black text-lg sm:text-xl text-warning flex items-center gap-2">
                     <span class="text-2xl">🧩</span>
@@ -578,8 +511,7 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-success animate-pulse"></span>
                         <span id="online-room-title" class="font-black text-info text-sm">🔑 room</span>
                     </div>
-                    <span class="badge badge-info badge-sm font-bold">参加中: <span id="online-user-count"
-                            class="ml-1">1</span>人</span>
+                    <span class="badge badge-info badge-sm font-bold">参加中: <span id="online-user-count" class="ml-1">1</span>人</span>
                 </div>
 
                 <div class="flex gap-2">
@@ -604,7 +536,6 @@
     </dialog>
 
     <script>
-        // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
         let isSoundEnabled = localStorage.getItem('cube_sound_enabled') !== 'false';
 
@@ -648,7 +579,6 @@
             if (!audioCtx) return;
             try {
                 if (rank === 1) {
-                    // 1位: ピピッ！
                     const osc1 = audioCtx.createOscillator();
                     const gain1 = audioCtx.createGain();
                     osc1.type = 'sine';
@@ -671,7 +601,6 @@
                     osc2.start(audioCtx.currentTime + 0.09);
                     osc2.stop(audioCtx.currentTime + 0.22);
                 } else {
-                    // 2位以降: ピッ！
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sine';
@@ -688,7 +617,6 @@
             }
         }
 
-        // --- テーマ切り替え処理 (Dark / Light) ---
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
         const themeIcon = document.getElementById('theme-icon');
 
@@ -710,7 +638,6 @@
             });
         }
 
-        // --- サウンド切り替えボタン ---
         const soundToggleBtn = document.getElementById('sound-toggle-btn');
         const soundIcon = document.getElementById('sound-icon');
 
@@ -731,7 +658,6 @@
             });
         }
 
-        // --- Supabase設定 ---
         const SUPABASE_URL = "https://sqknnxyumrbiunsllzcl.supabase.co";
         const SUPABASE_KEY = "sb_publishable_QKQjNX4H8SLKclkvH8zrUg_DQOeLl_I";
         let supabaseClient = null;
@@ -743,7 +669,6 @@
             console.warn("Supabase is not initialized. Using local memory mode.", err);
         }
 
-        // ローカルランキングデータ
         let localLeaderboard = [];
         try {
             const savedBoard = localStorage.getItem('cube_today_leaderboard');
@@ -752,7 +677,6 @@
             console.warn("ローカルランキングの復元に失敗しました", e);
         }
 
-        // 直近で登録されたメンバーID一覧
         let lastRegisteredUserIds = [];
         try {
             const savedRecentUsers = localStorage.getItem('cube_recent_user_ids');
@@ -763,7 +687,6 @@
 
         let expandedSlots = new Set();
 
-        // 実績マスター
         let ACHIEVEMENTS = [
             {id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩'},
             {id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️'},
@@ -785,7 +708,6 @@
                 const savedData = localStorage.getItem(`cube_achievements_${todayKey}`);
                 todayAchievementCounts = savedData ? JSON.parse(savedData) : {};
 
-                // 「はじめの一歩」のみ1回（達成）に正規化
                 let isDataModified = false;
                 if (todayAchievementCounts['first_solve'] && typeof todayAchievementCounts['first_solve'] === 'object') {
                     Object.keys(todayAchievementCounts['first_solve']).forEach(name => {
@@ -835,8 +757,7 @@
             return html;
         }
 
-        // --- 状態変数 ---
-        let playerCount = 1; // デフォルト人数は1人
+        let playerCount = 1;
         let players = [];
         let spacePressTimer = null;
         let isReady = false;
@@ -847,7 +768,6 @@
         let finishOrder = 0;
         let currentUser = null;
 
-        // DOM要素
         const timerGrid = document.getElementById('timer-grid');
         const countButtons = document.querySelectorAll('.player-count-btn');
         const saveAllBtn = document.getElementById('save-all-btn');
@@ -878,7 +798,6 @@
         const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
         const overlayStatusSummary = document.getElementById('overlay-status-summary');
 
-        // 実績・ランキングアコーディオン
         const achievementDetails = document.getElementById('achievement-details');
         const leaderboardDetails = document.getElementById('leaderboard-details');
 
@@ -893,7 +812,6 @@
             });
         }
 
-        // --- キューブ管理機能 ---
         const cubeMgmtBtn = document.getElementById('cube-mgmt-btn');
         const cubeMgmtModal = document.getElementById('cube-mgmt-modal');
         const cubeMgmtList = document.getElementById('cube-mgmt-list');
@@ -901,7 +819,6 @@
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
         let cubesData = [];
 
-        // --- オンライン対戦機能 (Supabase Realtime Channel) ---
         const onlineBattleBtn = document.getElementById('online-battle-btn');
         const onlineBattleModal = document.getElementById('online-battle-modal');
         const onlineStatusDot = document.getElementById('online-status-dot');
@@ -921,7 +838,7 @@
         let onlineRoomName = null;
         let myOnlineId = 'user_' + Math.random().toString(36).substring(2, 9);
         let myOnlineNickname = localStorage.getItem('cube_online_nickname') || '';
-        let onlineRoomMembers = {}; // { [id]: { id, name, timeMs, status } }
+        let onlineRoomMembers = {};
 
         if (onlineNicknameInput) {
             onlineNicknameInput.value = myOnlineNickname;
@@ -946,7 +863,6 @@
                 return;
             }
 
-            // 既存接続のクリーンアップ
             if (onlineChannel) {
                 supabaseClient.removeChannel(onlineChannel);
             }
@@ -956,7 +872,6 @@
             localStorage.setItem('cube_online_nickname', nickname);
             onlineRoomMembers = {};
 
-            // 自身を登録
             onlineRoomMembers[myOnlineId] = {
                 id: myOnlineId,
                 name: myOnlineNickname,
@@ -970,7 +885,6 @@
                 }
             });
 
-            // 1. Presence (誰が入退室したか)
             onlineChannel
                 .on('presence', {event: 'sync'}, () => {
                     const state = onlineChannel.presenceState();
@@ -1011,7 +925,6 @@
                     }
                 });
 
-            // 2. Broadcast (スクランブル配信・タイム更新)
             onlineChannel
                 .on('broadcast', {event: 'new_scramble'}, ({payload}) => {
                     if (payload && payload.scramble) {
@@ -1020,7 +933,6 @@
                         renderScrambleImages();
                         updateCubePreview();
 
-                        // 全員のタイム表示をクリア
                         Object.keys(onlineRoomMembers).forEach(k => {
                             onlineRoomMembers[k].timeMs = null;
                             onlineRoomMembers[k].status = 'ready';
@@ -1064,7 +976,6 @@
             const members = Object.values(onlineRoomMembers);
             onlineUserCount.textContent = members.length;
 
-            // タイム順にソート（タイムがある人優先で速い順）
             members.sort((a, b) => {
                 if (a.timeMs && b.timeMs) return a.timeMs - b.timeMs;
                 if (a.timeMs) return -1;
@@ -1075,8 +986,9 @@
             members.forEach((m, idx) => {
                 const isMe = m.id === myOnlineId;
                 const card = document.createElement('div');
-                card.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${isMe ? 'bg-info/10 border-info/40 font-black' : 'bg-base-200/80 border-base-300 font-bold'
-                    }`;
+                card.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${
+                    isMe ? 'bg-info/10 border-info/40 font-black' : 'bg-base-200/80 border-base-300 font-bold'
+                }`;
 
                 let rankBadge = `<span class="badge badge-neutral badge-xs px-1.5">${idx + 1}</span>`;
                 if (m.timeMs) {
@@ -1106,7 +1018,6 @@
             });
         }
 
-        // --- オンライン対戦機能の初期化 ---
         async function initOnlineMultiplayer() {
             try {
                 if (onlineNicknameInput && !onlineNicknameInput.value) {
@@ -1149,7 +1060,6 @@
                 renderScrambleImages();
                 updateCubePreview();
 
-                // ルーム内の全員へ共通スクランブルを配信
                 onlineChannel.send({
                     type: 'broadcast',
                     event: 'new_scramble',
@@ -1203,7 +1113,6 @@
         }
 
         async function fetchCubeManagementData() {
-            // 未ログイン状態（Supabaseセッションなし）の判定
             if (!currentUser) {
                 cubeMgmtSummary.innerHTML = `<span class="text-error font-black">🔒 未ログイン状態です</span>`;
                 cubeMgmtList.innerHTML = `
@@ -1373,7 +1282,6 @@
             renderCubeManagementUI();
         }
 
-        // --- 認証機能 ---
         const settingsBtn = document.getElementById('settings-btn');
         const authModal = document.getElementById('auth-modal');
         const authStatusDot = document.getElementById('auth-status-dot');
@@ -1553,7 +1461,6 @@
         }
         newScrambleBtn.addEventListener('click', refreshScramble);
 
-        // --- スクランブル文字サイズ調整機能 ---
         const SCRAMBLE_SIZE_CLASSES = {
             sm: ['text-sm', 'sm:text-base', 'md:text-lg', 'py-0.5'],
             md: ['text-base', 'sm:text-xl', 'md:text-2xl', 'py-1'],
@@ -1592,7 +1499,6 @@
             });
         });
 
-        // --- 3x3x3 キューブ描画 ---
         const CUBE_COLORS = {
             W: '#ffffff', // 上面 (白)
             Y: '#ffd000', // 下面 (黄)
@@ -1666,21 +1572,18 @@
             const cube = createSolvedCube();
             currentScrambleMoves.forEach(m => applyCubeMove(cube, m));
 
-            // キューブの等角投影（アイソメトリック）幾何パラメータ
-            const s = 19; // 1ステッカーの一辺サイズ
-            const w = s * Math.cos(Math.PI / 6); // 水平オフセット ≈ 16.45px
-            const h = s * Math.sin(Math.PI / 6); // 垂直傾斜オフセット ≈ 9.5px
+            const s = 19;
+            const w = s * Math.cos(Math.PI / 6);
+            const h = s * Math.sin(Math.PI / 6);
             const cx = 80;
             const cy = 78;
 
             let stickerSvg = '';
 
             // 1. 上面 (U: Whiteベース)
-            // 奥(r=0)から手前(r=2)、左(c=0)から右(c=2)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
-                    // 上面の各頂点座標
                     const p0 = {x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h};
                     const p1 = {x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h};
                     const p2 = {x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h};
@@ -1689,8 +1592,7 @@
                 }
             }
 
-            // 2. 正面 (F: Greenベース・左手前面)
-            // 上(r=0)から下(r=2)、左(c=0)から右(c=2)
+            // 2. 正面 (F: Greenベース)
             const fOrigX = cx - 3 * w;
             const fOrigY = cy - 1.5 * s;
             for (let r = 0; r < 3; r++) {
@@ -1704,8 +1606,7 @@
                 }
             }
 
-            // 3. 右面 (R: Redベース・右手前面)
-            // 上(r=0)から下(r=2)、左(c=0)から右(c=2)
+            // 3. 右面 (R: Redベース)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#dc2626';
@@ -1717,7 +1618,6 @@
                 }
             }
 
-            // キューブ外枠の黒いシルエットベゼル
             const bezel = `
                 <polygon points="${cx},${cy - 3 * s - 2} ${cx + 3 * w + 2},${cy - 1.5 * s - 1} ${cx + 3 * w + 2},${cy + 1.5 * s + 1} ${cx},${cy + 3 * s + 2} ${cx - 3 * w - 2},${cy + 1.5 * s + 1} ${cx - 3 * w - 2},${cy - 1.5 * s - 1}" fill="#18181b" stroke="#18181b" stroke-width="2.5" stroke-linejoin="round" />
             `;
@@ -1741,7 +1641,6 @@
             }
         });
 
-        // --- プレイヤー初期化 ---
         function initPlayers(count) {
             playerCount = count;
             players = [];
@@ -1752,10 +1651,10 @@
             if (modeBadge) {
                 if (count === 1) {
                     modeBadge.textContent = 'ソロモード';
-                    modeBadge.className = 'badge badge-outline badge-info font-bold py-3 px-3 transition-colors';
+                    modeBadge.className = 'badge badge-outline badge-info font-bold py-3 px-3 transition-colors hidden md:inline-flex';
                 } else {
                     modeBadge.textContent = `マルチ測定モード (${count}人)`;
-                    modeBadge.className = 'badge badge-outline badge-warning font-bold py-3 px-3 transition-colors';
+                    modeBadge.className = 'badge badge-outline badge-warning font-bold py-3 px-3 transition-colors hidden md:inline-flex';
                 }
             }
 
@@ -1975,7 +1874,6 @@
             const now = Date.now();
             const currentScrambleText = currentScrambleMoves.join(' ');
 
-            // 全画面オーバーレイを確実に表示
             if (mobileTimerOverlay) {
                 mobileTimerOverlay.classList.remove('hidden');
                 mobileTimerOverlay.classList.add('flex');
@@ -1983,13 +1881,6 @@
             if (overlayTimerText) {
                 overlayTimerText.textContent = '00.000';
                 overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-warning tracking-wider leading-none drop-shadow-2xl';
-            }
-            if (overlayStatusHint) {
-                overlayStatusHint.textContent = '⏱ 計測中！';
-                overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-warning mb-2 animate-pulse';
-            }
-            if (overlaySubHint) {
-                overlaySubHint.textContent = '⚡️ 画面のどこでもタップ または スペースキーでストップ！';
             }
             if (overlayRemainingBadge) {
                 const activeCount = players.filter(p => !p.isCancelled).length;
@@ -2057,15 +1948,9 @@
             if (!mobileTimerOverlay) return;
             overlayTimerText.textContent = '00.000';
             overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-error tracking-wider leading-none drop-shadow-2xl transition-colors';
-            if (overlayStatusHint) {
-                overlayStatusHint.textContent = '長押し中...（0.3秒で緑色になったら準備OK）';
-                overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-error mb-3 sm:mb-6 animate-pulse';
-            }
-            if (overlaySubHint) overlaySubHint.textContent = '指を離すとスタート！';
             mobileTimerOverlay.classList.remove('hidden');
             mobileTimerOverlay.classList.add('flex');
 
-            // ブラウザのフルスクリーンAPI（可能な環境のみ）
             try {
                 if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen().catch(() => { });
@@ -2158,10 +2043,6 @@
                         if (overlayTimerText) {
                             overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-success tracking-wider leading-none drop-shadow-2xl transition-colors animate-pulse';
                         }
-                        if (overlayStatusHint) {
-                            overlayStatusHint.textContent = '🟢 準備完了！指を離すとスタート！';
-                            overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-success mb-3 sm:mb-6 animate-pulse';
-                        }
                         if (navigator.vibrate) navigator.vibrate(40);
                     }, 300);
                 }
@@ -2203,7 +2084,6 @@
 
             playStopBeep(finishOrder);
 
-            // オンライン対戦中なら、自分のタイムを友達へ即時送信！
             if (onlineChannel && index === 0) {
                 broadcastMyOnlineSolve(p.elapsedTime);
             }
@@ -2231,7 +2111,6 @@
             const statusDot = document.getElementById(`badge-status-${p.id}`);
             if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-success";
 
-            // 全画面オーバーレイの右側リストに追加
             if (overlayFinishedList) {
                 if (finishOrder === 1) overlayFinishedList.innerHTML = '';
                 const formattedTime = formatTime(p.elapsedTime);
@@ -2287,14 +2166,36 @@
             });
         }
 
-        // キーボード操作
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Escape') {
                 hideMobileFullscreenTimer();
                 return;
             }
-            if (e.code !== 'Space' || e.repeat) return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
+
+            // キーボードによる人数変更: D で増加、C で減少 (タイマー待機時のみ)
+            if (globalState === 'IDLE' && !e.repeat) {
+                if (e.key === 'd' || e.key === 'D') {
+                    e.preventDefault();
+                    if (playerCount < 10) {
+                        setPlayerCount(playerCount + 1);
+                    } else {
+                        showToast('人数は最大10人までです', 'info');
+                    }
+                    return;
+                }
+                if (e.key === 'c' || e.key === 'C') {
+                    e.preventDefault();
+                    if (playerCount > 1) {
+                        setPlayerCount(playerCount - 1);
+                    } else {
+                        showToast('人数は最小1人です', 'info');
+                    }
+                    return;
+                }
+            }
+
+            if (e.code !== 'Space' || e.repeat) return;
             e.preventDefault();
 
             if (globalState === 'IDLE') {
@@ -2313,10 +2214,6 @@
                     statusBanner.className = 'text-center mb-3 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto animate-pulse';
                     if (overlayTimerText) {
                         overlayTimerText.className = 'timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-success tracking-wider leading-none drop-shadow-2xl transition-colors animate-pulse';
-                    }
-                    if (overlayStatusHint) {
-                        overlayStatusHint.textContent = '🟢 準備完了！手を離すとスタート！';
-                        overlayStatusHint.className = 'text-sm sm:text-lg font-bold text-success mb-2 animate-pulse';
                     }
                 }, 300);
             } else if (globalState === 'RUNNING') {
@@ -2343,21 +2240,31 @@
             }
         });
 
-        // 人数変更ボタン
+        // 人数変更処理
+        function setPlayerCount(count) {
+            if (count < 1) count = 1;
+            if (count > 10) count = 10;
+            if (count === playerCount) return;
+
+            countButtons.forEach(b => {
+                if (parseInt(b.dataset.count) === count) {
+                    b.classList.remove('btn-neutral');
+                    b.classList.add('btn-warning');
+                } else {
+                    b.classList.remove('btn-warning');
+                    b.classList.add('btn-neutral');
+                }
+            });
+
+            initPlayers(count);
+            showToast(`${count}人モードに切り替えました`, 'info');
+        }
+
         countButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetBtn = e.currentTarget;
                 const count = parseInt(targetBtn.dataset.count);
-
-                countButtons.forEach(b => {
-                    b.classList.remove('btn-warning');
-                    b.classList.add('btn-neutral');
-                });
-                targetBtn.classList.remove('btn-neutral');
-                targetBtn.classList.add('btn-warning');
-
-                initPlayers(count);
-                showToast(`${count}人モードに切り替えました`, 'info');
+                setPlayerCount(count);
             });
         });
 
@@ -2423,10 +2330,10 @@
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
                                     ${isUnlockedToday
-                        ? (ach.id === 'first_solve'
-                            ? `${earnersEntries.length} 人が達成 ✨`
-                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
-                        : '🔒 未解除'}
+                            ? (ach.id === 'first_solve'
+                                ? `${earnersEntries.length} 人が達成 ✨`
+                                : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
+                            : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -2462,8 +2369,6 @@
             if (!todayAchievementCounts[id]) todayAchievementCounts[id] = {};
 
             const currentCount = todayAchievementCounts[id][playerName] || 0;
-
-            // 「はじめの一歩」のみ1日1回まで
             if (id === 'first_solve' && currentCount >= 1) return;
 
             const newCount = currentCount + 1;
@@ -2695,7 +2600,6 @@
             renderAchievements();
             renderLeaderboard();
 
-            // 保存されたスクランブル文字サイズの適用
             const savedScrambleSize = localStorage.getItem('cube_scramble_font_size') || 'md';
             applyScrambleFontSize(savedScrambleSize);
 
