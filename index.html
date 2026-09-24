@@ -147,7 +147,7 @@
                             <div class="flex items-center gap-2">
                                 <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
                                 <span
-                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.5.1</span>
+                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.5.2</span>
                             </div>
                             <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                 スペースキー長押し（0.3秒）またはボタン長押しでスタート！
@@ -179,7 +179,7 @@
                             <span class="hidden sm:inline">キューブ管理</span>
                         </button>
 
-                        <!-- モード表示バッジ (スマホでは人数のみ、PCではフルテキスト) -->
+                        <!-- モード表示バッジ -->
                         <div id="mode-badge"
                             class="badge badge-outline badge-info font-bold py-3 px-3 transition-colors hidden md:inline-flex">
                             ソロモード
@@ -291,7 +291,7 @@
                         <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                         <span
                             class="badge badge-neutral badge-xs text-[10px] font-bold text-base-content/60 hidden sm:inline-block">⌨️
-                            C:増やす / D:減らす</span>
+                            D:増やす / C:減らす</span>
                     </div>
                     <div class="flex flex-wrap gap-1 p-1 bg-base-200/60 rounded-xl border border-base-300">
                         <button class="player-count-btn btn btn-xs sm:btn-sm btn-warning px-2.5"
@@ -401,7 +401,7 @@
         <div
             class="badge badge-neutral border border-base-content/20 text-xs font-mono font-bold py-1 px-2.5 shadow-xl opacity-80 hover:opacity-100 transition-opacity flex items-center gap-1 bg-base-100/90 backdrop-blur-sm select-none">
             <span>🏷️</span>
-            <span class="text-warning font-black">v1.5.1</span>
+            <span class="text-warning font-black">v1.5.2</span>
         </div>
     </aside>
 
@@ -664,8 +664,8 @@
     </dialog>
 
     <script>
-        // アプリケーション・バージョン管理（修正ごとにパッチ、機能追加でマイナーアップデート）
-        const APP_VERSION = 'v1.5.1';
+        // アプリケーション・バージョン管理
+        const APP_VERSION = 'v1.5.2';
 
         // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
@@ -765,7 +765,8 @@
         applyTheme(savedTheme);
 
         if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
+            themeToggleBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const current = document.documentElement.getAttribute('data-theme') || 'dark';
                 applyTheme(current === 'dark' ? 'light' : 'dark');
             });
@@ -783,7 +784,8 @@
         updateSoundUI();
 
         if (soundToggleBtn) {
-            soundToggleBtn.addEventListener('click', () => {
+            soundToggleBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 isSoundEnabled = !isSoundEnabled;
                 localStorage.setItem('cube_sound_enabled', isSoundEnabled ? 'true' : 'false');
                 updateSoundUI();
@@ -804,7 +806,6 @@
             console.warn("Supabase is not initialized. Using local memory mode.", err);
         }
 
-        // ローカルランキングデータ
         let localLeaderboard = [];
         try {
             const savedBoard = localStorage.getItem('cube_today_leaderboard');
@@ -813,7 +814,6 @@
             console.warn("ローカルランキングの復元に失敗しました", e);
         }
 
-        // 直近で登録されたメンバーID一覧
         let lastRegisteredUserIds = [];
         try {
             const savedRecentUsers = localStorage.getItem('cube_recent_user_ids');
@@ -824,14 +824,13 @@
 
         let expandedSlots = new Set();
 
-        // 実績マスター
         let ACHIEVEMENTS = [
-            {id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩'},
-            {id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️'},
-            {id: 'sub_30', title: 'スピードスター', desc: '30秒未満でそろえた！', icon: '🚀'},
-            {id: 'sub_20', title: '神タイム降臨', desc: '20秒未満の超人記録！', icon: '👑'},
-            {id: 'multi_battle', title: '対戦マスター', desc: '3人以上で一斉にバトルした！', icon: '⚔️'},
-            {id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯'}
+            { id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩' },
+            { id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️' },
+            { id: 'sub_30', title: 'スピードスター', desc: '30秒未満でそろえた！', icon: '🚀' },
+            { id: 'sub_20', title: '神タイム降臨', desc: '20秒未満の超人記録！', icon: '👑' },
+            { id: 'multi_battle', title: '対戦マスター', desc: '3人以上で一斉にバトルした！', icon: '⚔️' },
+            { id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯' }
         ];
 
         function getTodayKey() {
@@ -846,7 +845,6 @@
                 const savedData = localStorage.getItem(`cube_achievements_${todayKey}`);
                 todayAchievementCounts = savedData ? JSON.parse(savedData) : {};
 
-                // 「はじめの一歩」のみ1回（達成）に正規化
                 let isDataModified = false;
                 if (todayAchievementCounts['first_solve'] && typeof todayAchievementCounts['first_solve'] === 'object') {
                     Object.keys(todayAchievementCounts['first_solve']).forEach(name => {
@@ -897,7 +895,7 @@
         }
 
         // --- 状態変数 ---
-        let playerCount = 1; // デフォルト人数は1人
+        let playerCount = 1;
         let players = [];
         let spacePressTimer = null;
         let isReady = false;
@@ -962,7 +960,7 @@
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
         let cubesData = [];
 
-        // --- オンライン対戦機能 (Supabase Realtime Channel & BroadcastChannel Fallback) ---
+        // --- オンライン対戦機能 ---
         const onlineBattleBtn = document.getElementById('online-battle-btn');
         const onlineBattleModal = document.getElementById('online-battle-modal');
         const onlineStatusDot = document.getElementById('online-status-dot');
@@ -990,7 +988,7 @@
         let onlineRoomName = null;
         let myOnlineId = 'user_' + Math.random().toString(36).substring(2, 9);
         let myOnlineNickname = localStorage.getItem('cube_online_nickname') || '';
-        let onlineRoomMembers = {}; // { [id]: { id, name, timeMs, status } }
+        let onlineRoomMembers = {};
 
         function syncOnlineModalScramble() {
             if (onlineModalScrambleText) {
@@ -1003,14 +1001,16 @@
         }
 
         if (onlineRandomRoomBtn) {
-            onlineRandomRoomBtn.addEventListener('click', () => {
+            onlineRandomRoomBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const randomCode = Math.floor(100 + Math.random() * 900);
                 onlineRoomInput.value = `battle-${randomCode}`;
             });
         }
 
         if (onlineBattleBtn && onlineBattleModal) {
-            onlineBattleBtn.addEventListener('click', () => {
+            onlineBattleBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 syncOnlineModalScramble();
                 onlineBattleModal.showModal();
             });
@@ -1056,13 +1056,12 @@
         }
 
         function setupOnlineChannel(roomName, nickname) {
-            // 既存通信のクリーンアップ
             if (onlineChannel && supabaseClient) {
-                try {supabaseClient.removeChannel(onlineChannel);} catch (e) { }
+                try { supabaseClient.removeChannel(onlineChannel); } catch (e) { }
                 onlineChannel = null;
             }
             if (onlineBroadcastChannel) {
-                try {onlineBroadcastChannel.close();} catch (e) { }
+                try { onlineBroadcastChannel.close(); } catch (e) { }
                 onlineBroadcastChannel = null;
             }
 
@@ -1071,7 +1070,6 @@
             localStorage.setItem('cube_online_nickname', nickname);
             onlineRoomMembers = {};
 
-            // 自身をメンバーに登録
             onlineRoomMembers[myOnlineId] = {
                 id: myOnlineId,
                 name: myOnlineNickname,
@@ -1079,12 +1077,11 @@
                 status: 'ready'
             };
 
-            // ブラウザ間（同一オリジン）ローカル通信を常にスタンバイ
             try {
                 if ('BroadcastChannel' in window) {
                     onlineBroadcastChannel = new BroadcastChannel(`cube_room_${roomName}`);
                     onlineBroadcastChannel.onmessage = (event) => {
-                        const {type, payload} = event.data || {};
+                        const { type, payload } = event.data || {};
                         if (type === 'new_scramble') handleIncomingScramble(payload);
                         if (type === 'solve_finish') handleIncomingSolve(payload);
                     };
@@ -1093,15 +1090,14 @@
                 console.warn("BroadcastChannel は利用できません:", e);
             }
 
-            // WebSocket が使用可能かつ Supabase クライアントがある場合はリアルタイム通信を確立
             if (canUseWebSocket() && supabaseClient) {
                 try {
                     onlineChannel = supabaseClient.channel(`room_${roomName}`, {
-                        config: {presence: {key: myOnlineId}}
+                        config: { presence: { key: myOnlineId } }
                     });
 
                     onlineChannel
-                        .on('presence', {event: 'sync'}, () => {
+                        .on('presence', { event: 'sync' }, () => {
                             const state = onlineChannel.presenceState();
                             Object.keys(state).forEach(key => {
                                 const userPresence = state[key][0];
@@ -1120,7 +1116,7 @@
                             });
                             renderOnlineRoomMembers();
                         })
-                        .on('presence', {event: 'join'}, ({key, newPresences}) => {
+                        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
                             const p = newPresences[0];
                             if (p && key !== myOnlineId) {
                                 onlineRoomMembers[key] = {
@@ -1133,14 +1129,14 @@
                                 renderOnlineRoomMembers();
                             }
                         })
-                        .on('presence', {event: 'leave'}, ({key}) => {
+                        .on('presence', { event: 'leave' }, ({ key }) => {
                             if (onlineRoomMembers[key]) {
                                 delete onlineRoomMembers[key];
                                 renderOnlineRoomMembers();
                             }
                         })
-                        .on('broadcast', {event: 'new_scramble'}, ({payload}) => handleIncomingScramble(payload))
-                        .on('broadcast', {event: 'solve_finish'}, ({payload}) => handleIncomingSolve(payload));
+                        .on('broadcast', { event: 'new_scramble' }, ({ payload }) => handleIncomingScramble(payload))
+                        .on('broadcast', { event: 'solve_finish' }, ({ payload }) => handleIncomingSolve(payload));
 
                     onlineChannel.subscribe(async (status) => {
                         if (status === 'SUBSCRIBED') {
@@ -1152,7 +1148,7 @@
                         }
                     });
                 } catch (err) {
-                    console.warn("Supabase Realtime 通信をスキップしました (ローカルモードで動作):", err);
+                    console.warn("Supabase Realtime 通信をスキップしました (ローカルモード):", err);
                 }
             }
 
@@ -1172,7 +1168,6 @@
             const members = Object.values(onlineRoomMembers);
             if (onlineUserCount) onlineUserCount.textContent = members.length;
 
-            // タイム順にソート（タイムがある人優先で速い順）
             members.sort((a, b) => {
                 if (a.timeMs && b.timeMs) return a.timeMs - b.timeMs;
                 if (a.timeMs) return -1;
@@ -1180,7 +1175,6 @@
                 return 0;
             });
 
-            // 1. モーダル内 VS カード表示 (2人なら xx vs oo、3人以上ならマルチ対戦グリッド)
             if (onlineModalVsDisplay) {
                 if (members.length === 1) {
                     onlineModalVsDisplay.innerHTML = `
@@ -1222,7 +1216,6 @@
                         </div>
                     `;
                 } else {
-                    // 3人以上
                     const finishedCount = members.filter(m => m.timeMs).length;
                     if (onlineMatchStatusBadge) onlineMatchStatusBadge.textContent = `${finishedCount}/${members.length} ゴール`;
                     onlineModalVsDisplay.innerHTML = `
@@ -1241,7 +1234,6 @@
                 }
             }
 
-            // 2. モーダル内 メンバー詳細縦並びリスト
             members.forEach((m, idx) => {
                 const isMe = m.id === myOnlineId;
                 const card = document.createElement('div');
@@ -1275,7 +1267,6 @@
             });
         }
 
-        // --- オンライン対戦機能の初期化 ---
         async function initOnlineMultiplayer() {
             try {
                 if (onlineNicknameInput && !onlineNicknameInput.value) {
@@ -1288,7 +1279,8 @@
         }
 
         if (onlineJoinBtn) {
-            onlineJoinBtn.addEventListener('click', () => {
+            onlineJoinBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const nick = (onlineNicknameInput.value || '').trim() || 'キューバー';
                 const room = (onlineRoomInput.value || '').trim() || 'battle-1';
                 setupOnlineChannel(room, nick);
@@ -1296,13 +1288,14 @@
         }
 
         if (onlineLeaveBtn) {
-            onlineLeaveBtn.addEventListener('click', () => {
+            onlineLeaveBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 if (onlineChannel && supabaseClient) {
-                    try {supabaseClient.removeChannel(onlineChannel);} catch (e) { }
+                    try { supabaseClient.removeChannel(onlineChannel); } catch (err) { }
                     onlineChannel = null;
                 }
                 if (onlineBroadcastChannel) {
-                    try {onlineBroadcastChannel.close();} catch (e) { }
+                    try { onlineBroadcastChannel.close(); } catch (err) { }
                     onlineBroadcastChannel = null;
                 }
                 onlineRoomName = null;
@@ -1314,7 +1307,8 @@
         }
 
         if (onlineBroadcastScrambleBtn) {
-            onlineBroadcastScrambleBtn.addEventListener('click', () => {
+            onlineBroadcastScrambleBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 if (!onlineRoomName) return;
                 const newScrambleText = generateScramble().join(' ');
                 currentScrambleMoves = newScrambleText.split(' ');
@@ -1327,15 +1321,15 @@
                         onlineChannel.send({
                             type: 'broadcast',
                             event: 'new_scramble',
-                            payload: {scramble: newScrambleText}
+                            payload: { scramble: newScrambleText }
                         });
-                    } catch (e) { }
+                    } catch (err) { }
                 }
 
                 if (onlineBroadcastChannel) {
                     onlineBroadcastChannel.postMessage({
                         type: 'new_scramble',
-                        payload: {scramble: newScrambleText}
+                        payload: { scramble: newScrambleText }
                     });
                 }
 
@@ -1350,9 +1344,9 @@
             });
         }
 
-        // テスト用ボット追加機能
         if (onlineAddBotBtn) {
-            onlineAddBotBtn.addEventListener('click', () => {
+            onlineAddBotBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const botNames = ['ルービック君', 'スピードMAX', 'メガソルバー', 'カチカチ名人'];
                 const botName = botNames[Math.floor(Math.random() * botNames.length)] + (Math.floor(Math.random() * 90) + 10);
                 const botId = 'bot_' + Math.random().toString(36).substring(2, 7);
@@ -1366,7 +1360,6 @@
                 renderOnlineRoomMembers();
                 showToast(`🤖 練習ボット【${botName}】が参加しました！`, 'info');
 
-                // 20〜45秒後にランダムでボットがゴールする疑似イベント
                 const solveDelay = Math.floor(18000 + Math.random() * 25000);
                 setTimeout(() => {
                     if (onlineRoomMembers[botId]) {
@@ -1415,14 +1408,18 @@
 
         // --- キューブ管理機能 ---
         if (cubeMgmtBtn && cubeMgmtModal) {
-            cubeMgmtBtn.addEventListener('click', () => {
+            cubeMgmtBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 cubeMgmtModal.showModal();
                 fetchCubeManagementData();
             });
         }
 
         if (cubeMgmtRefreshBtn) {
-            cubeMgmtRefreshBtn.addEventListener('click', fetchCubeManagementData);
+            cubeMgmtRefreshBtn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
+                fetchCubeManagementData();
+            });
         }
 
         function formatCubeDisplayName(name) {
@@ -1453,7 +1450,8 @@
                 `;
                 const openLoginBtn = document.getElementById('open-login-from-mgmt-btn');
                 if (openLoginBtn) {
-                    openLoginBtn.addEventListener('click', () => {
+                    openLoginBtn.addEventListener('click', (e) => {
+                        e.currentTarget.blur();
                         cubeMgmtModal.close();
                         authModal.showModal();
                     });
@@ -1465,19 +1463,19 @@
 
             if (!supabaseClient) {
                 cubesData = [
-                    {id: '1', cubeName: 'sel3', user_id: null, user_name: null},
-                    {id: '2', cubeName: '356M', user_id: null, user_name: null},
-                    {id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた'}
+                    { id: '1', cubeName: 'sel3', user_id: null, user_name: null },
+                    { id: '2', cubeName: '356M', user_id: null, user_name: null },
+                    { id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた' }
                 ];
                 renderCubeManagementUI();
                 return;
             }
 
             try {
-                const {data, error} = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('cube_management')
                     .select('id, cubeName, user_id, user_name, supabase_Authid, created_at')
-                    .order('created_at', {ascending: true});
+                    .order('created_at', { ascending: true });
 
                 if (error) throw error;
                 cubesData = data || [];
@@ -1554,12 +1552,14 @@
                 select.addEventListener('change', async (e) => {
                     const cubeId = e.target.dataset.cubeId;
                     const newUserId = e.target.value || null;
+                    e.target.blur();
                     await updateCubeUser(cubeId, newUserId);
                 });
             });
 
             document.querySelectorAll('.cube-release-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
+                    e.currentTarget.blur();
                     const cubeId = e.currentTarget.dataset.cubeId;
                     await updateCubeUser(cubeId, null);
                 });
@@ -1573,10 +1573,10 @@
 
             if (supabaseClient) {
                 try {
-                    const updatePayload = {user_id: userId, user_name: userName};
+                    const updatePayload = { user_id: userId, user_name: userName };
                     if (authUserId) updatePayload.supabase_Authid = authUserId;
 
-                    const {error} = await supabaseClient
+                    const { error } = await supabaseClient
                         .from('cube_management')
                         .update(updatePayload)
                         .eq('id', cubeId);
@@ -1637,7 +1637,7 @@
         async function initAuth() {
             if (!supabaseClient) return;
             try {
-                const {data: {session}, error} = await supabaseClient.auth.getSession();
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
                 updateAuthUI(session ? session.user : null);
 
@@ -1653,12 +1653,14 @@
             }
         }
 
-        settingsBtn.addEventListener('click', () => {
+        settingsBtn.addEventListener('click', (e) => {
+            e.currentTarget.blur();
             authErrorMsg.classList.add('hidden');
             authModal.showModal();
         });
 
-        submitLoginBtn.addEventListener('click', async () => {
+        submitLoginBtn.addEventListener('click', async (e) => {
+            e.currentTarget.blur();
             const email = authEmailInput.value.trim();
             const password = authPasswordInput.value;
             if (!email || !password) {
@@ -1677,7 +1679,7 @@
             authErrorMsg.classList.add('hidden');
 
             try {
-                const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 authModal.close();
                 showToast('🔑 ログインに成功しました！', 'success');
@@ -1691,11 +1693,12 @@
             }
         });
 
-        submitLogoutBtn.addEventListener('click', async () => {
+        submitLogoutBtn.addEventListener('click', async (e) => {
+            e.currentTarget.blur();
             if (!supabaseClient) return;
             submitLogoutBtn.disabled = true;
             try {
-                const {error} = await supabaseClient.auth.signOut();
+                const { error } = await supabaseClient.auth.signOut();
                 if (error) throw error;
                 authModal.close();
                 showToast('ログアウトしました', 'info');
@@ -1783,7 +1786,10 @@
             updateCubePreview();
             syncOnlineModalScramble();
         }
-        newScrambleBtn.addEventListener('click', refreshScramble);
+        newScrambleBtn.addEventListener('click', (e) => {
+            e.currentTarget.blur();
+            refreshScramble();
+        });
 
         // --- スクランブル文字サイズ調整機能 ---
         const SCRAMBLE_SIZE_CLASSES = {
@@ -1818,7 +1824,8 @@
         }
 
         scrambleSizeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const size = btn.dataset.size;
                 applyScrambleFontSize(size);
             });
@@ -1851,7 +1858,7 @@
             const turns = move.includes('2') ? 2 : move.includes("'") ? 3 : 1;
             for (let t = 0; t < turns; t++) {
                 cube[baseMove] = rotateFaceCW(cube[baseMove]);
-                const {U, D, F, B, L, R} = cube;
+                const { U, D, F, B, L, R } = cube;
                 if (baseMove === 'U') {
                     const temp = [F[0], F[1], F[2]];
                     F[0] = R[0]; F[1] = R[1]; F[2] = R[2];
@@ -1898,7 +1905,6 @@
             const cube = createSolvedCube();
             currentScrambleMoves.forEach(m => applyCubeMove(cube, m));
 
-            // キューブの等角投影（アイソメトリック）幾何パラメータ
             const s = 19;
             const w = s * Math.cos(Math.PI / 6);
             const h = s * Math.sin(Math.PI / 6);
@@ -1911,10 +1917,10 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
-                    const p0 = {x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h};
-                    const p1 = {x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h};
-                    const p2 = {x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h};
-                    const p3 = {x: cx + (c - (r + 1)) * w, y: cy - 3 * s + (c + (r + 1)) * h};
+                    const p0 = { x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h };
+                    const p1 = { x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h };
+                    const p2 = { x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h };
+                    const p3 = { x: cx + (c - (r + 1)) * w, y: cy - 3 * s + (c + (r + 1)) * h };
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
@@ -1925,10 +1931,10 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.F[r * 3 + c]] || '#00a651';
-                    const p0 = {x: fOrigX + c * w, y: fOrigY + c * h + r * s};
-                    const p1 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + r * s};
-                    const p2 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + (r + 1) * s};
-                    const p3 = {x: fOrigX + c * w, y: fOrigY + c * h + (r + 1) * s};
+                    const p0 = { x: fOrigX + c * w, y: fOrigY + c * h + r * s };
+                    const p1 = { x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + r * s };
+                    const p2 = { x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + (r + 1) * s };
+                    const p3 = { x: fOrigX + c * w, y: fOrigY + c * h + (r + 1) * s };
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
@@ -1937,15 +1943,14 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#dc2626';
-                    const p0 = {x: cx + c * w, y: cy - c * h + r * s};
-                    const p1 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + r * s};
-                    const p2 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + (r + 1) * s};
-                    const p3 = {x: cx + c * w, y: cy - c * h + (r + 1) * s};
+                    const p0 = { x: cx + c * w, y: cy - c * h + r * s };
+                    const p1 = { x: cx + (c + 1) * w, y: cy - (c + 1) * h + r * s };
+                    const p2 = { x: cx + (c + 1) * w, y: cy - (c + 1) * h + (r + 1) * s };
+                    const p3 = { x: cx + c * w, y: cy - c * h + (r + 1) * s };
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
 
-            // キューブ外枠の黒いシルエットベゼル
             const bezel = `
                 <polygon points="${cx},${cy - 3 * s - 2} ${cx + 3 * w + 2},${cy - 1.5 * s - 1} ${cx + 3 * w + 2},${cy + 1.5 * s + 1} ${cx},${cy + 3 * s + 2} ${cx - 3 * w - 2},${cy + 1.5 * s + 1} ${cx - 3 * w - 2},${cy - 1.5 * s - 1}" fill="#18181b" stroke="#18181b" stroke-width="2.5" stroke-linejoin="round" />
             `;
@@ -1959,6 +1964,7 @@
         }
 
         toggleScrambleImages.addEventListener('change', (e) => {
+            e.target.blur(); // スペース暴発ガード
             const isEnabled = e.target.checked;
             localStorage.setItem('cube_show_scramble_images', isEnabled ? 'true' : 'false');
             if (isEnabled) {
@@ -2063,12 +2069,14 @@
                 select.addEventListener('change', (e) => {
                     const id = parseInt(e.target.dataset.id) - 1;
                     players[id].solveType = e.target.value;
+                    e.target.blur();
                     updatePlayerStatsDisplay(id + 1, players[id].userId, players[id].solveType);
                 });
             });
 
             document.querySelectorAll('.stop-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    e.currentTarget.blur();
                     const id = parseInt(e.currentTarget.dataset.id) - 1;
                     stopIndividualTimer(id);
                 });
@@ -2077,6 +2085,7 @@
             document.querySelectorAll('.cancel-slot-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    e.currentTarget.blur();
                     const id = parseInt(e.currentTarget.dataset.id) - 1;
                     cancelPlayerSlot(id);
                 });
@@ -2089,6 +2098,7 @@
                     const slotId = parseInt(e.target.dataset.id);
                     const pIndex = slotId - 1;
                     const val = e.target.value;
+                    e.target.blur();
 
                     if (val === '__SHOW_ALL__') {
                         expandedSlots.add(slotId);
@@ -2130,12 +2140,12 @@
             let solves = [];
             if (supabaseClient) {
                 try {
-                    const {data, error} = await supabaseClient
+                    const { data, error } = await supabaseClient
                         .from('cube_solves')
                         .select('time_ms, created_at')
                         .eq('user_id', userId)
                         .eq('solve_type', solveType)
-                        .order('created_at', {ascending: false})
+                        .order('created_at', { ascending: false })
                         .limit(100);
 
                     if (!error && data) solves = data.map(d => d.time_ms);
@@ -2184,7 +2194,7 @@
             if (card) {
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.85)';
-                setTimeout(() => {card.classList.add('hidden');}, 250);
+                setTimeout(() => { card.classList.add('hidden'); }, 250);
             }
             showToast(`スロット ${p.id} を除外しました`, 'info');
             if (globalState === 'RUNNING') checkAllFinished();
@@ -2203,7 +2213,6 @@
             const now = Date.now();
             const currentScrambleText = currentScrambleMoves.join(' ');
 
-            // 全画面オーバーレイを確実に表示
             if (mobileTimerOverlay) {
                 mobileTimerOverlay.classList.remove('hidden');
                 mobileTimerOverlay.classList.add('flex');
@@ -2278,7 +2287,7 @@
             });
 
             canStopTouch = false;
-            setTimeout(() => {canStopTouch = true;}, 250);
+            setTimeout(() => { canStopTouch = true; }, 250);
         }
 
         function showMobileFullscreenHolding() {
@@ -2327,13 +2336,14 @@
         }
 
         if (mobileTimerOverlay) {
-            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, {passive: false});
+            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, { passive: false });
             mobileTimerOverlay.addEventListener('pointerdown', handleOverlayStop);
         }
 
         if (overlayCloseBtn) {
             overlayCloseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                e.currentTarget.blur();
                 hideMobileFullscreenTimer();
             });
         }
@@ -2351,7 +2361,6 @@
                 resetTouchButtonUI();
                 refreshScramble();
 
-                // オンライン対戦中なら、ゴール後に結果モーダルを自動で再表示
                 if (onlineRoomName && onlineBattleModal && !onlineBattleModal.open) {
                     setTimeout(() => {
                         onlineBattleModal.showModal();
@@ -2506,7 +2515,6 @@
 
             playStopBeep(finishOrder);
 
-            // オンライン対戦中なら、自分のタイムを友達へ即時送信！
             if (onlineRoomName && index === 0) {
                 broadcastMyOnlineSolve(p.elapsedTime);
             }
@@ -2534,7 +2542,6 @@
             const statusDot = document.getElementById(`badge-status-${p.id}`);
             if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-success";
 
-            // 全画面オーバーレイの右側リストに追加
             if (overlayFinishedList) {
                 if (finishOrder === 1) overlayFinishedList.innerHTML = '';
                 const formattedTime = formatTime(p.elapsedTime);
@@ -2610,14 +2617,13 @@
             showToast(`${count}人モードに切り替えました 👥`, 'info');
         }
 
-        // キーボード操作
+        // キーボード操作（D: 人数増加 / C: 人数減少 / Space: タイマー）
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Escape') {
                 hideMobileFullscreenTimer();
                 return;
             }
 
-            // キーボードの C で人数増加、D で人数減少
             if (globalState === 'IDLE' && document.activeElement.tagName !== 'SELECT' && document.activeElement.tagName !== 'INPUT') {
                 if (e.key === 'd' || e.key === 'D') {
                     e.preventDefault();
@@ -2633,6 +2639,12 @@
 
             if (e.code !== 'Space' || e.repeat) return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
+
+            // ボタンやトグルにフォーカスがある場合は強制解除
+            if (document.activeElement.tagName === 'BUTTON' || document.activeElement.type === 'checkbox') {
+                document.activeElement.blur();
+            }
+
             e.preventDefault();
 
             if (globalState === 'IDLE') {
@@ -2667,6 +2679,10 @@
             if (e.code !== 'Space') return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
 
+            if (document.activeElement.tagName === 'BUTTON' || document.activeElement.type === 'checkbox') {
+                document.activeElement.blur();
+            }
+
             if (globalState === 'HOLDING' || globalState === 'READY') {
                 clearTimeout(spacePressTimer);
                 if (isReady) {
@@ -2684,13 +2700,15 @@
         // 人数変更ボタンクリックイベント
         countButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.currentTarget.blur();
                 const count = parseInt(e.currentTarget.dataset.count);
                 setPlayerCount(count);
             });
         });
 
         // リセットボタン
-        resetAllBtn.addEventListener('click', () => {
+        resetAllBtn.addEventListener('click', (e) => {
+            e.currentTarget.blur();
             players.forEach(p => {
                 if (p.intervalId) clearInterval(p.intervalId);
                 p.intervalId = null;
@@ -2730,9 +2748,9 @@
                                 <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
                                     <span>${name}</span>
                                     ${ach.id === 'first_solve'
-                            ? '<span class="text-[9px]">✨</span>'
-                            : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
-                        }
+                                        ? '<span class="text-[9px]">✨</span>'
+                                        : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
+                                    }
                                 </span>
                             `).join('')}
                         </div>
@@ -2751,10 +2769,10 @@
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
                                     ${isUnlockedToday
-                        ? (ach.id === 'first_solve'
-                            ? `${earnersEntries.length} 人が達成 ✨`
-                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
-                        : '🔒 未解除'}
+                                        ? (ach.id === 'first_solve'
+                                            ? `${earnersEntries.length} 人が達成 ✨`
+                                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
+                                        : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -2869,28 +2887,28 @@
         async function fetchActiveUsersFromSupabase() {
             if (!supabaseClient) {
                 usersList = [
-                    {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
-                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'},
-                    {id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面'}
+                    { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
+                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' },
+                    { id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面' }
                 ];
                 initPlayers(playerCount);
                 return;
             }
 
             try {
-                const {data, error} = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('users')
                     .select('id, name, isActive, default_solvetype')
                     .eq('isActive', true)
-                    .order('name', {ascending: true});
+                    .order('name', { ascending: true });
 
                 if (error) throw error;
                 usersList = data || [];
             } catch (err) {
                 console.warn("users取得失敗、フォールバック使用", err);
                 usersList = [
-                    {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
-                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'}
+                    { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
+                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' }
                 ];
             }
             initPlayers(playerCount);
@@ -2902,11 +2920,11 @@
                 const todayStart = new Date();
                 todayStart.setHours(0, 0, 0, 0);
 
-                const {data, error} = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('cube_solves')
                     .select('user_id, time_ms, solve_type, created_at, users(name)')
                     .gte('created_at', todayStart.toISOString())
-                    .order('time_ms', {ascending: true})
+                    .order('time_ms', { ascending: true })
                     .limit(100);
 
                 if (error) throw error;
@@ -2915,7 +2933,7 @@
                         name: item.users ? item.users.name : (usersList.find(u => u.id === item.user_id)?.name || '不明'),
                         time: item.time_ms / 1000,
                         solveType: item.solve_type || 'CROSS',
-                        date: new Date(item.created_at).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                        date: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     }));
                     localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
                     renderLeaderboard();
@@ -2925,7 +2943,8 @@
             }
         }
 
-        saveAllBtn.addEventListener('click', async () => {
+        saveAllBtn.addEventListener('click', async (e) => {
+            e.currentTarget.blur();
             const finishedPlayers = players.filter(p => !p.isCancelled && p.elapsedTime > 0);
             if (finishedPlayers.length === 0) {
                 showToast('まずはタイムを測定してください', 'error');
@@ -2940,7 +2959,7 @@
 
             let authUserId = currentUser ? currentUser.id : null;
             if (supabaseClient && !authUserId) {
-                const {data: {session}} = await supabaseClient.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session && session.user) {
                     currentUser = session.user;
                     authUserId = session.user.id;
@@ -2963,7 +2982,7 @@
                 created_at: new Date().toISOString()
             }));
 
-            const nowStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             finishedPlayers.forEach(p => {
                 localLeaderboard.push({
                     name: p.name,
@@ -2975,16 +2994,16 @@
 
             try {
                 localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
-            } catch (e) {
-                console.warn("ローカル保存エラー", e);
+            } catch (err) {
+                console.warn("ローカル保存エラー", err);
             }
             renderLeaderboard();
 
             lastRegisteredUserIds = Array.from(new Set(finishedPlayers.map(p => p.userId).filter(Boolean)));
             try {
                 localStorage.setItem('cube_recent_user_ids', JSON.stringify(lastRegisteredUserIds));
-            } catch (e) {
-                console.warn("前回メンバー保存エラー", e);
+            } catch (err) {
+                console.warn("前回メンバー保存エラー", err);
             }
 
             finishedPlayers.forEach(p => {
@@ -3000,7 +3019,7 @@
 
             if (supabaseClient) {
                 try {
-                    const {error} = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
+                    const { error } = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
                     if (error) throw error;
                     showToast(`${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
                     await fetchTodayLeaderboardFromSupabase();
