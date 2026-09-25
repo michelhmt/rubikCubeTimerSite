@@ -147,7 +147,7 @@
                             <div class="flex items-center gap-2">
                                 <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
                                 <span
-                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.5.2</span>
+                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.1</span>
                             </div>
                             <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                 スペースキー長押し（0.3秒）またはボタン長押しでスタート！
@@ -165,7 +165,7 @@
                             <span id="online-status-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
                         </button>
 
-                        <!-- キューブ管理ボタン -->
+                        <!-- キューブ管理ボタン（管理者にのみ表示） -->
                         <button id="cube-mgmt-btn"
                             class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1.5 shadow-sm">
                             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -286,7 +286,7 @@
             <footer
                 class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
                 <!-- 人数切り替えボタン群 (デフォルト1人) -->
-                <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                <div id="player-count-container" class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <div class="flex items-center gap-1.5">
                         <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                         <span
@@ -401,7 +401,7 @@
         <div
             class="badge badge-neutral border border-base-content/20 text-xs font-mono font-bold py-1 px-2.5 shadow-xl opacity-80 hover:opacity-100 transition-opacity flex items-center gap-1 bg-base-100/90 backdrop-blur-sm select-none">
             <span>🏷️</span>
-            <span class="text-warning font-black">v1.5.2</span>
+            <span class="text-warning font-black">v1.6.1</span>
         </div>
     </aside>
 
@@ -473,10 +473,10 @@
     <!-- トースト通知コンテナ -->
     <div id="toast-container" class="toast toast-top toast-center z-50 pointer-events-none"></div>
 
-    <!-- 認証・ログイン用モーダル -->
+    <!-- 認証・ログイン用モーダル（ログイン & 新規登録タブ対応） -->
     <dialog id="auth-modal" class="modal">
         <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-sm">
-            <div class="flex items-center justify-between pb-3 border-b border-base-200">
+            <div class="flex items-center justify-between pb-2 border-b border-base-200">
                 <h3 class="font-black text-lg text-warning flex items-center gap-2">
                     <span>⚙️</span> アカウント設定
                 </h3>
@@ -485,11 +485,17 @@
                 </form>
             </div>
 
-            <!-- 未ログイン時のフォーム -->
-            <div id="login-section" class="py-4 space-y-3">
-                <p class="text-xs text-base-content/70 font-semibold leading-relaxed">
-                    Supabaseへタイムを保存・同期するためにログインしてください。ログイン状態は自動で維持されます。
+            <!-- 未ログイン時のフォーム（タブ切り替え: ログイン / 新規登録） -->
+            <div id="login-section" class="py-3 space-y-3">
+                <div class="tabs tabs-boxed bg-base-200 p-1">
+                    <button id="auth-tab-login" type="button" class="tab tab-active flex-1 font-black text-xs">ログイン</button>
+                    <button id="auth-tab-signup" type="button" class="tab flex-1 font-black text-xs">新規登録 (はじめて)</button>
+                </div>
+
+                <p id="auth-guide-text" class="text-xs text-base-content/70 font-semibold leading-relaxed">
+                    登録したメールアドレスとパスワードでログインしてください。
                 </p>
+
                 <div class="space-y-2">
                     <div>
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">メールアドレス</label>
@@ -498,13 +504,15 @@
                     </div>
                     <div>
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">パスワード</label>
-                        <input type="password" id="auth-password" placeholder="••••••••"
+                        <input type="password" id="auth-password" placeholder="6文字以上のパスワード"
                             class="input input-bordered input-sm w-full font-sans text-sm focus:border-warning" />
                     </div>
                 </div>
+
                 <div id="auth-error-msg"
                     class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
-                <button id="submit-login-btn"
+
+                <button id="submit-auth-action-btn"
                     class="btn btn-warning btn-sm w-full font-black text-slate-900 mt-2 shadow">
                     🔑 ログインする
                 </button>
@@ -515,11 +523,17 @@
                 <div class="p-3 bg-success/10 border border-success/30 rounded-xl flex items-center gap-3">
                     <span class="text-2xl">✅</span>
                     <div class="min-w-0">
-                        <div class="text-xs font-black text-success">ログイン中</div>
-                        <div id="logged-in-email" class="text-xs font-bold text-base-content/80 truncate">
+                        <div class="flex items-center gap-1.5">
+                            <span id="logged-in-role-badge" class="badge badge-success badge-xs font-black">子どもアカウント</span>
+                            <span id="logged-in-user-name" class="font-black text-sm text-base-content truncate">--</span>
+                        </div>
+                        <div id="logged-in-email" class="text-xs font-bold text-base-content/60 truncate mt-0.5">
                             user@example.com</div>
                     </div>
                 </div>
+                <button id="relink-invite-btn" class="btn btn-ghost btn-xs text-info font-bold w-full hidden">
+                    🔄 合言葉を入力し直す
+                </button>
                 <button id="submit-logout-btn" class="btn btn-outline btn-error btn-sm w-full font-bold">
                     🚪 ログアウト
                 </button>
@@ -528,6 +542,26 @@
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>
+    </dialog>
+
+    <!-- 初回合言葉（招待コード）入力モーダル -->
+    <dialog id="invite-code-modal" class="modal">
+        <div class="modal-box bg-base-100 border border-warning shadow-2xl max-w-sm text-center">
+            <span class="text-4xl inline-block mb-1">🍎</span>
+            <h3 class="font-black text-lg text-warning mb-1">合言葉を入力してね！</h3>
+            <p class="text-xs text-base-content/70 font-bold leading-relaxed mb-3">
+                先生からもらった「合言葉（例: <span class="text-warning">りんご48</span> や <span class="text-warning">パンダ72</span>）」を入力すると、学童の過去のタイムと合体するよ！
+            </p>
+            <div class="space-y-3">
+                <input type="text" id="input-invite-code" placeholder="例: ギター34"
+                    class="input input-bordered input-md w-full font-black text-center text-lg focus:border-warning tracking-wide" />
+                <div id="invite-code-error-msg"
+                    class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
+                <button id="submit-invite-code-btn" class="btn btn-warning btn-sm w-full font-black text-slate-900 shadow">
+                    ✨ 合言葉で紐付ける！
+                </button>
+            </div>
+        </div>
     </dialog>
 
     <!-- キューブ管理用モーダル -->
@@ -601,7 +635,6 @@
 
             <!-- 入室中セクション -->
             <div id="online-room-section" class="py-3 space-y-3 hidden">
-                <!-- 共通スクランブル表示エリア -->
                 <div class="p-2.5 bg-base-200/90 border border-base-300 rounded-xl text-center">
                     <div class="text-[10px] font-bold text-base-content/50 uppercase mb-0.5">🎲 共通スクランブル</div>
                     <div id="online-modal-scramble-text"
@@ -617,7 +650,6 @@
                             class="ml-1">1</span>人</span>
                 </div>
 
-                <!-- 対戦カードエリア (xx vs oo) -->
                 <div class="bg-base-200/80 border border-base-300 rounded-xl p-2.5">
                     <div class="flex items-center justify-between mb-1.5">
                         <span class="text-[11px] font-black text-warning flex items-center gap-1">
@@ -648,7 +680,6 @@
                     <div id="online-room-members-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- スマホ用長押しスタートボタン（モーダル内・タッチ端末専用） -->
                 <div class="touch-device-only pt-1">
                     <button id="online-modal-touch-start-btn" type="button"
                         class="btn btn-warning btn-outline btn-sm w-full font-black shadow-md flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-xs sm:text-sm border-2 py-2.5">
@@ -665,7 +696,7 @@
 
     <script>
         // アプリケーション・バージョン管理
-        const APP_VERSION = 'v1.5.2';
+        const APP_VERSION = 'v1.6.1';
 
         // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
@@ -866,34 +897,6 @@
         let usersList = [];
         const SOLVE_TYPES = ['CROSS', '完全一面', 'F2L', 'OLL', 'PLL(LBL)', 'PLL(CFOP)'];
 
-        function buildNameOptionsHtml(slotId, selectedUserId = null) {
-            const isExpanded = expandedSlots.has(slotId);
-            const hasRecent = lastRegisteredUserIds.length > 0;
-            let displayUsers = usersList;
-            let showExpandOption = false;
-
-            if (hasRecent && !isExpanded) {
-                const filtered = usersList.filter(u => lastRegisteredUserIds.includes(u.id));
-                if (filtered.length > 0) {
-                    displayUsers = filtered;
-                    if (usersList.some(u => !lastRegisteredUserIds.includes(u.id))) {
-                        showExpandOption = true;
-                    }
-                }
-            }
-
-            let html = `<option value="" disabled ${!selectedUserId ? 'selected' : ''}>名前をえらんでね</option>`;
-            displayUsers.forEach(u => {
-                const isSelected = selectedUserId === u.id ? 'selected' : '';
-                html += `<option value="${u.id}" data-default-solve="${u.default_solvetype || 'CROSS'}" ${isSelected}>${u.name}</option>`;
-            });
-
-            if (showExpandOption) {
-                html += `<option value="__SHOW_ALL__" class="text-warning font-bold">➕ 他の名前も表示...</option>`;
-            }
-            return html;
-        }
-
         // --- 状態変数 ---
         let playerCount = 1;
         let players = [];
@@ -904,11 +907,16 @@
         let canStopTouch = false;
         let isTouchStarted = false;
         let finishOrder = 0;
-        let currentUser = null;
+
+        // ログイン・権限状態
+        let currentUser = null;          // Supabase Auth User
+        let linkedUserProfile = null;    // users テーブルの紐付けレコード
+        let isKidMode = false;           // 子ども個別アカウント時: true
 
         // DOM要素
         const timerGrid = document.getElementById('timer-grid');
         const countButtons = document.querySelectorAll('.player-count-btn');
+        const playerCountContainer = document.getElementById('player-count-container');
         const saveAllBtn = document.getElementById('save-all-btn');
         const resetAllBtn = document.getElementById('reset-all-btn');
         const newScrambleBtn = document.getElementById('new-scramble-btn');
@@ -1604,7 +1612,7 @@
             renderCubeManagementUI();
         }
 
-        // --- 認証機能 ---
+        // --- 認証機能 & アカウント管理 ---
         const settingsBtn = document.getElementById('settings-btn');
         const authModal = document.getElementById('auth-modal');
         const authStatusDot = document.getElementById('auth-status-dot');
@@ -1612,18 +1620,54 @@
         const loggedInSection = document.getElementById('logged-in-section');
         const authEmailInput = document.getElementById('auth-email');
         const authPasswordInput = document.getElementById('auth-password');
-        const submitLoginBtn = document.getElementById('submit-login-btn');
+        const submitAuthActionBtn = document.getElementById('submit-auth-action-btn');
         const submitLogoutBtn = document.getElementById('submit-logout-btn');
         const loggedInEmailText = document.getElementById('logged-in-email');
+        const loggedInUserNameText = document.getElementById('logged-in-user-name');
+        const loggedInRoleBadge = document.getElementById('logged-in-role-badge');
         const authErrorMsg = document.getElementById('auth-error-msg');
+        const authTabLogin = document.getElementById('auth-tab-login');
+        const authTabSignup = document.getElementById('auth-tab-signup');
+        const authGuideText = document.getElementById('auth-guide-text');
+        const relinkInviteBtn = document.getElementById('relink-invite-btn');
 
-        function updateAuthUI(user) {
+        // 初回合言葉入力モーダル
+        const inviteCodeModal = document.getElementById('invite-code-modal');
+        const inputInviteCode = document.getElementById('input-invite-code');
+        const submitInviteCodeBtn = document.getElementById('submit-invite-code-btn');
+        const inviteCodeErrorMsg = document.getElementById('invite-code-error-msg');
+
+        let authMode = 'login'; // 'login' | 'signup'
+
+        function setAuthTab(mode) {
+            authMode = mode;
+            authErrorMsg.classList.add('hidden');
+            if (mode === 'login') {
+                authTabLogin.classList.add('tab-active');
+                authTabSignup.classList.remove('tab-active');
+                submitAuthActionBtn.textContent = '🔑 ログインする';
+                authGuideText.textContent = '登録したメールアドレスとパスワードでログインしてください。';
+            } else {
+                authTabSignup.classList.add('tab-active');
+                authTabLogin.classList.remove('tab-active');
+                submitAuthActionBtn.textContent = '✨ アカウントを作る (新規登録)';
+                authGuideText.textContent = '子ども専用アカウントを作成します。登録後に合言葉を入力してね！';
+            }
+        }
+
+        authTabLogin.addEventListener('click', () => setAuthTab('login'));
+        authTabSignup.addEventListener('click', () => setAuthTab('signup'));
+
+        async function updateAuthUI(user) {
             currentUser = user;
             if (user) {
                 authStatusDot.className = "w-2.5 h-2.5 rounded-full bg-success absolute -top-0.5 -right-0.5 border-2 border-base-100 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
                 loginSection.classList.add('hidden');
                 loggedInSection.classList.remove('hidden');
-                loggedInEmailText.textContent = user.email || '管理者';
+                loggedInEmailText.textContent = user.email || '';
+
+                // ユーザー権限・紐付け状態の取得
+                await syncUserProfile(user);
             } else {
                 authStatusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-500 absolute -top-0.5 -right-0.5 border-2 border-base-100";
                 loginSection.classList.remove('hidden');
@@ -1631,18 +1675,174 @@
                 authEmailInput.value = '';
                 authPasswordInput.value = '';
                 authErrorMsg.classList.add('hidden');
+                linkedUserProfile = null;
+                isKidMode = false;
+                applyUserRoleMode();
             }
         }
+
+        // ログインしたユーザーが「管理者」か「子ども」かを判定しUIを調整
+        async function syncUserProfile(user) {
+            if (!supabaseClient) return;
+
+            try {
+                // 1. users テーブルから auth_user_id が一致する行を探す
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('id, name, isActive, default_solvetype, is_admin, auth_user_id, invite_code')
+                    .eq('auth_user_id', user.id)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (data) {
+                    linkedUserProfile = data;
+                    isKidMode = !data.is_admin;
+                    loggedInUserNameText.textContent = data.name;
+
+                    if (data.is_admin) {
+                        loggedInRoleBadge.textContent = '👑 管理者';
+                        loggedInRoleBadge.className = 'badge badge-warning badge-xs font-black';
+                        relinkInviteBtn.classList.add('hidden');
+                    } else {
+                        loggedInRoleBadge.textContent = `🧒 ${data.name}`;
+                        loggedInRoleBadge.className = 'badge badge-info badge-xs font-black';
+                        relinkInviteBtn.classList.remove('hidden');
+                    }
+                    applyUserRoleMode();
+                } else {
+                    // まだ users テーブルと紐付いていない子どもアカウントの場合
+                    linkedUserProfile = null;
+                    isKidMode = true;
+                    loggedInUserNameText.textContent = '未紐付け';
+                    loggedInRoleBadge.textContent = '⚠️ 合言葉が必要です';
+                    loggedInRoleBadge.className = 'badge badge-error badge-xs font-black';
+                    relinkInviteBtn.classList.remove('hidden');
+
+                    applyUserRoleMode();
+
+                    // 合言葉入力モーダルを自動ポップアップ
+                    setTimeout(() => {
+                        showInviteCodePrompt();
+                    }, 500);
+                }
+            } catch (err) {
+                console.warn("プロフィール同期エラー:", err);
+            }
+        }
+
+        // 子どもモードと管理者モードのUI切り替え
+        function applyUserRoleMode() {
+            if (isKidMode && linkedUserProfile) {
+                // --- 子どもアカウント時 ---
+                if (cubeMgmtBtn) cubeMgmtBtn.classList.add('hidden');
+                if (playerCountContainer) playerCountContainer.classList.add('opacity-40', 'pointer-events-none');
+                if (modeBadge) {
+                    modeBadge.textContent = `🧒 ${linkedUserProfile.name} 専用タイマー`;
+                    modeBadge.className = 'badge badge-info font-black py-3 px-3 shadow';
+                }
+                saveAllBtn.textContent = '💾 自分の記録を保存！';
+
+                // 人数は1人に強制
+                if (playerCount !== 1) setPlayerCount(1);
+                else initPlayers(1);
+            } else if (linkedUserProfile && linkedUserProfile.is_admin) {
+                // --- 指導員・管理者アカウント時 ---
+                if (cubeMgmtBtn) cubeMgmtBtn.classList.remove('hidden');
+                if (playerCountContainer) playerCountContainer.classList.remove('opacity-40', 'pointer-events-none');
+                if (modeBadge) {
+                    modeBadge.textContent = '👑 管理者モード';
+                    modeBadge.className = 'badge badge-warning font-black py-3 px-3 shadow';
+                }
+                saveAllBtn.textContent = '💾 全員の記録を保存！';
+                initPlayers(playerCount);
+            } else {
+                // --- ゲスト / 未ログイン時 ---
+                if (cubeMgmtBtn) cubeMgmtBtn.classList.remove('hidden');
+                if (playerCountContainer) playerCountContainer.classList.remove('opacity-40', 'pointer-events-none');
+                if (modeBadge) {
+                    modeBadge.textContent = 'ソロモード';
+                    modeBadge.className = 'badge badge-outline badge-info font-bold py-3 px-3';
+                }
+                saveAllBtn.textContent = '💾 全員の記録を保存！';
+                initPlayers(playerCount);
+            }
+        }
+
+        function showInviteCodePrompt() {
+            inviteCodeErrorMsg.classList.add('hidden');
+            inputInviteCode.value = '';
+            inviteCodeModal.showModal();
+        }
+
+        relinkInviteBtn.addEventListener('click', () => {
+            authModal.close();
+            showInviteCodePrompt();
+        });
+
+        // 合言葉の送信・照合（専用RPC関数を安全に呼び出し）
+        submitInviteCodeBtn.addEventListener('click', async (e) => {
+            e.currentTarget.blur();
+            const code = (inputInviteCode.value || '').trim();
+            if (!code) {
+                inviteCodeErrorMsg.textContent = '合言葉を入力してください';
+                inviteCodeErrorMsg.classList.remove('hidden');
+                return;
+            }
+
+            if (!supabaseClient) {
+                inviteCodeErrorMsg.textContent = 'Supabaseクライアントが未初期化です';
+                inviteCodeErrorMsg.classList.remove('hidden');
+                return;
+            }
+
+            submitInviteCodeBtn.disabled = true;
+            submitInviteCodeBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> 照合中...';
+            inviteCodeErrorMsg.classList.add('hidden');
+
+            try {
+                // 送信直前に最新のセッション状態を確実に再取得
+                const { data: sessionData, error: sessionErr } = await supabaseClient.auth.getSession();
+                if (sessionErr || !sessionData || !sessionData.session || !sessionData.session.user) {
+                    throw new Error('ログイン状態が確認できませんでした。お手数ですが、⚙️設定から再度ログインしてください。');
+                }
+                currentUser = sessionData.session.user;
+
+                // Supabase の link_kid_account 関数（SECURITY DEFINER）を呼び出して安全に照合・紐付け
+                const { data, error } = await supabaseClient.rpc('link_kid_account', {
+                    p_invite_code: code
+                });
+
+                if (error) throw error;
+
+                if (!data || !data.success) {
+                    throw new Error(data ? data.message : '紐付けに失敗しました');
+                }
+
+                const kidName = data.user_name || '自分';
+                showToast(`🎉【${kidName}】と合体したよ！自宅から測れるよ 👏`, 'success');
+                inviteCodeModal.close();
+                await syncUserProfile(currentUser);
+                await fetchTodayLeaderboardFromSupabase();
+            } catch (err) {
+                console.error("紐付けエラー:", err);
+                inviteCodeErrorMsg.textContent = err.message || '紐付けに失敗しました';
+                inviteCodeErrorMsg.classList.remove('hidden');
+            } finally {
+                submitInviteCodeBtn.disabled = false;
+                submitInviteCodeBtn.innerHTML = '✨ 合言葉で紐付ける！';
+            }
+        });
 
         async function initAuth() {
             if (!supabaseClient) return;
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
-                updateAuthUI(session ? session.user : null);
+                await updateAuthUI(session ? session.user : null);
 
-                supabaseClient.auth.onAuthStateChange((event, session) => {
-                    updateAuthUI(session ? session.user : null);
+                supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                    await updateAuthUI(session ? session.user : null);
                     if (event === 'SIGNED_IN') {
                         fetchActiveUsersFromSupabase();
                         fetchTodayLeaderboardFromSupabase();
@@ -1659,12 +1859,18 @@
             authModal.showModal();
         });
 
-        submitLoginBtn.addEventListener('click', async (e) => {
+        // ログインまたは新規登録ボタンクリック
+        submitAuthActionBtn.addEventListener('click', async (e) => {
             e.currentTarget.blur();
             const email = authEmailInput.value.trim();
             const password = authPasswordInput.value;
             if (!email || !password) {
                 authErrorMsg.textContent = 'メールアドレスとパスワードを入力してください';
+                authErrorMsg.classList.remove('hidden');
+                return;
+            }
+            if (password.length < 6) {
+                authErrorMsg.textContent = 'パスワードは6文字以上で入力してください';
                 authErrorMsg.classList.remove('hidden');
                 return;
             }
@@ -1674,22 +1880,32 @@
                 return;
             }
 
-            submitLoginBtn.disabled = true;
-            submitLoginBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> ログイン中...';
+            submitAuthActionBtn.disabled = true;
+            submitAuthActionBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> 処理中...';
             authErrorMsg.classList.add('hidden');
 
             try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                authModal.close();
-                showToast('🔑 ログインに成功しました！', 'success');
-                updateAuthUI(data.user);
+                if (authMode === 'login') {
+                    // ログイン
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    authModal.close();
+                    showToast('🔑 ログインに成功しました！', 'success');
+                    await updateAuthUI(data.user);
+                } else {
+                    // 新規登録
+                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                    if (error) throw error;
+                    authModal.close();
+                    showToast('🎉 アカウントを作成しました！合言葉を入力してね', 'success');
+                    await updateAuthUI(data.user);
+                }
             } catch (err) {
-                authErrorMsg.textContent = `⚠️ ${err.message || 'ログインに失敗しました'}`;
+                authErrorMsg.textContent = `⚠️ ${err.message || '認証に失敗しました'}`;
                 authErrorMsg.classList.remove('hidden');
             } finally {
-                submitLoginBtn.disabled = false;
-                submitLoginBtn.innerHTML = '🔑 ログインする';
+                submitAuthActionBtn.disabled = false;
+                submitAuthActionBtn.textContent = authMode === 'login' ? '🔑 ログインする' : '✨ アカウントを作る (新規登録)';
             }
         });
 
@@ -1702,7 +1918,7 @@
                 if (error) throw error;
                 authModal.close();
                 showToast('ログアウトしました', 'info');
-                updateAuthUI(null);
+                await updateAuthUI(null);
             } catch (err) {
                 console.error(err);
                 showToast('ログアウトに失敗しました', 'error');
@@ -1710,6 +1926,39 @@
                 submitLogoutBtn.disabled = false;
             }
         });
+
+        function buildNameOptionsHtml(slotId, selectedUserId = null) {
+            // 子どものアカウントの場合は自分の名前だけを表示
+            if (isKidMode && linkedUserProfile) {
+                return `<option value="${linkedUserProfile.id}" selected>${linkedUserProfile.name} (自分)</option>`;
+            }
+
+            const isExpanded = expandedSlots.has(slotId);
+            const hasRecent = lastRegisteredUserIds.length > 0;
+            let displayUsers = usersList;
+            let showExpandOption = false;
+
+            if (hasRecent && !isExpanded) {
+                const filtered = usersList.filter(u => lastRegisteredUserIds.includes(u.id));
+                if (filtered.length > 0) {
+                    displayUsers = filtered;
+                    if (usersList.some(u => !lastRegisteredUserIds.includes(u.id))) {
+                        showExpandOption = true;
+                    }
+                }
+            }
+
+            let html = `<option value="" disabled ${!selectedUserId ? 'selected' : ''}>名前をえらんでね</option>`;
+            displayUsers.forEach(u => {
+                const isSelected = selectedUserId === u.id ? 'selected' : '';
+                html += `<option value="${u.id}" data-default-solve="${u.default_solvetype || 'CROSS'}" ${isSelected}>${u.name}</option>`;
+            });
+
+            if (showExpandOption) {
+                html += `<option value="__SHOW_ALL__" class="text-warning font-bold">➕ 他の名前も表示...</option>`;
+            }
+            return html;
+        }
 
         function formatTime(ms) {
             if (ms <= 0) return '00.000';
@@ -1983,22 +2232,12 @@
             finishOrder = 0;
             expandedSlots.clear();
 
-            if (modeBadge) {
-                if (count === 1) {
-                    modeBadge.textContent = 'ソロモード';
-                    modeBadge.className = 'badge badge-outline badge-info font-bold py-3 px-3 transition-colors';
-                } else {
-                    modeBadge.textContent = `マルチ測定モード (${count}人)`;
-                    modeBadge.className = 'badge badge-outline badge-warning font-bold py-3 px-3 transition-colors';
-                }
-            }
-
             for (let i = 0; i < count; i++) {
                 const p = {
                     id: i + 1,
-                    userId: null,
-                    name: '',
-                    solveType: 'CROSS',
+                    userId: (isKidMode && linkedUserProfile && i === 0) ? linkedUserProfile.id : null,
+                    name: (isKidMode && linkedUserProfile && i === 0) ? linkedUserProfile.name : '',
+                    solveType: (isKidMode && linkedUserProfile && i === 0) ? (linkedUserProfile.default_solvetype || 'CROSS') : 'CROSS',
                     scramble: '',
                     startTime: 0,
                     elapsedTime: 0,
@@ -2009,9 +2248,9 @@
                 };
                 players.push(p);
 
-                const optionsHtml = buildNameOptionsHtml(p.id);
-                const solveTypeOptionsHtml = SOLVE_TYPES.map((type, idx) =>
-                    `<option value="${type}" ${idx === 0 ? 'selected' : ''}>🎯 ${type}</option>`
+                const optionsHtml = buildNameOptionsHtml(p.id, p.userId);
+                const solveTypeOptionsHtml = SOLVE_TYPES.map((type) =>
+                    `<option value="${type}" ${type === p.solveType ? 'selected' : ''}>🎯 ${type}</option>`
                 ).join('');
 
                 const card = document.createElement('div');
@@ -2021,19 +2260,19 @@
                     <div class="w-full flex items-center justify-between mb-2 gap-1.5">
                         <span id="rank-badge-${p.id}" class="badge badge-sm badge-neutral font-black shrink-0">Slot ${p.id}</span>
                         <div id="badge-status-${p.id}" class="w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0"></div>
-                        <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
+                        <button type="button" class="cancel-slot-btn btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error hover:bg-error/20 shrink-0 ml-auto ${isKidMode ? 'hidden' : ''}" title="この記録を取り消して除外" data-id="${p.id}">✕</button>
                     </div>
 
                     <div class="w-full mb-2">
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
-                        <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
+                        <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer ${isKidMode ? 'bg-base-200 font-black' : 'opacity-40 pointer-events-none'} rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" ${isKidMode ? 'disabled' : 'disabled'}>
                             ${optionsHtml}
                         </select>
                     </div>
 
                     <div class="w-full mb-2">
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">🎯 ソルブタイプ:</label>
-                        <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer opacity-40 pointer-events-none rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" disabled>
+                        <select id="solve-type-${p.id}" class="solve-type-select select select-bordered select-sm w-full font-black text-xs sm:text-sm text-warning focus:outline-none focus:border-warning cursor-pointer ${isKidMode ? '' : 'opacity-40 pointer-events-none'} rounded-xl shadow-inner h-10 min-h-[40px]" data-id="${p.id}" ${isKidMode ? '' : 'disabled'}>
                             ${solveTypeOptionsHtml}
                         </select>
                     </div>
@@ -2061,6 +2300,11 @@
                     </button>
                 `;
                 timerGrid.appendChild(card);
+
+                // 子どもモード時は初期状態でPBとao5をすぐロード
+                if (isKidMode && linkedUserProfile && i === 0) {
+                    updatePlayerStatsDisplay(1, linkedUserProfile.id, p.solveType);
+                }
             }
 
             attachNameSelectListeners();
@@ -2242,18 +2486,21 @@
                 p.startTime = now;
                 p.elapsedTime = 0;
                 p.isFinished = false;
-                p.userId = null;
-                p.name = '';
 
-                const select = document.getElementById(`select-${p.id}`);
-                if (select) {
-                    select.disabled = true;
-                    select.classList.add('opacity-40', 'pointer-events-none');
-                    select.selectedIndex = 0;
+                // 子どもモードの場合は自分自身のIDと名前を保持
+                if (!isKidMode) {
+                    p.userId = null;
+                    p.name = '';
+                    const select = document.getElementById(`select-${p.id}`);
+                    if (select) {
+                        select.disabled = true;
+                        select.classList.add('opacity-40', 'pointer-events-none');
+                        select.selectedIndex = 0;
+                    }
                 }
 
                 const solveSelect = document.getElementById(`solve-type-${p.id}`);
-                if (solveSelect) {
+                if (solveSelect && !isKidMode) {
                     solveSelect.disabled = true;
                     solveSelect.classList.add('opacity-40', 'pointer-events-none');
                 }
@@ -2355,9 +2602,17 @@
                 isTouchStarted = false;
                 hideMobileFullscreenTimer();
                 unlockNameSelectors();
-                statusBanner.textContent = '🎉 全員ゴール！それぞれのタイムに名前を割り当ててね';
-                statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
-                showToast('測定完了！名前を選んで保存してね ✍️', 'success');
+
+                if (isKidMode && linkedUserProfile) {
+                    statusBanner.textContent = `🎉 測定完了！「${formatTime(players[0].elapsedTime)}」を保存しよう！`;
+                    statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
+                    showToast('測定完了！「自分の記録を保存！」ボタンを押してね 💾', 'success');
+                } else {
+                    statusBanner.textContent = '🎉 全員ゴール！それぞれのタイムに名前を割り当ててね';
+                    statusBanner.className = 'text-center mb-2 font-bold text-sm text-success py-1 px-3 bg-success/10 rounded-lg max-w-md mx-auto';
+                    showToast('測定完了！名前を選んで保存してね ✍️', 'success');
+                }
+
                 resetTouchButtonUI();
                 refreshScramble();
 
@@ -2573,7 +2828,7 @@
             players.forEach(p => {
                 if (p.isCancelled) return;
                 const select = document.getElementById(`select-${p.id}`);
-                if (select) {
+                if (select && !isKidMode) {
                     select.disabled = false;
                     select.classList.remove('opacity-40', 'pointer-events-none');
                     select.classList.add('border-warning', 'animate-bounce');
@@ -2581,7 +2836,7 @@
                 }
 
                 const solveSelect = document.getElementById(`solve-type-${p.id}`);
-                if (solveSelect) {
+                if (solveSelect && !isKidMode) {
                     solveSelect.disabled = false;
                     solveSelect.classList.remove('opacity-40', 'pointer-events-none');
                 }
@@ -2599,6 +2854,8 @@
 
         // 人数設定ロジックの一元管理関数（UIと同期）
         function setPlayerCount(count) {
+            if (isKidMode) return; // 子どもモードは1人固定
+
             if (count < 1) count = 1;
             if (count > 10) count = 10;
             if (playerCount === count) return;
@@ -2625,15 +2882,17 @@
             }
 
             if (globalState === 'IDLE' && document.activeElement.tagName !== 'SELECT' && document.activeElement.tagName !== 'INPUT') {
-                if (e.key === 'd' || e.key === 'D') {
-                    e.preventDefault();
-                    if (playerCount < 10) setPlayerCount(playerCount + 1);
-                    return;
-                }
-                if (e.key === 'c' || e.key === 'C') {
-                    e.preventDefault();
-                    if (playerCount > 1) setPlayerCount(playerCount - 1);
-                    return;
+                if (!isKidMode) {
+                    if (e.key === 'd' || e.key === 'D') {
+                        e.preventDefault();
+                        if (playerCount < 10) setPlayerCount(playerCount + 1);
+                        return;
+                    }
+                    if (e.key === 'c' || e.key === 'C') {
+                        e.preventDefault();
+                        if (playerCount > 1) setPlayerCount(playerCount - 1);
+                        return;
+                    }
                 }
             }
 
@@ -2898,7 +3157,7 @@
             try {
                 const { data, error } = await supabaseClient
                     .from('users')
-                    .select('id, name, isActive, default_solvetype')
+                    .select('id, name, isActive, default_solvetype, is_admin, auth_user_id')
                     .eq('isActive', true)
                     .order('name', { ascending: true });
 
@@ -2951,6 +3210,14 @@
                 return;
             }
 
+            // 子どもモードの場合は自分のIDが自動セットされる
+            if (isKidMode && linkedUserProfile) {
+                finishedPlayers.forEach(p => {
+                    p.userId = linkedUserProfile.id;
+                    p.name = linkedUserProfile.name;
+                });
+            }
+
             const unnamedPlayers = finishedPlayers.filter(p => !p.userId);
             if (unnamedPlayers.length > 0) {
                 showToast('残りのカードの名前を選択してから保存してね！', 'warning');
@@ -2963,7 +3230,7 @@
                 if (session && session.user) {
                     currentUser = session.user;
                     authUserId = session.user.id;
-                    updateAuthUI(currentUser);
+                    await updateAuthUI(currentUser);
                 } else {
                     showToast('⚠️ クラウドに保存するには、ログインが必要です', 'warning');
                     authErrorMsg.textContent = 'タイムをクラウド保存するにはログインしてください';
@@ -3021,7 +3288,7 @@
                 try {
                     const { error } = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
                     if (error) throw error;
-                    showToast(`${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
+                    showToast(isKidMode ? '自分の記録をクラウドに保存しました！ ✨' : `${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
                     await fetchTodayLeaderboardFromSupabase();
                 } catch (err) {
                     console.error(err);
