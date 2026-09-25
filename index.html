@@ -286,7 +286,8 @@
             <footer
                 class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
                 <!-- 人数切り替えボタン群 (デフォルト1人) -->
-                <div id="player-count-container" class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                <div id="player-count-container"
+                    class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <div class="flex items-center gap-1.5">
                         <span class="font-black text-sm text-base-content/80 whitespace-nowrap">人数:</span>
                         <span
@@ -488,8 +489,10 @@
             <!-- 未ログイン時のフォーム（タブ切り替え: ログイン / 新規登録） -->
             <div id="login-section" class="py-3 space-y-3">
                 <div class="tabs tabs-boxed bg-base-200 p-1">
-                    <button id="auth-tab-login" type="button" class="tab tab-active flex-1 font-black text-xs">ログイン</button>
-                    <button id="auth-tab-signup" type="button" class="tab flex-1 font-black text-xs">新規登録 (はじめて)</button>
+                    <button id="auth-tab-login" type="button"
+                        class="tab tab-active flex-1 font-black text-xs">ログイン</button>
+                    <button id="auth-tab-signup" type="button" class="tab flex-1 font-black text-xs">新規登録
+                        (はじめて)</button>
                 </div>
 
                 <p id="auth-guide-text" class="text-xs text-base-content/70 font-semibold leading-relaxed">
@@ -524,8 +527,10 @@
                     <span class="text-2xl">✅</span>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5">
-                            <span id="logged-in-role-badge" class="badge badge-success badge-xs font-black">子どもアカウント</span>
-                            <span id="logged-in-user-name" class="font-black text-sm text-base-content truncate">--</span>
+                            <span id="logged-in-role-badge"
+                                class="badge badge-success badge-xs font-black">子どもアカウント</span>
+                            <span id="logged-in-user-name"
+                                class="font-black text-sm text-base-content truncate">--</span>
                         </div>
                         <div id="logged-in-email" class="text-xs font-bold text-base-content/60 truncate mt-0.5">
                             user@example.com</div>
@@ -550,14 +555,16 @@
             <span class="text-4xl inline-block mb-1">🍎</span>
             <h3 class="font-black text-lg text-warning mb-1">合言葉を入力してね！</h3>
             <p class="text-xs text-base-content/70 font-bold leading-relaxed mb-3">
-                先生からもらった「合言葉（例: <span class="text-warning">りんご48</span> や <span class="text-warning">パンダ72</span>）」を入力すると、学童の過去のタイムと合体するよ！
+                先生からもらった「合言葉（例: <span class="text-warning">りんご48</span> や <span
+                    class="text-warning">パンダ72</span>）」を入力すると、学童の過去のタイムと合体するよ！
             </p>
             <div class="space-y-3">
                 <input type="text" id="input-invite-code" placeholder="例: ギター34"
                     class="input input-bordered input-md w-full font-black text-center text-lg focus:border-warning tracking-wide" />
                 <div id="invite-code-error-msg"
                     class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
-                <button id="submit-invite-code-btn" class="btn btn-warning btn-sm w-full font-black text-slate-900 shadow">
+                <button id="submit-invite-code-btn"
+                    class="btn btn-warning btn-sm w-full font-black text-slate-900 shadow">
                     ✨ 合言葉で紐付ける！
                 </button>
             </div>
@@ -856,12 +863,12 @@
         let expandedSlots = new Set();
 
         let ACHIEVEMENTS = [
-            { id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩' },
-            { id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️' },
-            { id: 'sub_30', title: 'スピードスター', desc: '30秒未満でそろえた！', icon: '🚀' },
-            { id: 'sub_20', title: '神タイム降臨', desc: '20秒未満の超人記録！', icon: '👑' },
-            { id: 'multi_battle', title: '対戦マスター', desc: '3人以上で一斉にバトルした！', icon: '⚔️' },
-            { id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯' }
+            {id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩'},
+            {id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️'},
+            {id: 'sub_30', title: 'スピードスター', desc: '30秒未満でそろえた！', icon: '🚀'},
+            {id: 'sub_20', title: '神タイム降臨', desc: '20秒未満の超人記録！', icon: '👑'},
+            {id: 'multi_battle', title: '対戦マスター', desc: '3人以上で一斉にバトルした！', icon: '⚔️'},
+            {id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯'}
         ];
 
         function getTodayKey() {
@@ -1065,11 +1072,11 @@
 
         function setupOnlineChannel(roomName, nickname) {
             if (onlineChannel && supabaseClient) {
-                try { supabaseClient.removeChannel(onlineChannel); } catch (e) { }
+                try {supabaseClient.removeChannel(onlineChannel);} catch (e) { }
                 onlineChannel = null;
             }
             if (onlineBroadcastChannel) {
-                try { onlineBroadcastChannel.close(); } catch (e) { }
+                try {onlineBroadcastChannel.close();} catch (e) { }
                 onlineBroadcastChannel = null;
             }
 
@@ -1089,7 +1096,7 @@
                 if ('BroadcastChannel' in window) {
                     onlineBroadcastChannel = new BroadcastChannel(`cube_room_${roomName}`);
                     onlineBroadcastChannel.onmessage = (event) => {
-                        const { type, payload } = event.data || {};
+                        const {type, payload} = event.data || {};
                         if (type === 'new_scramble') handleIncomingScramble(payload);
                         if (type === 'solve_finish') handleIncomingSolve(payload);
                     };
@@ -1101,11 +1108,11 @@
             if (canUseWebSocket() && supabaseClient) {
                 try {
                     onlineChannel = supabaseClient.channel(`room_${roomName}`, {
-                        config: { presence: { key: myOnlineId } }
+                        config: {presence: {key: myOnlineId}}
                     });
 
                     onlineChannel
-                        .on('presence', { event: 'sync' }, () => {
+                        .on('presence', {event: 'sync'}, () => {
                             const state = onlineChannel.presenceState();
                             Object.keys(state).forEach(key => {
                                 const userPresence = state[key][0];
@@ -1124,7 +1131,7 @@
                             });
                             renderOnlineRoomMembers();
                         })
-                        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+                        .on('presence', {event: 'join'}, ({key, newPresences}) => {
                             const p = newPresences[0];
                             if (p && key !== myOnlineId) {
                                 onlineRoomMembers[key] = {
@@ -1137,14 +1144,14 @@
                                 renderOnlineRoomMembers();
                             }
                         })
-                        .on('presence', { event: 'leave' }, ({ key }) => {
+                        .on('presence', {event: 'leave'}, ({key}) => {
                             if (onlineRoomMembers[key]) {
                                 delete onlineRoomMembers[key];
                                 renderOnlineRoomMembers();
                             }
                         })
-                        .on('broadcast', { event: 'new_scramble' }, ({ payload }) => handleIncomingScramble(payload))
-                        .on('broadcast', { event: 'solve_finish' }, ({ payload }) => handleIncomingSolve(payload));
+                        .on('broadcast', {event: 'new_scramble'}, ({payload}) => handleIncomingScramble(payload))
+                        .on('broadcast', {event: 'solve_finish'}, ({payload}) => handleIncomingSolve(payload));
 
                     onlineChannel.subscribe(async (status) => {
                         if (status === 'SUBSCRIBED') {
@@ -1299,11 +1306,11 @@
             onlineLeaveBtn.addEventListener('click', (e) => {
                 e.currentTarget.blur();
                 if (onlineChannel && supabaseClient) {
-                    try { supabaseClient.removeChannel(onlineChannel); } catch (err) { }
+                    try {supabaseClient.removeChannel(onlineChannel);} catch (err) { }
                     onlineChannel = null;
                 }
                 if (onlineBroadcastChannel) {
-                    try { onlineBroadcastChannel.close(); } catch (err) { }
+                    try {onlineBroadcastChannel.close();} catch (err) { }
                     onlineBroadcastChannel = null;
                 }
                 onlineRoomName = null;
@@ -1329,7 +1336,7 @@
                         onlineChannel.send({
                             type: 'broadcast',
                             event: 'new_scramble',
-                            payload: { scramble: newScrambleText }
+                            payload: {scramble: newScrambleText}
                         });
                     } catch (err) { }
                 }
@@ -1337,7 +1344,7 @@
                 if (onlineBroadcastChannel) {
                     onlineBroadcastChannel.postMessage({
                         type: 'new_scramble',
-                        payload: { scramble: newScrambleText }
+                        payload: {scramble: newScrambleText}
                     });
                 }
 
@@ -1471,19 +1478,19 @@
 
             if (!supabaseClient) {
                 cubesData = [
-                    { id: '1', cubeName: 'sel3', user_id: null, user_name: null },
-                    { id: '2', cubeName: '356M', user_id: null, user_name: null },
-                    { id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた' }
+                    {id: '1', cubeName: 'sel3', user_id: null, user_name: null},
+                    {id: '2', cubeName: '356M', user_id: null, user_name: null},
+                    {id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた'}
                 ];
                 renderCubeManagementUI();
                 return;
             }
 
             try {
-                const { data, error } = await supabaseClient
+                const {data, error} = await supabaseClient
                     .from('cube_management')
                     .select('id, cubeName, user_id, user_name, supabase_Authid, created_at')
-                    .order('created_at', { ascending: true });
+                    .order('created_at', {ascending: true});
 
                 if (error) throw error;
                 cubesData = data || [];
@@ -1581,10 +1588,10 @@
 
             if (supabaseClient) {
                 try {
-                    const updatePayload = { user_id: userId, user_name: userName };
+                    const updatePayload = {user_id: userId, user_name: userName};
                     if (authUserId) updatePayload.supabase_Authid = authUserId;
 
-                    const { error } = await supabaseClient
+                    const {error} = await supabaseClient
                         .from('cube_management')
                         .update(updatePayload)
                         .eq('id', cubeId);
@@ -1687,7 +1694,7 @@
 
             try {
                 // 1. users テーブルから auth_user_id が一致する行を探す
-                const { data, error } = await supabaseClient
+                const {data, error} = await supabaseClient
                     .from('users')
                     .select('id, name, isActive, default_solvetype, is_admin, auth_user_id, invite_code')
                     .eq('auth_user_id', user.id)
@@ -1802,14 +1809,14 @@
 
             try {
                 // 送信直前に最新のセッション状態を確実に再取得
-                const { data: sessionData, error: sessionErr } = await supabaseClient.auth.getSession();
+                const {data: sessionData, error: sessionErr} = await supabaseClient.auth.getSession();
                 if (sessionErr || !sessionData || !sessionData.session || !sessionData.session.user) {
                     throw new Error('ログイン状態が確認できませんでした。お手数ですが、⚙️設定から再度ログインしてください。');
                 }
                 currentUser = sessionData.session.user;
 
                 // Supabase の link_kid_account 関数（SECURITY DEFINER）を呼び出して安全に照合・紐付け
-                const { data, error } = await supabaseClient.rpc('link_kid_account', {
+                const {data, error} = await supabaseClient.rpc('link_kid_account', {
                     p_invite_code: code
                 });
 
@@ -1837,7 +1844,7 @@
         async function initAuth() {
             if (!supabaseClient) return;
             try {
-                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                const {data: {session}, error} = await supabaseClient.auth.getSession();
                 if (error) throw error;
                 await updateAuthUI(session ? session.user : null);
 
@@ -1887,14 +1894,14 @@
             try {
                 if (authMode === 'login') {
                     // ログイン
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
                     if (error) throw error;
                     authModal.close();
                     showToast('🔑 ログインに成功しました！', 'success');
                     await updateAuthUI(data.user);
                 } else {
                     // 新規登録
-                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                    const {data, error} = await supabaseClient.auth.signUp({email, password});
                     if (error) throw error;
                     authModal.close();
                     showToast('🎉 アカウントを作成しました！合言葉を入力してね', 'success');
@@ -1914,7 +1921,7 @@
             if (!supabaseClient) return;
             submitLogoutBtn.disabled = true;
             try {
-                const { error } = await supabaseClient.auth.signOut();
+                const {error} = await supabaseClient.auth.signOut();
                 if (error) throw error;
                 authModal.close();
                 showToast('ログアウトしました', 'info');
@@ -2107,7 +2114,7 @@
             const turns = move.includes('2') ? 2 : move.includes("'") ? 3 : 1;
             for (let t = 0; t < turns; t++) {
                 cube[baseMove] = rotateFaceCW(cube[baseMove]);
-                const { U, D, F, B, L, R } = cube;
+                const {U, D, F, B, L, R} = cube;
                 if (baseMove === 'U') {
                     const temp = [F[0], F[1], F[2]];
                     F[0] = R[0]; F[1] = R[1]; F[2] = R[2];
@@ -2166,10 +2173,10 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
-                    const p0 = { x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h };
-                    const p1 = { x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h };
-                    const p2 = { x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h };
-                    const p3 = { x: cx + (c - (r + 1)) * w, y: cy - 3 * s + (c + (r + 1)) * h };
+                    const p0 = {x: cx + (c - r) * w, y: cy - 3 * s + (c + r) * h};
+                    const p1 = {x: cx + (c + 1 - r) * w, y: cy - 3 * s + (c + 1 + r) * h};
+                    const p2 = {x: cx + (c + 1 - (r + 1)) * w, y: cy - 3 * s + (c + 1 + (r + 1)) * h};
+                    const p3 = {x: cx + (c - (r + 1)) * w, y: cy - 3 * s + (c + (r + 1)) * h};
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
@@ -2180,10 +2187,10 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.F[r * 3 + c]] || '#00a651';
-                    const p0 = { x: fOrigX + c * w, y: fOrigY + c * h + r * s };
-                    const p1 = { x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + r * s };
-                    const p2 = { x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + (r + 1) * s };
-                    const p3 = { x: fOrigX + c * w, y: fOrigY + c * h + (r + 1) * s };
+                    const p0 = {x: fOrigX + c * w, y: fOrigY + c * h + r * s};
+                    const p1 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + r * s};
+                    const p2 = {x: fOrigX + (c + 1) * w, y: fOrigY + (c + 1) * h + (r + 1) * s};
+                    const p3 = {x: fOrigX + c * w, y: fOrigY + c * h + (r + 1) * s};
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
@@ -2192,10 +2199,10 @@
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#dc2626';
-                    const p0 = { x: cx + c * w, y: cy - c * h + r * s };
-                    const p1 = { x: cx + (c + 1) * w, y: cy - (c + 1) * h + r * s };
-                    const p2 = { x: cx + (c + 1) * w, y: cy - (c + 1) * h + (r + 1) * s };
-                    const p3 = { x: cx + c * w, y: cy - c * h + (r + 1) * s };
+                    const p0 = {x: cx + c * w, y: cy - c * h + r * s};
+                    const p1 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + r * s};
+                    const p2 = {x: cx + (c + 1) * w, y: cy - (c + 1) * h + (r + 1) * s};
+                    const p3 = {x: cx + c * w, y: cy - c * h + (r + 1) * s};
                     stickerSvg += `<polygon points="${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="${color}" stroke="#18181b" stroke-width="1.8" stroke-linejoin="round" />`;
                 }
             }
@@ -2226,11 +2233,7 @@
 
         // --- プレイヤー初期化 ---
         function initPlayers(count) {
-<<<<<<< Updated upstream
             playerCount = count;
-=======
-            console.log(count);
->>>>>>> Stashed changes
             players = [];
             timerGrid.innerHTML = '';
             finishOrder = 0;
@@ -2330,7 +2333,6 @@
                 });
             });
 
-<<<<<<< Updated upstream
             document.querySelectorAll('.cancel-slot-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -2389,12 +2391,12 @@
             let solves = [];
             if (supabaseClient) {
                 try {
-                    const { data, error } = await supabaseClient
+                    const {data, error} = await supabaseClient
                         .from('cube_solves')
                         .select('time_ms, created_at')
                         .eq('user_id', userId)
                         .eq('solve_type', solveType)
-                        .order('created_at', { ascending: false })
+                        .order('created_at', {ascending: false})
                         .limit(100);
 
                     if (!error && data) solves = data.map(d => d.time_ms);
@@ -2426,27 +2428,6 @@
                 ao5Val.textContent = formatTime(avgMs);
             } else {
                 ao5Val.textContent = `あと${5 - solves.length}回`;
-=======
-            const countControls = document.getElementById('player-count-controls');
-            if (!isSoloKidMode) {
-                const saveBtn = document.getElementById('save-all-btn');
-                if (saveBtn) saveBtn.innerHTML = '💾 自分の記録を保存！';
-                const mgmtBtn = document.getElementById('cube-mgmt-btn');
-                if (mgmtBtn) mgmtBtn.classList.add('hidden');
-                if (countControls) {
-                    countControls.style.opacity = '0.5';
-                    countControls.style.pointerEvents = 'none';
-                }
-            } else {
-                const saveBtn = document.getElementById('save-all-btn');
-                if (saveBtn) saveBtn.innerHTML = '💾 全員の記録を保存！';
-                const mgmtBtn = document.getElementById('cube-mgmt-btn');
-                if (mgmtBtn) mgmtBtn.classList.remove('hidden');
-                if (countControls) {
-                    countControls.style.opacity = '1';
-                    countControls.style.pointerEvents = 'auto'; // ← クリック可能に復帰
-                }
->>>>>>> Stashed changes
             }
         }
 
@@ -2464,7 +2445,7 @@
             if (card) {
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.85)';
-                setTimeout(() => { card.classList.add('hidden'); }, 250);
+                setTimeout(() => {card.classList.add('hidden');}, 250);
             }
             showToast(`スロット ${p.id} を除外しました`, 'info');
             if (globalState === 'RUNNING') checkAllFinished();
@@ -2560,7 +2541,7 @@
             });
 
             canStopTouch = false;
-            setTimeout(() => { canStopTouch = true; }, 250);
+            setTimeout(() => {canStopTouch = true;}, 250);
         }
 
         function showMobileFullscreenHolding() {
@@ -2609,7 +2590,7 @@
         }
 
         if (mobileTimerOverlay) {
-            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, { passive: false });
+            mobileTimerOverlay.addEventListener('touchstart', handleOverlayStop, {passive: false});
             mobileTimerOverlay.addEventListener('pointerdown', handleOverlayStop);
         }
 
@@ -2880,7 +2861,7 @@
 
         // 人数設定ロジックの一元管理関数（UIと同期）
         function setPlayerCount(count) {
-            if (isKidMode) return; // 子どもモードは1人固定
+            if (isKidMode) count = 1; // 子どもモードは1人固定
 
             if (count < 1) count = 1;
             if (count > 10) count = 10;
@@ -3033,9 +3014,9 @@
                                 <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
                                     <span>${name}</span>
                                     ${ach.id === 'first_solve'
-                                        ? '<span class="text-[9px]">✨</span>'
-                                        : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
-                                    }
+                            ? '<span class="text-[9px]">✨</span>'
+                            : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
+                        }
                                 </span>
                             `).join('')}
                         </div>
@@ -3054,10 +3035,10 @@
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
                                     ${isUnlockedToday
-                                        ? (ach.id === 'first_solve'
-                                            ? `${earnersEntries.length} 人が達成 ✨`
-                                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
-                                        : '🔒 未解除'}
+                        ? (ach.id === 'first_solve'
+                            ? `${earnersEntries.length} 人が達成 ✨`
+                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
+                        : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -3172,28 +3153,28 @@
         async function fetchActiveUsersFromSupabase() {
             if (!supabaseClient) {
                 usersList = [
-                    { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
-                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' },
-                    { id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面' }
+                    {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
+                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'},
+                    {id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面'}
                 ];
                 initPlayers(playerCount);
                 return;
             }
 
             try {
-                const { data, error } = await supabaseClient
+                const {data, error} = await supabaseClient
                     .from('users')
                     .select('id, name, isActive, default_solvetype, is_admin, auth_user_id')
                     .eq('isActive', true)
-                    .order('name', { ascending: true });
+                    .order('name', {ascending: true});
 
                 if (error) throw error;
                 usersList = data || [];
             } catch (err) {
                 console.warn("users取得失敗、フォールバック使用", err);
                 usersList = [
-                    { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
-                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' }
+                    {id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L'},
+                    {id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS'}
                 ];
             }
             initPlayers(playerCount);
@@ -3205,11 +3186,11 @@
                 const todayStart = new Date();
                 todayStart.setHours(0, 0, 0, 0);
 
-                const { data, error } = await supabaseClient
+                const {data, error} = await supabaseClient
                     .from('cube_solves')
                     .select('user_id, time_ms, solve_type, created_at, users(name)')
                     .gte('created_at', todayStart.toISOString())
-                    .order('time_ms', { ascending: true })
+                    .order('time_ms', {ascending: true})
                     .limit(100);
 
                 if (error) throw error;
@@ -3218,7 +3199,7 @@
                         name: item.users ? item.users.name : (usersList.find(u => u.id === item.user_id)?.name || '不明'),
                         time: item.time_ms / 1000,
                         solveType: item.solve_type || 'CROSS',
-                        date: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        date: new Date(item.created_at).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
                     }));
                     localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
                     renderLeaderboard();
@@ -3252,7 +3233,7 @@
 
             let authUserId = currentUser ? currentUser.id : null;
             if (supabaseClient && !authUserId) {
-                const { data: { session } } = await supabaseClient.auth.getSession();
+                const {data: {session}} = await supabaseClient.auth.getSession();
                 if (session && session.user) {
                     currentUser = session.user;
                     authUserId = session.user.id;
@@ -3275,7 +3256,7 @@
                 created_at: new Date().toISOString()
             }));
 
-            const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const nowStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
             finishedPlayers.forEach(p => {
                 localLeaderboard.push({
                     name: p.name,
@@ -3324,7 +3305,7 @@
 
             if (supabaseClient) {
                 try {
-                    const { error } = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
+                    const {error} = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
                     if (error) throw error;
                     showToast(isKidMode ? '自分の記録をクラウドに保存しました！ ✨' : `${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
                     await fetchTodayLeaderboardFromSupabase();
