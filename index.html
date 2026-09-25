@@ -2226,7 +2226,11 @@
 
         // --- プレイヤー初期化 ---
         function initPlayers(count) {
+<<<<<<< Updated upstream
             playerCount = count;
+=======
+            console.log(count);
+>>>>>>> Stashed changes
             players = [];
             timerGrid.innerHTML = '';
             finishOrder = 0;
@@ -2326,6 +2330,7 @@
                 });
             });
 
+<<<<<<< Updated upstream
             document.querySelectorAll('.cancel-slot-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -2421,6 +2426,27 @@
                 ao5Val.textContent = formatTime(avgMs);
             } else {
                 ao5Val.textContent = `あと${5 - solves.length}回`;
+=======
+            const countControls = document.getElementById('player-count-controls');
+            if (!isSoloKidMode) {
+                const saveBtn = document.getElementById('save-all-btn');
+                if (saveBtn) saveBtn.innerHTML = '💾 自分の記録を保存！';
+                const mgmtBtn = document.getElementById('cube-mgmt-btn');
+                if (mgmtBtn) mgmtBtn.classList.add('hidden');
+                if (countControls) {
+                    countControls.style.opacity = '0.5';
+                    countControls.style.pointerEvents = 'none';
+                }
+            } else {
+                const saveBtn = document.getElementById('save-all-btn');
+                if (saveBtn) saveBtn.innerHTML = '💾 全員の記録を保存！';
+                const mgmtBtn = document.getElementById('cube-mgmt-btn');
+                if (mgmtBtn) mgmtBtn.classList.remove('hidden');
+                if (countControls) {
+                    countControls.style.opacity = '1';
+                    countControls.style.pointerEvents = 'auto'; // ← クリック可能に復帰
+                }
+>>>>>>> Stashed changes
             }
         }
 
@@ -3283,6 +3309,18 @@
                     unlockAchievement('multi_battle', p.name);
                 });
             }
+
+            // 人数切り替えボタン（1人〜10人）のクリックイベント
+            document.querySelectorAll('.player-count-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.currentTarget.blur();
+                    // 子ども（一般ユーザー）の場合は変更を制限
+                    if (currentUserPublicData && !currentUserPublicData.is_admin) return;
+                    const count = parseInt(e.currentTarget.dataset.count);
+                    console.log("count = " + count);
+                    setPlayerCount(count);
+                });
+            });
 
             if (supabaseClient) {
                 try {
