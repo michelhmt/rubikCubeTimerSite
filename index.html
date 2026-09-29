@@ -147,7 +147,7 @@
                             <div class="flex items-center gap-2">
                                 <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
                                 <span
-                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.2</span>
+                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.3</span>
                             </div>
                             <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                 スペースキー長押し（0.3秒）またはボタン長押しでスタート！
@@ -402,7 +402,7 @@
         <div
             class="badge badge-neutral border border-base-content/20 text-xs font-mono font-bold py-1 px-2.5 shadow-xl opacity-80 hover:opacity-100 transition-opacity flex items-center gap-1 bg-base-100/90 backdrop-blur-sm select-none">
             <span>🏷️</span>
-            <span class="text-warning font-black">v1.6.2</span>
+            <span class="text-warning font-black">v1.6.3</span>
         </div>
     </aside>
 
@@ -703,7 +703,7 @@
 
     <script>
         // アプリケーション・バージョン管理
-        const APP_VERSION = 'v1.6.2';
+        const APP_VERSION = 'v1.6.3';
 
         // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
@@ -1955,17 +1955,29 @@
             }, 2500);
         }
 
+        // --- 無駄な手順（同一軸の連続回転）を自動除外するスクランブル生成関数 ---
         function generateScramble() {
             const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
+            // 各面の軸定義（U/D=0, L/R=1, F/B=2）
+            const axis = { 'U': 0, 'D': 0, 'L': 1, 'R': 1, 'F': 2, 'B': 2 };
             const modifiers = ['', "'", '2'];
             const length = 20;
             let scramble = [];
             let lastMove = '';
+            let secondLastMove = '';
+
             for (let i = 0; i < length; i++) {
                 let move;
                 do {
                     move = moves[Math.floor(Math.random() * moves.length)];
-                } while (move === lastMove);
+                } while (
+                    // ① 直前と同じ面は不可 (例: U U は不可)
+                    move === lastMove ||
+                    // ② 直前と2手前が同じ軸で、今回も同じ軸は不可 (例: U D U' などの無駄を防止)
+                    (axis[move] === axis[lastMove] && axis[move] === axis[secondLastMove])
+                );
+
+                secondLastMove = lastMove;
                 lastMove = move;
                 const mod = modifiers[Math.floor(Math.random() * modifiers.length)];
                 scramble.push(move + mod);
