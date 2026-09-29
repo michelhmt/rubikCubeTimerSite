@@ -147,7 +147,7 @@
                             <div class="flex items-center gap-2">
                                 <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー</h1>
                                 <span
-                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.1</span>
+                                    class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.2</span>
                             </div>
                             <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                 スペースキー長押し（0.3秒）またはボタン長押しでスタート！
@@ -402,7 +402,7 @@
         <div
             class="badge badge-neutral border border-base-content/20 text-xs font-mono font-bold py-1 px-2.5 shadow-xl opacity-80 hover:opacity-100 transition-opacity flex items-center gap-1 bg-base-100/90 backdrop-blur-sm select-none">
             <span>🏷️</span>
-            <span class="text-warning font-black">v1.6.1</span>
+            <span class="text-warning font-black">v1.6.2</span>
         </div>
     </aside>
 
@@ -703,7 +703,7 @@
 
     <script>
         // アプリケーション・バージョン管理
-        const APP_VERSION = 'v1.6.1';
+        const APP_VERSION = 'v1.6.2';
 
         // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
@@ -845,13 +845,6 @@
         }
 
         let localLeaderboard = [];
-        try {
-            const savedBoard = localStorage.getItem('cube_today_leaderboard');
-            if (savedBoard) localLeaderboard = JSON.parse(savedBoard);
-        } catch (e) {
-            console.warn("ローカルランキングの復元に失敗しました", e);
-        }
-
         let lastRegisteredUserIds = [];
         try {
             const savedRecentUsers = localStorage.getItem('cube_recent_user_ids');
@@ -871,35 +864,7 @@
             { id: 'lucky_double', title: 'ゾロ目の奇跡', desc: 'ミリ秒の下3桁がゾロ目（.333など）！', icon: '🎯' }
         ];
 
-        function getTodayKey() {
-            const now = new Date();
-            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        }
-
         let todayAchievementCounts = {};
-        function loadTodayAchievements() {
-            try {
-                const todayKey = getTodayKey();
-                const savedData = localStorage.getItem(`cube_achievements_${todayKey}`);
-                todayAchievementCounts = savedData ? JSON.parse(savedData) : {};
-
-                let isDataModified = false;
-                if (todayAchievementCounts['first_solve'] && typeof todayAchievementCounts['first_solve'] === 'object') {
-                    Object.keys(todayAchievementCounts['first_solve']).forEach(name => {
-                        if (todayAchievementCounts['first_solve'][name] > 1) {
-                            todayAchievementCounts['first_solve'][name] = 1;
-                            isDataModified = true;
-                        }
-                    });
-                }
-                if (isDataModified) {
-                    localStorage.setItem(`cube_achievements_${todayKey}`, JSON.stringify(todayAchievementCounts));
-                }
-            } catch (e) {
-                todayAchievementCounts = {};
-            }
-        }
-        loadTodayAchievements();
 
         let usersList = [];
         const SOLVE_TYPES = ['CROSS', '完全一面', 'F2L', 'OLL', 'PLL(LBL)', 'PLL(CFOP)'];
@@ -1638,7 +1603,7 @@
         const authGuideText = document.getElementById('auth-guide-text');
         const relinkInviteBtn = document.getElementById('relink-invite-btn');
 
-        // 初回合言葉入力モーダル
+        // 初初回合言葉入力モーダル
         const inviteCodeModal = document.getElementById('invite-code-modal');
         const inputInviteCode = document.getElementById('input-invite-code');
         const submitInviteCodeBtn = document.getElementById('submit-invite-code-btn');
@@ -2405,16 +2370,6 @@
                 }
             }
 
-            if (solves.length === 0 && localLeaderboard) {
-                const userObj = usersList.find(u => u.id === userId);
-                const uName = userObj ? userObj.name : null;
-                if (uName) {
-                    solves = localLeaderboard
-                        .filter(r => r.name === uName && r.solveType === solveType)
-                        .map(r => Math.round(r.time * 1000));
-                }
-            }
-
             if (solves.length > 0) {
                 pbVal.textContent = formatTime(Math.min(...solves));
             } else {
@@ -2990,6 +2945,69 @@
             showToast('タイマーをリセットしました', 'warning');
         });
 
+        // --- Supabaseからのデータ動的集計による「かくとく実績」描写 ---
+        async function fetchTodayAchievementsFromSupabase() {
+            if (!supabaseClient) {
+                renderAchievements();
+                return;
+            }
+
+            try {
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+
+                const { data, error } = await supabaseClient
+                    .from('cube_solves')
+                    .select('user_id, time_ms, created_at')
+                    .gte('created_at', todayStart.toISOString());
+
+                if (error) throw error;
+
+                todayAchievementCounts = {};
+
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const userObj = usersList.find(u => String(u.id) === String(item.user_id));
+                        const name = userObj ? userObj.name : '不明';
+                        const timeSec = item.time_ms / 1000;
+
+                        // 1. はじめの一歩
+                        if (!todayAchievementCounts['first_solve']) todayAchievementCounts['first_solve'] = {};
+                        todayAchievementCounts['first_solve'][name] = 1;
+
+                        // 2. 1分のカベ突破 (< 60s)
+                        if (timeSec < 60) {
+                            if (!todayAchievementCounts['sub_60']) todayAchievementCounts['sub_60'] = {};
+                            todayAchievementCounts['sub_60'][name] = (todayAchievementCounts['sub_60'][name] || 0) + 1;
+                        }
+
+                        // 3. スピードスター (< 30s)
+                        if (timeSec < 30) {
+                            if (!todayAchievementCounts['sub_30']) todayAchievementCounts['sub_30'] = {};
+                            todayAchievementCounts['sub_30'][name] = (todayAchievementCounts['sub_30'][name] || 0) + 1;
+                        }
+
+                        // 4. 神タイム降臨 (< 20s)
+                        if (timeSec < 20) {
+                            if (!todayAchievementCounts['sub_20']) todayAchievementCounts['sub_20'] = {};
+                            todayAchievementCounts['sub_20'][name] = (todayAchievementCounts['sub_20'][name] || 0) + 1;
+                        }
+
+                        // 5. ゾロ目の奇跡 (ミリ秒がゾロ目)
+                        const millisPart = Math.floor(item.time_ms % 1000);
+                        if (millisPart >= 111 && millisPart % 111 === 0) {
+                            if (!todayAchievementCounts['lucky_double']) todayAchievementCounts['lucky_double'] = {};
+                            todayAchievementCounts['lucky_double'][name] = (todayAchievementCounts['lucky_double'][name] || 0) + 1;
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn("実績集計エラー:", err);
+            }
+
+            renderAchievements();
+        }
+
         function renderAchievements() {
             achievementList.innerHTML = '';
             let totalTodayUnlocks = 0;
@@ -3068,43 +3086,6 @@
             }
         }
 
-        function unlockAchievement(id, playerName) {
-            const ach = ACHIEVEMENTS.find(a => a.id === id);
-            if (!ach || !playerName) return;
-            if (!todayAchievementCounts[id]) todayAchievementCounts[id] = {};
-
-            const currentCount = todayAchievementCounts[id][playerName] || 0;
-
-            if (id === 'first_solve' && currentCount >= 1) return;
-
-            const newCount = currentCount + 1;
-            todayAchievementCounts[id][playerName] = newCount;
-
-            try {
-                const todayKey = getTodayKey();
-                localStorage.setItem(`cube_achievements_${todayKey}`, JSON.stringify(todayAchievementCounts));
-            } catch (e) {
-                console.warn("実績保存エラー", e);
-            }
-
-            renderAchievements();
-            if (id === 'first_solve') {
-                showToast(`🎉【${playerName}】が「${ach.title}」を達成！ ✨`, 'warning');
-            } else {
-                showToast(`🎉【${playerName}】が「${ach.title}」を達成！ (きょう ${newCount} 回目)`, 'warning');
-            }
-        }
-
-        function checkSolveAchievements(timeSec, playerName) {
-            if (timeSec < 60) unlockAchievement('sub_60', playerName);
-            if (timeSec < 30) unlockAchievement('sub_30', playerName);
-            if (timeSec < 20) unlockAchievement('sub_20', playerName);
-            const millisPart = Math.floor((timeSec * 1000) % 1000);
-            if (millisPart >= 111 && millisPart % 111 === 0) {
-                unlockAchievement('lucky_double', playerName);
-            }
-        }
-
         function renderLeaderboard() {
             leaderboardList.innerHTML = '';
             if (!localLeaderboard || localLeaderboard.length === 0) {
@@ -3180,6 +3161,7 @@
             initPlayers(playerCount);
         }
 
+        // --- 今日のベスト (Supabaseから安全に取得) ---
         async function fetchTodayLeaderboardFromSupabase() {
             if (!supabaseClient) return;
             try {
@@ -3188,20 +3170,29 @@
 
                 const { data, error } = await supabaseClient
                     .from('cube_solves')
-                    .select('user_id, time_ms, solve_type, created_at, users(name)')
+                    .select('user_id, time_ms, solve_type, created_at')
                     .gte('created_at', todayStart.toISOString())
                     .order('time_ms', { ascending: true })
                     .limit(100);
 
                 if (error) throw error;
+
                 if (data && data.length > 0) {
-                    localLeaderboard = data.map(item => ({
-                        name: item.users ? item.users.name : (usersList.find(u => u.id === item.user_id)?.name || '不明'),
-                        time: item.time_ms / 1000,
-                        solveType: item.solve_type || 'CROSS',
-                        date: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    }));
-                    localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
+                    localLeaderboard = data.map(item => {
+                        const userObj = usersList.find(u => String(u.id) === String(item.user_id));
+                        const name = userObj ? userObj.name : '不明';
+
+                        return {
+                            name: name,
+                            time: item.time_ms / 1000,
+                            solveType: item.solve_type || 'CROSS',
+                            date: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        };
+                    });
+
+                    renderLeaderboard();
+                } else {
+                    localLeaderboard = [];
                     renderLeaderboard();
                 }
             } catch (err) {
@@ -3256,23 +3247,6 @@
                 created_at: new Date().toISOString()
             }));
 
-            const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            finishedPlayers.forEach(p => {
-                localLeaderboard.push({
-                    name: p.name,
-                    time: parseFloat((p.elapsedTime / 1000).toFixed(3)),
-                    solveType: p.solveType,
-                    date: nowStr
-                });
-            });
-
-            try {
-                localStorage.setItem('cube_today_leaderboard', JSON.stringify(localLeaderboard));
-            } catch (err) {
-                console.warn("ローカル保存エラー", err);
-            }
-            renderLeaderboard();
-
             lastRegisteredUserIds = Array.from(new Set(finishedPlayers.map(p => p.userId).filter(Boolean)));
             try {
                 localStorage.setItem('cube_recent_user_ids', JSON.stringify(lastRegisteredUserIds));
@@ -3280,35 +3254,15 @@
                 console.warn("前回メンバー保存エラー", err);
             }
 
-            finishedPlayers.forEach(p => {
-                const timeSec = parseFloat((p.elapsedTime / 1000).toFixed(3));
-                unlockAchievement('first_solve', p.name);
-                checkSolveAchievements(timeSec, p.name);
-            });
-            if (finishedPlayers.length >= 3) {
-                finishedPlayers.forEach(p => {
-                    unlockAchievement('multi_battle', p.name);
-                });
-            }
-
-            // 人数切り替えボタン（1人〜10人）のクリックイベント
-            document.querySelectorAll('.player-count-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.currentTarget.blur();
-                    // 子ども（一般ユーザー）の場合は変更を制限
-                    if (currentUserPublicData && !currentUserPublicData.is_admin) return;
-                    const count = parseInt(e.currentTarget.dataset.count);
-                    console.log("count = " + count);
-                    setPlayerCount(count);
-                });
-            });
-
             if (supabaseClient) {
                 try {
                     const { error } = await supabaseClient.from('cube_solves').insert(recordsForSupabase);
                     if (error) throw error;
                     showToast(isKidMode ? '自分の記録をクラウドに保存しました！ ✨' : `${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
+
+                    // 保存成功後にリアルタイムにSupabaseから再取得
                     await fetchTodayLeaderboardFromSupabase();
+                    await fetchTodayAchievementsFromSupabase();
                 } catch (err) {
                     console.error(err);
                     showToast(err.message || 'クラウド保存に失敗しました', 'error');
@@ -3318,15 +3272,12 @@
             }
 
             initPlayers(playerCount);
-            //refreshScramble();
+            // ※保存後のスクランブル再生成は行わない（測定完了時のスクランブルをそのまま維持）
             statusBanner.textContent = 'スペース長押し（0.3秒）またはボタン長押しでスタート準備';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto';
         });
 
         window.addEventListener('load', async () => {
-            renderAchievements();
-            renderLeaderboard();
-
             const savedScrambleSize = localStorage.getItem('cube_scramble_font_size') || 'md';
             applyScrambleFontSize(savedScrambleSize);
 
@@ -3344,8 +3295,11 @@
             refreshScramble();
             await initAuth();
             await initOnlineMultiplayer();
+
+            // ①ユーザー一覧を先に取得 ➔ ②ランキング・実績を安全にロード
             await fetchActiveUsersFromSupabase();
             await fetchTodayLeaderboardFromSupabase();
+            await fetchTodayAchievementsFromSupabase();
         });
     </script>
 </body>
