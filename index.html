@@ -3351,7 +3351,8 @@
             }
 
             initPlayers(playerCount);
-            // ※保存後のスクランブル再生成は行わない（測定完了時のスクランブルをそのまま維持）
+            // 記録保存後に次のスクランブルを生成する
+            refreshScramble();
             statusBanner.textContent = 'スペース長押し（0.3秒）またはボタン長押しでスタート準備';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto';
         });
