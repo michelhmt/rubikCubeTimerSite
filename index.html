@@ -1882,6 +1882,7 @@
                     await updateAuthUI(session ? session.user : null);
                     if (event === 'SIGNED_IN') {
                         fetchActiveUsersFromSupabase();
+                        await fetchChampionCountsFromSupabase();//今日のベスの取得回数を表示するために追加
                         fetchTodayLeaderboardFromSupabase();
                         fetchTodayAchievementsFromSupabase();
                     }
@@ -3192,14 +3193,19 @@
                 const count = solveCountMap.get(item.name) || 1;
                 const countBadge = `<span class="badge badge-neutral badge-xs text-[9px] font-bold text-base-content/70 px-1 py-0.5 ml-1 shrink-0">${count}回測定</span>`;
 
+                //ここから---(今日のベストの取得回数を表示するため)
+                const champCount = championCounts[item.name] || 0;
+                const champBadge = champCount > 0 ? `<span class="badge badge-warning badge-xs text-[9px] font-black shadow-sm ml-1 px-1">👑 ${champCount}冠</span>` : '';
+                //ここまでを追加---(今日のベストの取得回数を表示するため)
                 const row = document.createElement('div');
                 row.className = `flex items-center justify-between p-2 rounded-lg bg-base-200 border border-base-300 text-xs font-black transition-all duration-300 ${index === 0 ? 'border-warning/50 bg-warning/5' : ''}`;
                 row.innerHTML = `
                     <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
                         <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
                         <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
-                        ${solveTypeBadge}
-                        ${countBadge}
+                        
+                        ${champBadge}
+                        ${solveTypeBadge}${countBadge}
                     </div>
                     <div class="flex items-center gap-2 shrink-0 ml-auto">
                         <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
@@ -3272,10 +3278,34 @@
                     renderLeaderboard();
                 } else {
                     localLeaderboard = [];
+                    let championCounts = {};
                     renderLeaderboard();
                 }
             } catch (err) {
                 console.warn("ランキング取得スキップ:", err);
+            }
+        }
+        // --- 王者カウント（デイリー1位獲得回数）の取得 ---
+        async function fetchChampionCountsFromSupabase() {
+            if (!supabaseClient) return;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('daily_champions')
+                    .select('user_id, first_place_count');
+
+                if (error) throw error;
+
+                championCounts = {};
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const userObj = usersList.find(u => String(u.id) === String(item.user_id));
+                        if (userObj) {
+                            championCounts[userObj.name] = item.first_place_count;
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn("王者カウント取得スキップ:", err);
             }
         }
 
@@ -3339,6 +3369,7 @@
                     if (error) throw error;
                     showToast(isKidMode ? '自分の記録をクラウドに保存しました！ ✨' : `${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
 
+                    await fetchChampionCountsFromSupabase();//今日のベストの1位獲得回数を再取得
                     // 保存成功後にリアルタイムにSupabaseから再取得
                     await fetchTodayLeaderboardFromSupabase();
                     await fetchTodayAchievementsFromSupabase();
@@ -3378,6 +3409,7 @@
                 await initOnlineMultiplayer();
 
                 await fetchActiveUsersFromSupabase();
+                await fetchChampionCountsFromSupabase();//今日のベストの1位獲得回数を取得
                 await fetchTodayLeaderboardFromSupabase();
                 await fetchTodayAchievementsFromSupabase();
             } catch (err) {
