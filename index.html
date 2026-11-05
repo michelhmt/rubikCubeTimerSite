@@ -1204,7 +1204,7 @@
                     onlineModalVsDisplay.innerHTML = `
                         <div class="grid grid-cols-5 items-center gap-1.5 py-1">
                             <div class="col-span-2 p-2 rounded-xl border text-center transition-all ${winner === p1.id ? 'bg-warning/20 border-warning shadow-md' : 'bg-base-100 border-base-300'}">
-                                <div class="text-[11px] font-black truncate">${p1.name} ${p1.id === myOnlineId ? '👤' : ''}</div>
+                                <div class="text-[11px] font-black truncate"><span class="online-player-name"></span> ${p1.id === myOnlineId ? '👤' : ''}</div>
                                 <div class="timer-font text-base sm:text-lg font-black ${p1.timeMs ? 'text-warning' : 'text-base-content/40'}">
                                     ${p1.timeMs ? formatTime(p1.timeMs) : '計測中...'}
                                 </div>
@@ -1214,7 +1214,7 @@
                             <div class="col-span-1 text-center font-black text-xs text-error animate-pulse">VS</div>
 
                             <div class="col-span-2 p-2 rounded-xl border text-center transition-all ${winner === p2.id ? 'bg-warning/20 border-warning shadow-md' : 'bg-base-100 border-base-300'}">
-                                <div class="text-[11px] font-black truncate">${p2.name} ${p2.id === myOnlineId ? '👤' : ''}</div>
+                                <div class="text-[11px] font-black truncate"><span class="online-player-name"></span> ${p2.id === myOnlineId ? '👤' : ''}</div>
                                 <div class="timer-font text-base sm:text-lg font-black ${p2.timeMs ? 'text-warning' : 'text-base-content/40'}">
                                     ${p2.timeMs ? formatTime(p2.timeMs) : '計測中...'}
                                 </div>
@@ -1229,7 +1229,7 @@
                         <div class="grid grid-cols-3 gap-1.5 py-1">
                             ${members.map((m, idx) => `
                                 <div class="p-1.5 rounded-lg border text-center ${m.timeMs && idx === 0 ? 'bg-warning/20 border-warning font-black' : 'bg-base-100 border-base-300'}">
-                                    <div class="text-[10px] font-black truncate">${m.name} ${m.id === myOnlineId ? '👤' : ''}</div>
+                                    <div class="text-[10px] font-black truncate"><span class="online-player-name"></span> ${m.id === myOnlineId ? '👤' : ''}</div>
                                     <div class="timer-font text-xs font-black ${m.timeMs ? 'text-warning' : 'text-base-content/40'}">
                                         ${m.timeMs ? formatTime(m.timeMs) : '計測中'}
                                     </div>
@@ -1240,6 +1240,10 @@
                     `;
                 }
             }
+
+            onlineModalVsDisplay.querySelectorAll('.online-player-name').forEach((element, index) => {
+                element.textContent = members[index].name;
+            });
 
             members.forEach((m, idx) => {
                 const isMe = m.id === myOnlineId;
@@ -1262,7 +1266,7 @@
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="text-sm shrink-0">${rankBadge}</span>
                         <div class="truncate">
-                            <span>${m.name}</span>
+                            <span class="online-member-name"></span>
                             ${isMe ? '<span class="badge badge-info badge-xs ml-1 text-[10px]">自分</span>' : ''}
                         </div>
                     </div>
@@ -1270,6 +1274,7 @@
                         ${timeDisplay}
                     </div>
                 `;
+                card.querySelector('.online-member-name').textContent = m.name;
                 onlineRoomMembersList.appendChild(card);
             });
         }
@@ -2013,7 +2018,7 @@
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `alert alert-${type} shadow-lg py-2 px-4 text-sm font-bold flex items-center gap-2 pointer-events-auto transition-all transform duration-300`;
-            toast.innerHTML = `<span>${message}</span>`;
+            toast.textContent = message;
             toastContainer.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
