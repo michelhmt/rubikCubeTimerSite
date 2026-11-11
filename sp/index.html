@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <!-- スマホでのスワイプ拡大・縮小を防止し、アプリライクにするためのviewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://sqknnxyumrbiunsllzcl.supabase.co wss://sqknnxyumrbiunsllzcl.supabase.co;">
     <title>マルチキューブタイマー (Mobile)</title>
 
     <!-- DaisyUI CDN -->
@@ -474,10 +475,20 @@
         // 2. ユーティリティとオーディオ
         // ==========================================
 
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function showToast(msg, type = 'info') {
             const t = document.createElement('div');
             t.className = `alert alert-${type} shadow-lg py-2 px-4 text-xs font-bold transition-all rounded-full w-max mx-auto`;
-            t.innerHTML = `<span>${msg}</span>`;
+            t.textContent = msg;
             toastContainer.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
         }
@@ -621,7 +632,7 @@
                 document.getElementById('auth-status-dot').className = "w-3 h-3 rounded-full bg-success absolute -top-1 -right-1 border-2 border-base-100";
 
                 if (supabaseClient) {
-                    const { data } = await supabaseClient.from('users').select('*').eq('auth_user_id', u.id).maybeSingle();
+                    const { data } = await supabaseClient.from('users').select('id, name, isActive, default_solvetype, is_admin, auth_user_id').eq('auth_user_id', u.id).maybeSingle();
                     if (data) {
                         linkedUserProfile = data; isKidMode = !data.is_admin;
                         hdName.textContent = data.name;
@@ -703,8 +714,8 @@
                 players.push(p);
 
                 let opts = `<option value="" disabled ${!p.userId ? 'selected' : ''}>名前を選択</option>`;
-                if (isK) opts = `<option value="${p.userId}" selected>${p.name}</option>`;
-                else usersList.forEach(u => opts += `<option value="${u.id}" ${p.userId === u.id ? 'selected' : ''}>${u.name}</option>`);
+                if (isK) opts = `<option value="${escapeHtml(p.userId)}" selected>${escapeHtml(p.name)}</option>`;
+                else usersList.forEach(u => opts += `<option value="${escapeHtml(u.id)}" ${p.userId === u.id ? 'selected' : ''}>${escapeHtml(u.name)}</option>`);
 
                 const d = document.createElement('div');
                 d.className = "card bg-base-100 shadow-sm border border-base-200 p-3 w-full shrink-0 relative";
@@ -950,7 +961,7 @@
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 await updateAuthUI(session ? session.user : null);
 
-                const { data } = await supabaseClient.from('users').select('*').eq('isActive', true).order('name');
+                const { data } = await supabaseClient.from('users').select('id, name, isActive, default_solvetype, is_admin, auth_user_id').eq('isActive', true).order('name');
                 if (data) usersList = data;
 
                 supabaseClient.auth.onAuthStateChange(async (e, s) => {
@@ -985,7 +996,7 @@
                     list.innerHTML += `
                         <div class="flex justify-between items-center p-2 bg-base-200 rounded-lg text-xs font-black mb-1.5 border border-base-300">
                             <div class="truncate">
-                                <span class="w-4 inline-block text-center">${rank === 1 ? '🥇' : rank}</span> ${n}
+                                <span class="w-4 inline-block text-center">${rank === 1 ? '🥇' : rank}</span> ${escapeHtml(n)}
                             </div>
                             <span class="text-warning timer-font text-sm">${formatTime(i.time_ms)}</span>
                         </div>`;

@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://sqknnxyumrbiunsllzcl.supabase.co wss://sqknnxyumrbiunsllzcl.supabase.co;">
     <title>マルチキューブタイマー</title>
     <!-- DaisyUI CDN -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -28,7 +30,7 @@
             font-family: 'Share Tech Mono', monospace;
         }
 
-        /* リキッドグリッド：画面幅とカード枚数に応じて自動で幅が伸縮・最適折り返し */
+        /* リキッドグリッド */
         .liquid-timer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
@@ -43,14 +45,12 @@
             }
         }
 
-        /* スマホ・タブレット（タッチ操作環境）でのみ表示、PC（マウス操作）では非表示 */
         @media (hover: hover) and (pointer: fine) {
             .touch-device-only {
                 display: none !important;
             }
         }
 
-        /* ライトモード時の文字・バッジ視認性向上スタイル */
         [data-theme="light"] .text-warning {
             color: #b45309 !important;
         }
@@ -78,7 +78,6 @@
             color: #ffffff !important;
         }
 
-        /* 全画面オーバーレイ内のSlotバッジ色 */
         .overlay-slot-badge {
             background-color: rgba(255, 255, 255, 0.12);
             color: currentColor;
@@ -91,7 +90,6 @@
             border: 1px solid rgba(0, 0, 0, 0.2);
         }
 
-        /* 実績カード用のアニメーション */
         @keyframes badgeUnlock {
             0% {
                 transform: scale(0.8);
@@ -112,7 +110,6 @@
             animation: badgeUnlock 0.5s ease-out forwards;
         }
 
-        /* スクロールバーのカスタマイズ */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -140,10 +137,9 @@
         <span class="text-warning font-black mt-4 tracking-wider">データを読み込んでいます...</span>
     </div>
 
-    <!-- メインコンテンツ（未ログイン時は完全に非表示にして隠す） -->
+    <!-- メインコンテンツ -->
     <div id="app-main-content" class="hidden w-full min-h-screen flex-col justify-between">
 
-        <!-- 画面横幅いっぱいを使用するリキッドコンテナ -->
         <div class="flex-1 flex flex-col lg:flex-row w-full p-2 sm:p-4 lg:p-6 gap-3 sm:gap-4 min-w-0">
 
             <!-- 左・中央メイン領域 -->
@@ -159,7 +155,7 @@
                                     <h1 class="text-xl sm:text-2xl font-black text-warning tracking-wide">マルチキューブタイマー
                                     </h1>
                                     <span
-                                        class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.6</span>
+                                        class="badge badge-warning badge-xs font-black tracking-wider py-1.5 px-2 shadow-sm">v1.6.7</span>
                                 </div>
                                 <p class="text-xs text-base-content/60 font-bold hidden sm:block">
                                     スペースキー長押し（0.3秒）またはボタン長押しでスタート！
@@ -169,7 +165,6 @@
 
                         <!-- 右上コントロール群 -->
                         <div class="flex items-center gap-1.5 sm:gap-2">
-                            <!-- オンライン対戦ボタン -->
                             <button id="online-battle-btn"
                                 class="btn btn-sm btn-info font-black text-slate-900 flex items-center gap-1.5 shadow-sm">
                                 <span class="text-base">🌐</span>
@@ -177,7 +172,6 @@
                                 <span id="online-status-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
                             </button>
 
-                            <!-- キューブ管理ボタン（管理者にのみ表示） -->
                             <button id="cube-mgmt-btn"
                                 class="btn btn-sm btn-outline btn-warning font-bold flex items-center gap-1.5 shadow-sm hidden">
                                 <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -191,27 +185,23 @@
                                 <span class="hidden sm:inline">キューブ管理</span>
                             </button>
 
-                            <!-- モード表示バッジ -->
                             <div id="mode-badge"
                                 class="badge badge-outline badge-info font-bold py-3 px-3 transition-colors hidden md:inline-flex">
                                 ソロモード
                             </div>
 
-                            <!-- サウンドON/OFFボタン -->
                             <button id="sound-toggle-btn"
                                 class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
                                 title="サウンド切り替え">
                                 <span id="sound-icon" class="text-base">🔊</span>
                             </button>
 
-                            <!-- テーマ切り替えトグル（Dark / Light） -->
                             <button id="theme-toggle-btn"
                                 class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning"
                                 title="テーマ切り替え (ダーク/ライト)">
                                 <span id="theme-icon" class="text-base">☀️</span>
                             </button>
 
-                            <!-- 歯車（設定・ログイン）ボタン -->
                             <button id="settings-btn"
                                 class="btn btn-circle btn-sm btn-ghost border border-base-content/20 hover:border-warning relative"
                                 title="ログイン・設定">
@@ -229,22 +219,21 @@
                             <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider">3x3x3
                                 スクランブル</span>
                             <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-                                <!-- スクランブル文字サイズ調整ボタングループ -->
                                 <div
                                     class="flex items-center gap-0.5 bg-base-200/80 p-0.5 rounded-lg border border-base-300">
                                     <span class="text-[10px] font-black text-base-content/60 px-1">文字:</span>
                                     <button type="button"
                                         class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                        data-size="sm" title="小さめ">小</button>
+                                        data-size="sm">小</button>
                                     <button type="button"
                                         class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                        data-size="md" title="標準">中</button>
+                                        data-size="md">中</button>
                                     <button type="button"
                                         class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                        data-size="lg" title="大きめ">大</button>
+                                        data-size="lg">大</button>
                                     <button type="button"
                                         class="scramble-size-btn btn btn-xs btn-ghost px-1.5 min-h-0 h-6 text-[11px] font-bold"
-                                        data-size="xl" title="特大">特大</button>
+                                        data-size="xl">特大</button>
                                 </div>
 
                                 <label class="label cursor-pointer p-0 gap-1.5 flex items-center">
@@ -252,9 +241,8 @@
                                     <input type="checkbox" id="toggle-scramble-images"
                                         class="toggle toggle-warning toggle-xs" />
                                 </label>
-                                <button id="new-scramble-btn" class="btn btn-ghost btn-xs text-primary font-bold">
-                                    🔄 新しい配置
-                                </button>
+                                <button id="new-scramble-btn" class="btn btn-ghost btn-xs text-primary font-bold">🔄
+                                    新しい配置</button>
                             </div>
                         </div>
 
@@ -277,13 +265,11 @@
 
                 <!-- タイマーエリア -->
                 <div class="my-3 sm:my-4 flex-1 flex flex-col justify-center items-center min-w-0 w-full">
-                    <!-- 状態ガイドバナー -->
                     <div id="status-banner"
                         class="text-center mb-3 font-bold text-sm text-base-content/60 py-1.5 px-4 bg-base-200/50 rounded-xl max-w-md mx-auto transition-all">
                         スペース長押し（0.3秒）またはボタン長押しでスタート準備
                     </div>
 
-                    <!-- 長押しスタートボタン（タッチデバイス専用） -->
                     <div class="w-full flex justify-center mb-4 touch-device-only">
                         <button id="touch-start-btn"
                             class="btn btn-warning btn-outline btn-md sm:btn-wide w-full max-w-md font-black shadow-lg flex items-center justify-center gap-2 select-none touch-none active:scale-95 transition-all text-sm sm:text-base border-2 py-3">
@@ -292,14 +278,12 @@
                         </button>
                     </div>
 
-                    <!-- プレイヤーカードグリッド -->
                     <div id="timer-grid" class="liquid-timer-grid items-stretch w-full"></div>
                 </div>
 
                 <!-- 下部コントロールパネル -->
                 <footer
                     class="card bg-base-100 border border-base-200 p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
-                    <!-- 人数切り替えボタン群 (デフォルト1人) -->
                     <div id="player-count-container"
                         class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                         <div class="flex items-center gap-1.5">
@@ -332,7 +316,6 @@
                         </div>
                     </div>
 
-                    <!-- アクションボタン群 -->
                     <div class="flex items-center gap-2 w-full xl:w-auto">
                         <button id="reset-all-btn"
                             class="btn btn-outline btn-neutral btn-sm font-bold flex-1 xl:flex-none">
@@ -346,10 +329,8 @@
                 </footer>
             </section>
 
-            <!-- 右側サイドバー：実績 ＆ ランキング ＆ キューブプレビュー -->
+            <!-- 右側サイドバー -->
             <aside class="w-full lg:w-80 xl:w-96 flex flex-col gap-3 shrink-0">
-
-                <!-- 実績アコーディオン -->
                 <details id="achievement-details"
                     class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                     <summary
@@ -369,7 +350,6 @@
                     </div>
                 </details>
 
-                <!-- 今日のランキングアコーディオン -->
                 <details id="leaderboard-details"
                     class="card bg-base-100 border border-base-200 shadow-xl group overflow-hidden">
                     <summary
@@ -383,14 +363,12 @@
                     </summary>
                     <div class="p-3 pt-1 border-t border-base-200/50 flex flex-col max-h-[350px]">
                         <div id="leaderboard-list" class="overflow-y-auto space-y-1.5 flex-1 pr-1 mt-1">
-                            <div class="text-center text-xs text-base-content/50 py-4">
-                                タイムを測定して保存すると<br>ここにランクインするよ！
+                            <div class="text-center text-xs text-base-content/50 py-4">タイムを測定して保存すると<br>ここにランクインするよ！
                             </div>
                         </div>
                     </div>
                 </details>
 
-                <!-- スクランブル完成図プレビュー -->
                 <div id="cube-preview-card"
                     class="card bg-base-100 border border-base-200 shadow-xl p-3 flex flex-col items-center shrink-0">
                     <div class="flex items-center justify-between w-full mb-1">
@@ -408,25 +386,22 @@
                         回し終わったあとの形があっているか確認しよう！
                     </div>
                 </div>
-
             </aside>
         </div>
 
-        <!-- 画面右下端の固定バージョン表示バッジ -->
         <aside aria-label="Version" class="fixed bottom-2 right-2 z-40">
             <div
                 class="badge badge-neutral border border-base-content/20 text-xs font-mono font-bold py-1 px-2.5 shadow-xl opacity-80 hover:opacity-100 transition-opacity flex items-center gap-1 bg-base-100/90 backdrop-blur-sm select-none">
                 <span>🏷️</span>
-                <span class="text-warning font-black">v1.6.6</span>
+                <span class="text-warning font-black">v1.6.7</span>
             </div>
         </aside>
 
-    </div> <!-- /#app-main-content -->
+    </div>
 
     <!-- 全画面タイマーオーバーレイ -->
     <div id="mobile-timer-overlay"
         class="fixed inset-0 bg-base-300 z-50 hidden flex-col justify-between p-4 sm:p-6 lg:p-8 select-none touch-manipulation">
-        <!-- 上部ヘッダーバー -->
         <div class="flex items-center justify-between w-full shrink-0 border-b border-base-content/10 pb-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl animate-pulse">🧩</span>
@@ -447,9 +422,7 @@
             </div>
         </div>
 
-        <!-- 中央メインコンテンツ（左: 特大タイマー / 右: 確定ゴールリスト） -->
         <div class="flex-1 flex flex-col lg:flex-row items-center justify-between my-2 gap-4 lg:gap-8 min-h-0 w-full">
-            <!-- 左・中央：特大デジタルタイマー -->
             <div class="flex-1 flex flex-col items-center justify-center w-full min-h-0 py-4 pointer-events-none">
                 <div id="overlay-timer-text"
                     class="timer-font text-7xl sm:text-9xl md:text-[11rem] lg:text-[14rem] font-black text-warning tracking-wider leading-none drop-shadow-2xl">
@@ -464,7 +437,6 @@
                 </div>
             </div>
 
-            <!-- 右側：ゴールした子の縦並びリスト -->
             <div
                 class="w-full lg:w-80 xl:w-96 bg-base-100/90 backdrop-blur-md rounded-2xl border border-base-200 p-3 sm:p-4 shadow-2xl flex flex-col max-h-56 lg:max-h-[75vh] shrink-0 pointer-events-auto">
                 <div class="flex items-center justify-between border-b border-base-200 pb-2 mb-2 shrink-0">
@@ -481,30 +453,26 @@
             </div>
         </div>
 
-        <!-- 下部ナビゲーションヒント -->
         <div
             class="text-center text-[11px] sm:text-xs text-base-content/40 font-bold shrink-0 pt-2 border-t border-base-content/10">
             全員がゴールすると自動で名前入力画面に切り替わります（キーボード: ESCキーで手動終了）
         </div>
     </div>
 
-    <!-- トースト通知コンテナ -->
     <div id="toast-container" class="toast toast-top toast-center z-50 pointer-events-none"></div>
 
-    <!-- 認証・ログイン用モーダル（ログイン & 新規登録タブ対応） -->
+    <!-- 認証モーダル -->
     <dialog id="auth-modal" class="modal">
         <div class="modal-box bg-base-100 border border-base-200 shadow-2xl max-w-sm">
             <div class="flex items-center justify-between pb-2 border-b border-base-200">
                 <h3 class="font-black text-lg text-warning flex items-center gap-2">
                     <span>⚙️</span> アカウント設定
                 </h3>
-                <!-- 未ログイン時は✕ボタンを隠す -->
                 <form method="dialog">
                     <button id="auth-modal-close-btn" class="btn btn-sm btn-circle btn-ghost">✕</button>
                 </form>
             </div>
 
-            <!-- 未ログイン時のフォーム（タブ切り替え: ログイン / 新規登録） -->
             <div id="login-section" class="py-3 space-y-3">
                 <div class="tabs tabs-boxed bg-base-200 p-1">
                     <button id="auth-tab-login" type="button"
@@ -539,7 +507,6 @@
                 </button>
             </div>
 
-            <!-- ログイン済みの表示セクション -->
             <div id="logged-in-section" class="py-4 space-y-3 hidden">
                 <div class="p-3 bg-success/10 border border-success/30 rounded-xl flex items-center gap-3">
                     <span class="text-2xl">✅</span>
@@ -562,25 +529,21 @@
                 </button>
             </div>
         </div>
-
-        <!-- 背景クリックでモーダルを閉じるためのフォーム要素 -->
-        <!-- JSで未ログイン時のクリックイベントをブロックし、閉じられないように制御しています -->
         <form method="dialog" class="modal-backdrop" id="auth-modal-backdrop">
             <button>close</button>
         </form>
     </dialog>
 
-    <!-- 初回合言葉（招待コード）入力モーダル -->
+    <!-- 合言葉入力モーダル -->
     <dialog id="invite-code-modal" class="modal">
         <div class="modal-box bg-base-100 border border-warning shadow-2xl max-w-sm text-center">
             <span class="text-4xl inline-block mb-1">🍎</span>
             <h3 class="font-black text-lg text-warning mb-1">合言葉を入力してね！</h3>
             <p class="text-xs text-base-content/70 font-bold leading-relaxed mb-3">
-                先生からもらった「合言葉（例: <span class="text-warning">りんご48</span> や <span
-                    class="text-warning">パンダ72</span>）」を入力すると、学童の過去のタイムと合体するよ！
+                先生からもらった「合言葉（8桁の数字）」を入力すると、学童の過去のタイムと合体するよ！
             </p>
             <div class="space-y-3">
-                <input type="text" id="input-invite-code" placeholder="例: ギター34"
+                <input type="text" id="input-invite-code" placeholder="例: 12345678"
                     class="input input-bordered input-md w-full font-black text-center text-lg focus:border-warning tracking-wide" />
                 <div id="invite-code-error-msg"
                     class="text-xs text-error font-bold hidden p-2 bg-error/10 rounded-lg border border-error/20"></div>
@@ -635,7 +598,6 @@
                 </form>
             </div>
 
-            <!-- 入室前セクション -->
             <div id="online-join-section" class="py-4 space-y-3">
                 <p class="text-xs text-base-content/70 font-semibold leading-relaxed">
                     同じ合言葉（ルーム名）を入力した友達と、まったく同じスクランブルでリアルタイムに対戦できます！
@@ -661,7 +623,6 @@
                 </button>
             </div>
 
-            <!-- 入室中セクション -->
             <div id="online-room-section" class="py-3 space-y-3 hidden">
                 <div class="p-2.5 bg-base-200/90 border border-base-300 rounded-xl text-center">
                     <div class="text-[10px] font-bold text-base-content/50 uppercase mb-0.5">🎲 共通スクランブル</div>
@@ -723,32 +684,36 @@
     </dialog>
 
     <script>
-        // アプリケーション・バージョン管理
-        const APP_VERSION = 'v1.6.6';
+        const APP_VERSION = 'v1.6.7';
 
-        // --- DOM Elements (Main wrapper & Auth components) ---
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         const appMainContent = document.getElementById('app-main-content');
         const authModalCloseBtn = document.getElementById('auth-modal-close-btn');
         const authModalBackdrop = document.getElementById('auth-modal-backdrop');
         const initialLoading = document.getElementById('initial-loading');
 
-        // --- Web Audio API によるシンセサイズ音（ピッ音）---
         let audioCtx = null;
         let isSoundEnabled = localStorage.getItem('cube_sound_enabled') !== 'false';
 
         function initAudioContext() {
             if (!audioCtx) {
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                if (AudioContextClass) {
-                    audioCtx = new AudioContextClass();
-                }
+                if (AudioContextClass) audioCtx = new AudioContextClass();
             }
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
         }
 
-        // スタート音（ピッ！: 高めの周波数 988Hz）
         function playStartBeep() {
             if (!isSoundEnabled) return;
             initAudioContext();
@@ -757,7 +722,7 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
                 osc.connect(gain);
@@ -769,7 +734,6 @@
             }
         }
 
-        // 個別ストップ音（ピッ！ 1位はピピッと華やかに）
         function playStopBeep(rank = 1) {
             if (!isSoundEnabled) return;
             initAudioContext();
@@ -779,7 +743,7 @@
                     const osc1 = audioCtx.createOscillator();
                     const gain1 = audioCtx.createGain();
                     osc1.type = 'sine';
-                    osc1.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
+                    osc1.frequency.setValueAtTime(1046.5, audioCtx.currentTime);
                     gain1.gain.setValueAtTime(0.25, audioCtx.currentTime);
                     gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
                     osc1.connect(gain1);
@@ -790,7 +754,7 @@
                     const osc2 = audioCtx.createOscillator();
                     const gain2 = audioCtx.createGain();
                     osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(1318.5, audioCtx.currentTime + 0.09); // E6
+                    osc2.frequency.setValueAtTime(1318.5, audioCtx.currentTime + 0.09);
                     gain2.gain.setValueAtTime(0.3, audioCtx.currentTime + 0.09);
                     gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
                     osc2.connect(gain2);
@@ -801,7 +765,7 @@
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
                     osc.connect(gain);
@@ -814,7 +778,6 @@
             }
         }
 
-        // --- テーマ切り替え処理 (Dark / Light) ---
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
         const themeIcon = document.getElementById('theme-icon');
 
@@ -837,14 +800,11 @@
             });
         }
 
-        // --- サウンド切り替えボタン ---
         const soundToggleBtn = document.getElementById('sound-toggle-btn');
         const soundIcon = document.getElementById('sound-icon');
 
         function updateSoundUI() {
-            if (soundIcon) {
-                soundIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
-            }
+            if (soundIcon) soundIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
         }
         updateSoundUI();
 
@@ -859,7 +819,6 @@
             });
         }
 
-        // --- Supabase設定 ---
         const SUPABASE_URL = "https://sqknnxyumrbiunsllzcl.supabase.co";
         const SUPABASE_KEY = "sb_publishable_QKQjNX4H8SLKclkvH8zrUg_DQOeLl_I";
         let supabaseClient = null;
@@ -881,7 +840,6 @@
         }
 
         let expandedSlots = new Set();
-
         let ACHIEVEMENTS = [
             { id: 'first_solve', title: 'はじめの一歩', desc: 'タイマーで記録を保存した！', icon: '🧩' },
             { id: 'sub_60', title: '1分のカベ突破', desc: '60秒未満でそろえた！', icon: '⏱️' },
@@ -892,27 +850,24 @@
         ];
 
         let todayAchievementCounts = {};
-
+        let championCounts = {};
         let usersList = [];
         const SOLVE_TYPES = ['CROSS', '完全一面', 'F2L', 'OLL', 'PLL(LBL)', 'PLL(CFOP)'];
 
-        // --- 状態変数 ---
         let playerCount = 1;
         let players = [];
         let spacePressTimer = null;
         let isReady = false;
-        let globalState = 'IDLE'; // 'IDLE' | 'HOLDING' | 'READY' | 'RUNNING'
+        let globalState = 'IDLE';
         let currentScrambleMoves = [];
         let canStopTouch = false;
         let isTouchStarted = false;
         let finishOrder = 0;
 
-        // ログイン・権限状態
-        let currentUser = null;          // Supabase Auth User
-        let linkedUserProfile = null;    // users テーブルの紐付けレコード
-        let isKidMode = false;           // 子ども個別アカウント時: true
+        let currentUser = null;
+        let linkedUserProfile = null;
+        let isKidMode = false;
 
-        // DOM要素
         const timerGrid = document.getElementById('timer-grid');
         const countButtons = document.querySelectorAll('.player-count-btn');
         const playerCountContainer = document.getElementById('player-count-container');
@@ -944,7 +899,6 @@
         const overlayScrambleHint = document.getElementById('overlay-scramble-hint');
         const overlayStatusSummary = document.getElementById('overlay-status-summary');
 
-        // 実績・ランキングアコーディオン
         const achievementDetails = document.getElementById('achievement-details');
         const leaderboardDetails = document.getElementById('leaderboard-details');
 
@@ -959,7 +913,6 @@
             });
         }
 
-        // --- キューブ管理機能 ---
         const cubeMgmtBtn = document.getElementById('cube-mgmt-btn');
         const cubeMgmtModal = document.getElementById('cube-mgmt-modal');
         const cubeMgmtList = document.getElementById('cube-mgmt-list');
@@ -967,7 +920,6 @@
         const cubeMgmtRefreshBtn = document.getElementById('cube-mgmt-refresh-btn');
         let cubesData = [];
 
-        // --- オンライン対戦機能 ---
         const onlineBattleBtn = document.getElementById('online-battle-btn');
         const onlineBattleModal = document.getElementById('online-battle-modal');
         const onlineStatusDot = document.getElementById('online-status-dot');
@@ -1025,9 +977,7 @@
 
         function canUseWebSocket() {
             try {
-                if (window.location && window.location.hostname.includes('usercontent.goog')) {
-                    return false;
-                }
+                if (window.location && window.location.hostname.includes('usercontent.goog')) return false;
                 return typeof WebSocket !== 'undefined';
             } catch (e) {
                 return false;
@@ -1035,7 +985,7 @@
         }
 
         function handleIncomingScramble(payload) {
-            if (payload && payload.scramble) {
+            if (payload && payload.scramble && typeof payload.scramble === 'string') {
                 currentScrambleMoves = payload.scramble.split(' ');
                 scrambleDisplay.textContent = payload.scramble;
                 renderScrambleImages();
@@ -1052,13 +1002,13 @@
         }
 
         function handleIncomingSolve(payload) {
-            if (payload && payload.userId && payload.timeMs) {
+            if (payload && payload.userId && typeof payload.timeMs === 'number' && payload.timeMs >= 300) {
                 if (onlineRoomMembers[payload.userId]) {
                     onlineRoomMembers[payload.userId].timeMs = payload.timeMs;
                     onlineRoomMembers[payload.userId].status = 'finished';
                 }
                 renderOnlineRoomMembers();
-                showToast(`⚡️️【${payload.name}】がゴール！ (${formatTime(payload.timeMs)})`, "warning");
+                showToast(`⚡【${escapeHtml(payload.name || 'ゲスト')}】がゴール！ (${formatTime(payload.timeMs)})`, "warning");
             }
         }
 
@@ -1132,7 +1082,7 @@
                                     timeMs: null,
                                     status: 'ready'
                                 };
-                                showToast(`👋「${p.name}」が対戦ルームに入室しました！`, "info");
+                                showToast(`👋「${escapeHtml(p.name)}」が対戦ルームに入室しました！`, "info");
                                 renderOnlineRoomMembers();
                             }
                         })
@@ -1155,7 +1105,7 @@
                         }
                     });
                 } catch (err) {
-                    console.warn("Supabase Realtime 通信をスキップしました (ローカルモード):", err);
+                    console.warn("Supabase Realtime スキップ:", err);
                 }
             }
 
@@ -1210,9 +1160,7 @@
                                 </div>
                                 ${winner === p1.id ? '<span class="badge badge-warning badge-xs font-black text-[9px]">👑 WINNER!</span>' : (winner ? '<span class="badge badge-ghost badge-xs text-[9px]">LOSE</span>' : '')}
                             </div>
-
                             <div class="col-span-1 text-center font-black text-xs text-error animate-pulse">VS</div>
-
                             <div class="col-span-2 p-2 rounded-xl border text-center transition-all ${winner === p2.id ? 'bg-warning/20 border-warning shadow-md' : 'bg-base-100 border-base-300'}">
                                 <div class="text-[11px] font-black truncate"><span class="online-player-name"></span> ${p2.id === myOnlineId ? '👤' : ''}</div>
                                 <div class="timer-font text-base sm:text-lg font-black ${p2.timeMs ? 'text-warning' : 'text-base-content/40'}">
@@ -1242,7 +1190,7 @@
             }
 
             onlineModalVsDisplay.querySelectorAll('.online-player-name').forEach((element, index) => {
-                element.textContent = members[index].name;
+                if (members[index]) element.textContent = members[index].name;
             });
 
             members.forEach((m, idx) => {
@@ -1446,29 +1394,7 @@
         async function fetchCubeManagementData() {
             if (!currentUser) {
                 cubeMgmtSummary.innerHTML = `<span class="text-error font-black">🔒 未ログイン状態です</span>`;
-                cubeMgmtList.innerHTML = `
-                    <div class="card bg-base-200/80 border border-base-300 p-5 text-center flex flex-col items-center gap-3">
-                        <span class="text-4xl">🔒</span>
-                        <div class="space-y-1">
-                            <h4 class="font-black text-base sm:text-lg text-warning">Supabaseにログインしていません</h4>
-                            <p class="text-xs text-base-content/70 max-w-sm mx-auto">
-                                キューブ管理機能を利用するには、アカウント設定からSupabaseにログインしてください。
-                            </p>
-                        </div>
-                        <button id="open-login-from-mgmt-btn" class="btn btn-warning btn-sm font-black text-slate-900 shadow mt-1">
-                            🔑 ログイン画面を開く
-                        </button>
-                    </div>
-                `;
-                const openLoginBtn = document.getElementById('open-login-from-mgmt-btn');
-                if (openLoginBtn) {
-                    openLoginBtn.addEventListener('click', (e) => {
-                        e.currentTarget.blur();
-                        cubeMgmtModal.close();
-                        if (authModal.open) authModal.close();
-                        authModal.showModal();
-                    });
-                }
+                cubeMgmtList.innerHTML = `<div class="card bg-base-200/80 p-5 text-center">ログインしてください</div>`;
                 return;
             }
 
@@ -1477,8 +1403,7 @@
             if (!supabaseClient) {
                 cubesData = [
                     { id: '1', cubeName: 'sel3', user_id: null, user_name: null },
-                    { id: '2', cubeName: '356M', user_id: null, user_name: null },
-                    { id: '3', cubeName: 'maglev14_1', user_id: 'mock-1', user_name: 'けんた' }
+                    { id: '2', cubeName: '356M', user_id: null, user_name: null }
                 ];
                 renderCubeManagementUI();
                 return;
@@ -1487,14 +1412,14 @@
             try {
                 const { data, error } = await supabaseClient
                     .from('cube_management')
-                    .select('id, cubeName, user_id, user_name, supabase_Authid, created_at')
+                    .select('id, cubeName, user_id, user_name, "supabase_Authid", created_at')
                     .order('created_at', { ascending: true });
 
                 if (error) throw error;
                 cubesData = data || [];
                 renderCubeManagementUI();
             } catch (err) {
-                console.error("キューブ管理データの取得に失敗しました:", err);
+                console.error("キューブ管理データの取得失敗:", err);
                 showToast("キューブ一覧の取得に失敗しました", "error");
                 cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-error">データの読み込みに失敗しました</div>`;
             }
@@ -1502,6 +1427,7 @@
 
         function renderCubeManagementUI() {
             cubeMgmtList.innerHTML = '';
+            const isAdmin = linkedUserProfile && linkedUserProfile.is_admin;
 
             if (cubesData.length === 0) {
                 cubeMgmtList.innerHTML = `<div class="text-center py-6 text-sm text-base-content/50">登録されているキューブがありません</div>`;
@@ -1528,7 +1454,7 @@
 
                 const userOptionsHtml = usersList.map(u => {
                     const selected = u.id === cube.user_id ? 'selected' : '';
-                    return `<option value="${u.id}" ${selected}>${u.name}</option>`;
+                    return `<option value="${escapeHtml(u.id)}" ${selected}>${escapeHtml(u.name)}</option>`;
                 }).join('');
 
                 card.innerHTML = `
@@ -1536,23 +1462,23 @@
                         <span class="text-2xl shrink-0">${isUsing ? '🧩' : '📦'}</span>
                         <div class="min-w-0">
                             <div class="font-black text-sm text-base-content flex items-center gap-2 flex-wrap">
-                                <span class="text-warning text-base font-black tracking-wide">${cubeLabel}</span>
+                                <span class="text-warning text-base font-black tracking-wide">${escapeHtml(cubeLabel)}</span>
                                 <span class="badge ${isUsing ? 'badge-warning font-bold' : 'badge-ghost text-base-content/50'} badge-xs">
                                     ${isUsing ? '貸出中' : '空き'}
                                 </span>
                             </div>
                             <div class="text-xs text-base-content/70 font-bold mt-0.5">
-                                ${isUsing ? `使っている子: <span class="text-warning font-black underline decoration-warning/40 underline-offset-2">${userName}</span>` : '棚にあります（使えます）'}
+                                ${isUsing ? `使っている子: <span class="text-warning font-black underline decoration-warning/40 underline-offset-2">${escapeHtml(userName)}</span>` : '棚にあります（使えます）'}
                             </div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                        <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${cube.id}">
+                        <select class="cube-assign-select select select-bordered select-xs text-xs font-bold w-full sm:w-40 focus:border-warning ${isUsing ? 'border-warning/60' : ''}" data-cube-id="${escapeHtml(cube.id)}" ${!isAdmin ? 'disabled' : ''}>
                             <option value="" ${!isUsing ? 'selected' : ''}>-- 貸出先を選ぶ --</option>
                             ${userOptionsHtml}
                         </select>
-                        ${isUsing ? `
-                            <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${cube.id}" title="返却して空きにする">
+                        ${isUsing && isAdmin ? `
+                            <button class="cube-release-btn btn btn-xs btn-outline btn-error font-bold whitespace-nowrap" data-cube-id="${escapeHtml(cube.id)}" title="返却して空きにする">
                                 返却 📥
                             </button>
                         ` : ''}
@@ -1561,33 +1487,44 @@
                 cubeMgmtList.appendChild(card);
             });
 
-            document.querySelectorAll('.cube-assign-select').forEach(select => {
-                select.addEventListener('change', async (e) => {
-                    const cubeId = e.target.dataset.cubeId;
-                    const newUserId = e.target.value || null;
-                    e.target.blur();
-                    await updateCubeUser(cubeId, newUserId);
+            if (isAdmin) {
+                document.querySelectorAll('.cube-assign-select').forEach(select => {
+                    select.addEventListener('change', async (e) => {
+                        const cubeId = e.target.dataset.cubeId;
+                        const newUserId = e.target.value || null;
+                        e.target.blur();
+                        await updateCubeUser(cubeId, newUserId);
+                    });
                 });
-            });
 
-            document.querySelectorAll('.cube-release-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.currentTarget.blur();
-                    const cubeId = e.currentTarget.dataset.cubeId;
-                    await updateCubeUser(cubeId, null);
+                document.querySelectorAll('.cube-release-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.currentTarget.blur();
+                        const cubeId = e.currentTarget.dataset.cubeId;
+                        await updateCubeUser(cubeId, null);
+                    });
                 });
-            });
+            }
         }
 
         async function updateCubeUser(cubeId, userId) {
+            // クライアント側でも指導員（管理者）権限を事前確認
+            if (!currentUser || !linkedUserProfile || !linkedUserProfile.is_admin) {
+                showToast('キューブの貸出・返却操作は指導員（管理者）のみ可能です', 'error');
+                renderCubeManagementUI();
+                return;
+            }
+
             const assignedUser = usersList.find(u => u.id === userId);
             const userName = assignedUser ? assignedUser.name : null;
-            let authUserId = currentUser ? currentUser.id : null;
 
             if (supabaseClient) {
                 try {
-                    const updatePayload = { user_id: userId, user_name: userName };
-                    if (authUserId) updatePayload.supabase_Authid = authUserId;
+                    const updatePayload = {
+                        user_id: userId,
+                        user_name: userName,
+                        "supabase_Authid": currentUser.id
+                    };
 
                     const { error } = await supabaseClient
                         .from('cube_management')
@@ -1596,8 +1533,9 @@
 
                     if (error) throw error;
                 } catch (err) {
-                    console.error(err);
+                    console.error("キューブ更新エラー:", err);
                     showToast(`更新に失敗しました: ${err.message || ''}`, 'error');
+                    renderCubeManagementUI();
                     return;
                 }
             }
@@ -1636,34 +1574,22 @@
         const authGuideText = document.getElementById('auth-guide-text');
         const relinkInviteBtn = document.getElementById('relink-invite-btn');
 
-        // 初初回合言葉入力モーダル
         const inviteCodeModal = document.getElementById('invite-code-modal');
         const inputInviteCode = document.getElementById('input-invite-code');
         const submitInviteCodeBtn = document.getElementById('submit-invite-code-btn');
         const inviteCodeErrorMsg = document.getElementById('invite-code-error-msg');
 
-        // ESCキーでログイン画面を閉じられないようにする
         authModal.addEventListener('cancel', (e) => {
-            if (!currentUser) {
-                e.preventDefault();
-            }
+            if (!currentUser) e.preventDefault();
         });
-
-        // 背景クリック（送信イベント）でモーダルが閉じるのをブロック
         authModalBackdrop.addEventListener('submit', (e) => {
-            if (!currentUser) {
-                e.preventDefault();
-            }
+            if (!currentUser) e.preventDefault();
         });
-
-        // 念のためクリックイベントでもブロック
         authModalBackdrop.addEventListener('click', (e) => {
-            if (!currentUser) {
-                e.preventDefault();
-            }
+            if (!currentUser) e.preventDefault();
         });
 
-        let authMode = 'login'; // 'login' | 'signup'
+        let authMode = 'login';
 
         function setAuthTab(mode) {
             authMode = mode;
@@ -1687,9 +1613,7 @@
         async function updateAuthUI(user) {
             currentUser = user;
             if (user) {
-                // --- ログイン成功時：メイン画面を表示、モーダルを安全に閉じる ---
                 if (authModal.open) authModal.close();
-
                 appMainContent.classList.remove('hidden');
                 appMainContent.classList.add('flex');
                 authModalCloseBtn.classList.remove('hidden');
@@ -1699,10 +1623,8 @@
                 loggedInSection.classList.remove('hidden');
                 loggedInEmailText.textContent = user.email || '';
 
-                // ユーザー権限・紐付け状態の取得
                 await syncUserProfile(user);
             } else {
-                // --- 未ログイン時：メイン画面を完全に隠し、ログインモーダルを表示・固定 ---
                 appMainContent.classList.add('hidden');
                 appMainContent.classList.remove('flex');
                 authModalCloseBtn.classList.add('hidden');
@@ -1717,21 +1639,17 @@
                 isKidMode = false;
                 applyUserRoleMode();
 
-                if (!authModal.open) {
-                    authModal.showModal();
-                }
+                if (!authModal.open) authModal.showModal();
             }
         }
 
-        // ログインしたユーザーが「管理者」か「子ども」かを判定しUIを調整
         async function syncUserProfile(user) {
             if (!supabaseClient) return;
 
             try {
-                // 1. users テーブルから auth_user_id が一致する行を探す
                 const { data, error } = await supabaseClient
                     .from('users')
-                    .select('id, name, isActive, default_solvetype, is_admin, auth_user_id, invite_code')
+                    .select('id, name, "isActive", default_solvetype, is_admin, auth_user_id')
                     .eq('auth_user_id', user.id)
                     .maybeSingle();
 
@@ -1753,7 +1671,6 @@
                     }
                     applyUserRoleMode();
                 } else {
-                    // まだ users テーブルと紐付いていない子どもアカウントの場合
                     linkedUserProfile = null;
                     isKidMode = true;
                     loggedInUserNameText.textContent = '未紐付け';
@@ -1762,21 +1679,15 @@
                     relinkInviteBtn.classList.remove('hidden');
 
                     applyUserRoleMode();
-
-                    // 合言葉入力モーダルを自動ポップアップ
-                    setTimeout(() => {
-                        showInviteCodePrompt();
-                    }, 500);
+                    setTimeout(() => showInviteCodePrompt(), 500);
                 }
             } catch (err) {
                 console.warn("プロフィール同期エラー:", err);
             }
         }
 
-        // 子どもモードと管理者モードのUI切り替え
         function applyUserRoleMode() {
             if (isKidMode && linkedUserProfile) {
-                // --- 子どもアカウント時 ---
                 if (cubeMgmtBtn) cubeMgmtBtn.classList.add('hidden');
                 if (playerCountContainer) playerCountContainer.classList.add('opacity-40', 'pointer-events-none');
                 if (modeBadge) {
@@ -1784,12 +1695,9 @@
                     modeBadge.className = 'badge badge-info font-black py-3 px-3 shadow';
                 }
                 saveAllBtn.textContent = '💾 自分の記録を保存！';
-
-                // 人数は1人に強制
                 if (playerCount !== 1) setPlayerCount(1);
                 else initPlayers(1);
             } else if (linkedUserProfile && linkedUserProfile.is_admin) {
-                // --- 指導員・管理者アカウント時 ---
                 if (cubeMgmtBtn) cubeMgmtBtn.classList.remove('hidden');
                 if (playerCountContainer) playerCountContainer.classList.remove('opacity-40', 'pointer-events-none');
                 if (modeBadge) {
@@ -1799,8 +1707,7 @@
                 saveAllBtn.textContent = '💾 全員の記録を保存！';
                 initPlayers(playerCount);
             } else {
-                // --- ゲスト / 未ログイン時 ---
-                if (cubeMgmtBtn) cubeMgmtBtn.classList.remove('hidden');
+                if (cubeMgmtBtn) cubeMgmtBtn.classList.add('hidden');
                 if (playerCountContainer) playerCountContainer.classList.remove('opacity-40', 'pointer-events-none');
                 if (modeBadge) {
                     modeBadge.textContent = 'ソロモード';
@@ -1822,7 +1729,6 @@
             showInviteCodePrompt();
         });
 
-        // 合言葉の送信・照合（専用RPC関数を安全に呼び出し）
         submitInviteCodeBtn.addEventListener('click', async (e) => {
             e.currentTarget.blur();
             const code = (inputInviteCode.value || '').trim();
@@ -1843,20 +1749,17 @@
             inviteCodeErrorMsg.classList.add('hidden');
 
             try {
-                // 送信直前に最新のセッション状態を確実に再取得
                 const { data: sessionData, error: sessionErr } = await supabaseClient.auth.getSession();
-                if (sessionErr || !sessionData || !sessionData.session || !sessionData.session.user) {
-                    throw new Error('ログイン状態が確認できませんでした。お手数ですが、⚙️設定から再度ログインしてください。');
+                if (sessionErr || !sessionData?.session?.user) {
+                    throw new Error('ログイン状態が確認できませんでした。設定から再度ログインしてください。');
                 }
                 currentUser = sessionData.session.user;
 
-                // Supabase の link_kid_account 関数（SECURITY DEFINER）を呼び出して安全に照合・紐付け
                 const { data, error } = await supabaseClient.rpc('link_kid_account', {
                     p_invite_code: code
                 });
 
                 if (error) throw error;
-
                 if (!data || !data.success) {
                     throw new Error(data ? data.message : '紐付けに失敗しました');
                 }
@@ -1887,7 +1790,7 @@
                     await updateAuthUI(session ? session.user : null);
                     if (event === 'SIGNED_IN') {
                         fetchActiveUsersFromSupabase();
-                        await fetchChampionCountsFromSupabase();//今日のベスの取得回数を表示するために追加
+                        await fetchChampionCountsFromSupabase();
                         fetchTodayLeaderboardFromSupabase();
                         fetchTodayAchievementsFromSupabase();
                     }
@@ -1897,16 +1800,12 @@
             }
         }
 
-        // ★ 歯車マーク（設定・ログイン）ボタンの安全なクリック制御
         settingsBtn.addEventListener('click', (e) => {
             e.currentTarget.blur();
             authErrorMsg.classList.add('hidden');
-            if (!authModal.open) {
-                authModal.showModal();
-            }
+            if (!authModal.open) authModal.showModal();
         });
 
-        // ログインまたは新規登録ボタンクリック
         submitAuthActionBtn.addEventListener('click', async (e) => {
             e.currentTarget.blur();
             const email = authEmailInput.value.trim();
@@ -1933,13 +1832,11 @@
 
             try {
                 if (authMode === 'login') {
-                    // ログイン
                     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     showToast('🔑 ログインに成功しました！', 'success');
                     await updateAuthUI(data.user);
                 } else {
-                    // 新規登録
                     const { data, error } = await supabaseClient.auth.signUp({ email, password });
                     if (error) throw error;
                     showToast('🎉 アカウントを作成しました！合言葉を入力してね', 'success');
@@ -1972,9 +1869,8 @@
         });
 
         function buildNameOptionsHtml(slotId, selectedUserId = null) {
-            // 子どものアカウントの場合は自分の名前だけを表示
             if (isKidMode && linkedUserProfile) {
-                return `<option value="${linkedUserProfile.id}" selected>${linkedUserProfile.name} (自分)</option>`;
+                return `<option value="${escapeHtml(linkedUserProfile.id)}" selected>${escapeHtml(linkedUserProfile.name)} (自分)</option>`;
             }
 
             const isExpanded = expandedSlots.has(slotId);
@@ -1995,7 +1891,7 @@
             let html = `<option value="" disabled ${!selectedUserId ? 'selected' : ''}>名前をえらんでね</option>`;
             displayUsers.forEach(u => {
                 const isSelected = selectedUserId === u.id ? 'selected' : '';
-                html += `<option value="${u.id}" data-default-solve="${u.default_solvetype || 'CROSS'}" ${isSelected}>${u.name}</option>`;
+                html += `<option value="${escapeHtml(u.id)}" data-default-solve="${escapeHtml(u.default_solvetype || 'CROSS')}" ${isSelected}>${escapeHtml(u.name)}</option>`;
             });
 
             if (showExpandOption) {
@@ -2027,10 +1923,8 @@
             }, 2500);
         }
 
-        // --- 無駄な手順（同一軸の連続回転）を自動除外するスクランブル生成関数 ---
         function generateScramble() {
             const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
-            // 各面の軸定義（U/D=0, L/R=1, F/B=2）
             const axis = { 'U': 0, 'D': 0, 'L': 1, 'R': 1, 'F': 2, 'B': 2 };
             const modifiers = ['', "'", '2'];
             const length = 20;
@@ -2043,9 +1937,7 @@
                 do {
                     move = moves[Math.floor(Math.random() * moves.length)];
                 } while (
-                    // ① 直前と同じ面は不可 (例: U U は不可)
                     move === lastMove ||
-                    // ② 直前と2手前が同じ軸で、今回も同じ軸は不可 (例: U D U' などの無駄を防止)
                     (axis[move] === axis[lastMove] && axis[move] === axis[secondLastMove])
                 );
 
@@ -2074,12 +1966,20 @@
                 card.innerHTML = `
                     <div class="flex items-center justify-between w-full px-1.5 mb-1.5">
                         <span class="text-xs text-base-content/50 font-mono font-bold">${idx + 1}</span>
-                        <span class="badge badge-warning badge-sm font-black px-2">${move}</span>
+                        <span class="badge badge-warning badge-sm font-black px-2 scramble-badge"></span>
                     </div>
                     <div class="w-24 h-24 sm:w-28 sm:h-28 bg-base-300 rounded-lg flex items-center justify-center overflow-hidden p-1">
-                        <img src="${IMAGE_PATH_BASE}${imgIndex}.png" alt="${move}" class="w-full h-full object-contain pointer-events-none" />
+                        <img class="scramble-img w-full h-full object-contain pointer-events-none" />
                     </div>
                 `;
+                card.querySelector('.scramble-badge').textContent = move;
+                const imgEl = card.querySelector('.scramble-img');
+                if (imgIndex !== undefined) {
+                    imgEl.src = `${IMAGE_PATH_BASE}${imgIndex}.png`;
+                    imgEl.alt = move;
+                } else {
+                    imgEl.style.display = 'none';
+                }
                 scrambleImagesList.appendChild(card);
             });
         }
@@ -2096,7 +1996,6 @@
             refreshScramble();
         });
 
-        // --- スクランブル文字サイズ調整機能 ---
         const SCRAMBLE_SIZE_CLASSES = {
             sm: ['text-sm', 'sm:text-base', 'md:text-lg', 'py-0.5'],
             md: ['text-base', 'sm:text-xl', 'md:text-2xl', 'py-1'],
@@ -2131,19 +2030,13 @@
         scrambleSizeBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.currentTarget.blur();
-                const size = btn.dataset.size;
-                applyScrambleFontSize(size);
+                applyScrambleFontSize(btn.dataset.size);
             });
         });
 
-        // --- 3x3x3 キューブ描画 ---
         const CUBE_COLORS = {
-            W: '#ffffff', // 上面 (白)
-            Y: '#ffd000', // 下面 (黄)
-            G: '#00a651', // 正面 (緑)
-            B: '#0051ba', // 背面 (青)
-            O: '#ff5900', // 左面 (橙)
-            R: '#dc2626'  // 右面 (赤)
+            W: '#ffffff', Y: '#ffd000', G: '#00a651',
+            B: '#0051ba', O: '#ff5900', R: '#dc2626'
         };
 
         function createSolvedCube() {
@@ -2218,7 +2111,6 @@
 
             let stickerSvg = '';
 
-            // 1. 上面 (U: Whiteベース)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.U[r * 3 + c]] || '#ffffff';
@@ -2230,7 +2122,6 @@
                 }
             }
 
-            // 2. 正面 (F: Greenベース・左手前面)
             const fOrigX = cx - 3 * w;
             const fOrigY = cy - 1.5 * s;
             for (let r = 0; r < 3; r++) {
@@ -2244,7 +2135,6 @@
                 }
             }
 
-            // 3. 右面 (R: Redベース・右手前面)
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 3; c++) {
                     const color = CUBE_COLORS[cube.R[r * 3 + c]] || '#dc2626';
@@ -2269,7 +2159,7 @@
         }
 
         toggleScrambleImages.addEventListener('change', (e) => {
-            e.target.blur(); // スペース暴発ガード
+            e.target.blur();
             const isEnabled = e.target.checked;
             localStorage.setItem('cube_show_scramble_images', isEnabled ? 'true' : 'false');
             if (isEnabled) {
@@ -2321,7 +2211,7 @@
 
                     <div class="w-full mb-2">
                         <label class="text-[11px] font-bold text-base-content/60 block mb-1">👤 なまえ:</label>
-                        <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer ${isKidMode ? 'bg-base-200 font-black' : 'opacity-40 pointer-events-none'} rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" ${isKidMode ? 'disabled' : 'disabled'}>
+                        <select id="select-${p.id}" class="player-select select select-bordered select-md w-full font-black text-sm sm:text-base text-center focus:border-warning cursor-pointer ${isKidMode ? 'bg-base-200 font-black' : 'opacity-40 pointer-events-none'} rounded-xl shadow-inner py-1 h-11 min-h-[44px]" data-id="${p.id}" disabled>
                             ${optionsHtml}
                         </select>
                     </div>
@@ -2357,7 +2247,6 @@
                 `;
                 timerGrid.appendChild(card);
 
-                // 子どもモード時は初期状態でPBとao5をすぐロード
                 if (isKidMode && linkedUserProfile && i === 0) {
                     updatePlayerStatsDisplay(1, linkedUserProfile.id, p.solveType);
                 }
@@ -2484,7 +2373,7 @@
             if (card) {
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.85)';
-                setTimeout(() => { card.classList.add('hidden'); }, 250);
+                setTimeout(() => card.classList.add('hidden'), 250);
             }
             showToast(`スロット ${p.id} を除外しました`, 'info');
             if (globalState === 'RUNNING') checkAllFinished();
@@ -2533,7 +2422,6 @@
                 p.elapsedTime = 0;
                 p.isFinished = false;
 
-                // 子どもモードの場合は自分自身のIDと名前を保持
                 if (!isKidMode) {
                     p.userId = null;
                     p.name = '';
@@ -2661,12 +2549,8 @@
 
                 resetTouchButtonUI();
 
-                // === ここにあったスクランブル更新を削除（保存するまで維持） ===
-
                 if (onlineRoomName && onlineBattleModal && !onlineBattleModal.open) {
-                    setTimeout(() => {
-                        onlineBattleModal.showModal();
-                    }, 400);
+                    setTimeout(() => onlineBattleModal.showModal(), 400);
                 }
             }
         }
@@ -2684,7 +2568,6 @@
             }
         }
 
-        // --- モーダル内のスマホ用長押しスタートボタンの連携処理 ---
         if (onlineModalTouchStartBtn) {
             const startOnlineHold = (e) => {
                 if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -2746,7 +2629,6 @@
             onlineModalTouchStartBtn.addEventListener('contextmenu', e => e.preventDefault());
         }
 
-        // --- メイン画面の長押しスタートボタン処理 ---
         if (touchStartBtn) {
             const startHold = (e) => {
                 if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -2899,10 +2781,8 @@
             });
         }
 
-        // 人数設定ロジックの一元管理関数（UIと同期）
         function setPlayerCount(count) {
-            if (isKidMode) count = 1; // 子どもモードは1人固定
-
+            if (isKidMode) count = 1;
             if (count < 1) count = 1;
             if (count > 10) count = 10;
             if (playerCount === count) return;
@@ -2921,7 +2801,6 @@
             showToast(`${count}人モードに切り替えました 👥`, 'info');
         }
 
-        // キーボード操作（D: 人数増加 / C: 人数減少 / Space: タイマー）
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Escape') {
                 hideMobileFullscreenTimer();
@@ -2946,7 +2825,6 @@
             if (e.code !== 'Space' || e.repeat) return;
             if (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT') return;
 
-            // ボタンやトグルにフォーカスがある場合は強制解除
             if (document.activeElement.tagName === 'BUTTON' || document.activeElement.type === 'checkbox') {
                 document.activeElement.blur();
             }
@@ -3003,16 +2881,13 @@
             }
         });
 
-        // 人数変更ボタンクリックイベント
         countButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.currentTarget.blur();
-                const count = parseInt(e.currentTarget.dataset.count);
-                setPlayerCount(count);
+                setPlayerCount(parseInt(e.currentTarget.dataset.count));
             });
         });
 
-        // リセットボタン
         resetAllBtn.addEventListener('click', (e) => {
             e.currentTarget.blur();
             players.forEach(p => {
@@ -3030,7 +2905,6 @@
             showToast('タイマーをリセットしました', 'warning');
         });
 
-        // --- Supabaseからのデータ動的集計による「かくとく実績」描写 ---
         async function fetchTodayAchievementsFromSupabase() {
             if (!supabaseClient) {
                 renderAchievements();
@@ -3047,7 +2921,6 @@
                     .gte('created_at', todayStart.toISOString());
 
                 if (error) throw error;
-
                 todayAchievementCounts = {};
 
                 if (data && data.length > 0) {
@@ -3056,29 +2929,21 @@
                         const name = userObj ? userObj.name : '不明';
                         const timeSec = item.time_ms / 1000;
 
-                        // 1. はじめの一歩
                         if (!todayAchievementCounts['first_solve']) todayAchievementCounts['first_solve'] = {};
                         todayAchievementCounts['first_solve'][name] = 1;
 
-                        // 2. 1分のカベ突破 (< 60s)
                         if (timeSec < 60) {
                             if (!todayAchievementCounts['sub_60']) todayAchievementCounts['sub_60'] = {};
                             todayAchievementCounts['sub_60'][name] = (todayAchievementCounts['sub_60'][name] || 0) + 1;
                         }
-
-                        // 3. スピードスター (< 30s)
                         if (timeSec < 30) {
                             if (!todayAchievementCounts['sub_30']) todayAchievementCounts['sub_30'] = {};
                             todayAchievementCounts['sub_30'][name] = (todayAchievementCounts['sub_30'][name] || 0) + 1;
                         }
-
-                        // 4. 神タイム降臨 (< 20s)
                         if (timeSec < 20) {
                             if (!todayAchievementCounts['sub_20']) todayAchievementCounts['sub_20'] = {};
                             todayAchievementCounts['sub_20'][name] = (todayAchievementCounts['sub_20'][name] || 0) + 1;
                         }
-
-                        // 5. ゾロ目の奇跡 (ミリ秒がゾロ目)
                         const millisPart = Math.floor(item.time_ms % 1000);
                         if (millisPart >= 111 && millisPart % 111 === 0) {
                             if (!todayAchievementCounts['lucky_double']) todayAchievementCounts['lucky_double'] = {};
@@ -3115,11 +2980,8 @@
                             <span class="text-[10px] text-base-content/60 font-bold">今日の達成者:</span>
                             ${earnersEntries.map(([name, count]) => `
                                 <span class="badge badge-warning badge-xs font-black text-[10px] py-1 px-1.5 shadow-sm inline-flex items-center gap-1">
-                                    <span>${name}</span>
-                                    ${ach.id === 'first_solve'
-                            ? '<span class="text-[9px]">✨</span>'
-                            : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`
-                        }
+                                    <span>${escapeHtml(name)}</span>
+                                    ${ach.id === 'first_solve' ? '<span class="text-[9px]">✨</span>' : `<span class="bg-base-900/30 text-base-content text-[9px] px-1 rounded-full font-bold">${count}回</span>`}
                                 </span>
                             `).join('')}
                         </div>
@@ -3137,11 +2999,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="text-xs font-black text-warning">${ach.title}</div>
                                 <span class="text-[10px] font-black ${isUnlockedToday ? 'text-warning' : 'text-base-content/40'}">
-                                    ${isUnlockedToday
-                        ? (ach.id === 'first_solve'
-                            ? `${earnersEntries.length} 人が達成 ✨`
-                            : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`)
-                        : '🔒 未解除'}
+                                    ${isUnlockedToday ? (ach.id === 'first_solve' ? `${earnersEntries.length} 人が達成 ✨` : `計 ${earnersEntries.reduce((sum, [_, c]) => sum + c, 0)} 回達成 ✨`) : '🔒 未解除'}
                                 </span>
                             </div>
                             <div class="text-[10px] text-base-content/70 font-semibold leading-snug">${ach.desc}</div>
@@ -3162,7 +3020,7 @@
                     sortedKids.forEach(([name, count]) => {
                         const badge = document.createElement('span');
                         badge.className = "badge badge-neutral badge-xs font-bold text-[10px] py-1 px-1.5 flex items-center gap-1";
-                        badge.innerHTML = `<span>${name}</span><span class="text-warning font-black">${count}個</span>`;
+                        badge.innerHTML = `<span>${escapeHtml(name)}</span><span class="text-warning font-black">${count}個</span>`;
                         todayKidSummary.appendChild(badge);
                     });
                 } else {
@@ -3194,27 +3052,24 @@
             const sorted = Array.from(bestRecordsMap.values()).sort((a, b) => a.time - b.time);
             sorted.forEach((item, index) => {
                 const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
-                const solveTypeBadge = item.solveType ? `<span class="badge badge-outline badge-xs text-[9px] font-bold text-warning ml-1">${item.solveType}</span>` : '';
+                const solveTypeBadge = item.solveType ? `<span class="badge badge-outline badge-xs text-[9px] font-bold text-warning ml-1">${escapeHtml(item.solveType)}</span>` : '';
                 const count = solveCountMap.get(item.name) || 1;
                 const countBadge = `<span class="badge badge-neutral badge-xs text-[9px] font-bold text-base-content/70 px-1 py-0.5 ml-1 shrink-0">${count}回測定</span>`;
-
-                //ここから---(今日のベストの取得回数を表示するため)
                 const champCount = championCounts[item.name] || 0;
                 const champBadge = champCount > 0 ? `<span class="badge badge-warning badge-xs text-[9px] font-black shadow-sm ml-1 px-1">👑 ${champCount}冠</span>` : '';
-                //ここまでを追加---(今日のベストの取得回数を表示するため)
+
                 const row = document.createElement('div');
                 row.className = `flex items-center justify-between p-2 rounded-lg bg-base-200 border border-base-300 text-xs font-black transition-all duration-300 ${index === 0 ? 'border-warning/50 bg-warning/5' : ''}`;
                 row.innerHTML = `
                     <div class="flex items-center gap-1 min-w-0 flex-wrap sm:flex-nowrap">
                         <span class="w-5 text-center text-sm shrink-0">${rankMedal}</span>
-                        <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${item.name}</span>
-                        
+                        <span class="text-base-content truncate max-w-[75px] sm:max-w-[95px]">${escapeHtml(item.name)}</span>
                         ${champBadge}
                         ${solveTypeBadge}${countBadge}
                     </div>
                     <div class="flex items-center gap-2 shrink-0 ml-auto">
                         <span class="timer-font text-sm text-warning font-black">${formatTime(item.time * 1000)}</span>
-                        <span class="text-[10px] text-base-content/40 font-normal">${item.date || ''}</span>
+                        <span class="text-[10px] text-base-content/40 font-normal">${escapeHtml(item.date || '')}</span>
                     </div>
                 `;
                 leaderboardList.appendChild(row);
@@ -3225,8 +3080,7 @@
             if (!supabaseClient) {
                 usersList = [
                     { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
-                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' },
-                    { id: 'mock-3', name: 'あおい', isActive: true, default_solvetype: '完全一面' }
+                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' }
                 ];
                 initPlayers(playerCount);
                 return;
@@ -3235,7 +3089,7 @@
             try {
                 const { data, error } = await supabaseClient
                     .from('users')
-                    .select('id, name, isActive, default_solvetype, is_admin, auth_user_id')
+                    .select('id, name, "isActive", default_solvetype, is_admin, auth_user_id')
                     .eq('isActive', true)
                     .order('name', { ascending: true });
 
@@ -3243,15 +3097,10 @@
                 usersList = data || [];
             } catch (err) {
                 console.warn("users取得失敗、フォールバック使用", err);
-                usersList = [
-                    { id: 'mock-1', name: 'けんた', isActive: true, default_solvetype: 'F2L' },
-                    { id: 'mock-2', name: 'ゆうき', isActive: true, default_solvetype: 'CROSS' }
-                ];
             }
             initPlayers(playerCount);
         }
 
-        // --- 今日のベスト (Supabaseから安全に取得) ---
         async function fetchTodayLeaderboardFromSupabase() {
             if (!supabaseClient) return;
             try {
@@ -3279,18 +3128,15 @@
                             date: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                         };
                     });
-
-                    renderLeaderboard();
                 } else {
                     localLeaderboard = [];
-                    let championCounts = {};
-                    renderLeaderboard();
                 }
+                renderLeaderboard();
             } catch (err) {
                 console.warn("ランキング取得スキップ:", err);
             }
         }
-        // --- 王者カウント（デイリー1位獲得回数）の取得 ---
+
         async function fetchChampionCountsFromSupabase() {
             if (!supabaseClient) return;
             try {
@@ -3299,7 +3145,6 @@
                     .select('user_id, first_place_count');
 
                 if (error) throw error;
-
                 championCounts = {};
                 if (data && data.length > 0) {
                     data.forEach(item => {
@@ -3314,6 +3159,7 @@
             }
         }
 
+        // --- 記録保存処理 ---
         saveAllBtn.addEventListener('click', async (e) => {
             e.currentTarget.blur();
             const finishedPlayers = players.filter(p => !p.isCancelled && p.elapsedTime > 0);
@@ -3322,7 +3168,13 @@
                 return;
             }
 
-            // 子どもモードの場合は自分のIDが自動セットされる
+            // 0.3秒未満の不正・誤測定タイムのバリデーション
+            const invalidTimePlayers = finishedPlayers.filter(p => p.elapsedTime < 300);
+            if (invalidTimePlayers.length > 0) {
+                showToast('タイムが短すぎます（300ms以上必要です）', 'error');
+                return;
+            }
+
             if (isKidMode && linkedUserProfile) {
                 finishedPlayers.forEach(p => {
                     p.userId = linkedUserProfile.id;
@@ -3344,7 +3196,7 @@
                     authUserId = session.user.id;
                     await updateAuthUI(currentUser);
                 } else {
-                    showToast('⚠️ クラウドに保存するには、ログインが必要です', 'warning');
+                    showToast('⚠️ クラウドに保存するにはログインが必要です', 'warning');
                     authErrorMsg.textContent = 'タイムをクラウド保存するにはログインしてください';
                     authErrorMsg.classList.remove('hidden');
                     if (!authModal.open) authModal.showModal();
@@ -3357,7 +3209,7 @@
                 time_ms: Math.round(p.elapsedTime),
                 solve_type: p.solveType || 'CROSS',
                 scramble: p.scramble || currentScrambleMoves.join(' '),
-                supabase_Authid: authUserId,
+                "supabase_Authid": authUserId,
                 created_at: new Date().toISOString()
             }));
 
@@ -3374,20 +3226,19 @@
                     if (error) throw error;
                     showToast(isKidMode ? '自分の記録をクラウドに保存しました！ ✨' : `${recordsForSupabase.length}人分の記録をクラウドに保存しました！`, 'success');
 
-                    await fetchChampionCountsFromSupabase();//今日のベストの1位獲得回数を再取得
-                    // 保存成功後にリアルタイムにSupabaseから再取得
+                    await fetchChampionCountsFromSupabase();
                     await fetchTodayLeaderboardFromSupabase();
                     await fetchTodayAchievementsFromSupabase();
                 } catch (err) {
-                    console.error(err);
+                    console.error("保存失敗:", err);
                     showToast(err.message || 'クラウド保存に失敗しました', 'error');
+                    return;
                 }
             } else {
                 showToast(`${finishedPlayers.length}人分の記録を保存しました！`, 'success');
             }
 
             initPlayers(playerCount);
-            // 記録保存後に次のスクランブルを生成する
             refreshScramble();
             statusBanner.textContent = 'スペース長押し（0.3秒）またはボタン長押しでスタート準備';
             statusBanner.className = 'text-center mb-3 font-bold text-sm text-base-content/60 py-1 px-3 bg-base-200/50 rounded-lg max-w-md mx-auto';
@@ -3414,19 +3265,16 @@
                 await initOnlineMultiplayer();
 
                 await fetchActiveUsersFromSupabase();
-                await fetchChampionCountsFromSupabase();//今日のベストの1位獲得回数を取得
+                await fetchChampionCountsFromSupabase();
                 await fetchTodayLeaderboardFromSupabase();
                 await fetchTodayAchievementsFromSupabase();
             } catch (err) {
                 console.error("初期化エラー:", err);
             } finally {
-                // ロードが完了したら（エラー時含む）ローディング画面を安全にフェードアウト・透過
                 if (initialLoading) {
                     initialLoading.style.opacity = '0';
                     initialLoading.classList.add('pointer-events-none');
-                    setTimeout(() => {
-                        initialLoading.classList.add('hidden');
-                    }, 300);
+                    setTimeout(() => initialLoading.classList.add('hidden'), 300);
                 }
             }
         });
