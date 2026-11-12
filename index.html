@@ -984,32 +984,69 @@
             }
         }
 
+        // 修正後：安全なスクランブル受信処理
         function handleIncomingScramble(payload) {
-            if (payload && payload.scramble && typeof payload.scramble === 'string') {
-                currentScrambleMoves = payload.scramble.split(' ');
-                scrambleDisplay.textContent = payload.scramble;
-                renderScrambleImages();
-                updateCubePreview();
-                syncOnlineModalScramble();
-
-                Object.keys(onlineRoomMembers).forEach(k => {
-                    onlineRoomMembers[k].timeMs = null;
-                    onlineRoomMembers[k].status = 'ready';
-                });
-                renderOnlineRoomMembers();
-                showToast(`🎲 全員に共通スクランブルが配られました！`, "success");
+            // 1. 自分が計測中の場合は妨害を防ぐため無視
+            if (globalState === 'RUNNING') {
+                console.warn("計測中のため、受信したスクランブル変更を破棄しました。");
+                return;
             }
+
+            if (!payload || typeof payload.scramble !== 'string') return;
+
+            const moves = payload.scramble.trim().split(/\s+/);
+            // 2. ルービックキューブの標準スクランブル形式（15〜25手、正規の回転記号のみ）か検証
+            const validMoveRegex = /^[UDFBLR][2']?$/;
+            if (moves.length < 15 || moves.length > 25 || !moves.every(m => validMoveRegex.test(m))) {
+                console.warn("不正なスクランブル形式を受信したため破棄しました:", payload.scramble);
+                return;
+            }
+
+            currentScrambleMoves = moves;
+            scrambleDisplay.textContent = moves.join(' ');
+            renderScrambleImages();
+            updateCubePreview();
+            syncOnlineModalScramble();
+
+            Object.keys(onlineRoomMembers).forEach(k => {
+                onlineRoomMembers[k].timeMs = null;
+                onlineRoomMembers[k].status = 'ready';
+            });
+            renderOnlineRoomMembers();
+            showToast(`🎲 全員に共通スクランブルが配られました！`, "success");
         }
 
+        // 修正後：安全なゴール結果受信処理
         function handleIncomingSolve(payload) {
-            if (payload && payload.userId && typeof payload.timeMs === 'number' && payload.timeMs >= 300) {
-                if (onlineRoomMembers[payload.userId]) {
-                    onlineRoomMembers[payload.userId].timeMs = payload.timeMs;
-                    onlineRoomMembers[payload.userId].status = 'finished';
-                }
-                renderOnlineRoomMembers();
-                showToast(`⚡【${escapeHtml(payload.name || 'ゲスト')}】がゴール！ (${formatTime(payload.timeMs)})`, "warning");
+            if (!payload || !payload.userId) return;
+
+            // タイムが正当な数値（300ms〜1時間）か検証
+            const timeMs = Number(payload.timeMs);
+            if (!Number.isFinite(timeMs) || timeMs < 300 || timeMs > 3600000) {
+                console.warn("不正なタイムを受信したため無視しました:", payload);
+                return;
             }
+
+            // ニックネームの文字数を最大15文字に制限（長大な文字列によるUIクラッシュ防止）
+            const safeName = String(payload.name || 'ゲスト').trim().slice(0, 15);
+
+            if (onlineRoomMembers[payload.userId]) {
+                onlineRoomMembers[payload.userId].timeMs = timeMs;
+                onlineRoomMembers[payload.userId].name = safeName;
+                onlineRoomMembers[payload.userId].status = 'finished';
+            } else {
+                // 未知のユーザーからの通知でも最大30人までしか登録しない（メモリ枯渇防止）
+                if (Object.keys(onlineRoomMembers).length < 30) {
+                    onlineRoomMembers[payload.userId] = {
+                        id: String(payload.userId).slice(0, 36),
+                        name: safeName,
+                        timeMs: timeMs,
+                        status: 'finished'
+                    };
+                }
+            }
+            renderOnlineRoomMembers();
+            showToast(`⚡【${safeName}】がゴール！ (${formatTime(timeMs)})`, "warning");
         }
 
         function setupOnlineChannel(roomName, nickname) {
@@ -1266,31 +1303,35 @@
             });
         }
 
+        // 修正後：スクランブル配信ボタンの連打防止
         if (onlineBroadcastScrambleBtn) {
             onlineBroadcastScrambleBtn.addEventListener('click', (e) => {
                 e.currentTarget.blur();
                 if (!onlineRoomName) return;
+
+                // 3秒間のクールダウン（連打荒らし防止）
+                onlineBroadcastScrambleBtn.disabled = true;
+                setTimeout(() => {
+                    if (onlineBroadcastScrambleBtn) onlineBroadcastScrambleBtn.disabled = false;
+                }, 3000);
+
                 const newScrambleText = generateScramble().join(' ');
                 currentScrambleMoves = newScrambleText.split(' ');
                 scrambleDisplay.textContent = newScrambleText;
                 renderScrambleImages();
                 updateCubePreview();
 
-                if (onlineChannel) {
-                    try {
-                        onlineChannel.send({
-                            type: 'broadcast',
-                            event: 'new_scramble',
-                            payload: { scramble: newScrambleText }
-                        });
-                    } catch (err) { }
-                }
+                const broadcastPayload = {
+                    type: 'broadcast',
+                    event: 'new_scramble',
+                    payload: { scramble: newScrambleText }
+                };
 
+                if (onlineChannel) {
+                    try { onlineChannel.send(broadcastPayload); } catch (err) { }
+                }
                 if (onlineBroadcastChannel) {
-                    onlineBroadcastChannel.postMessage({
-                        type: 'new_scramble',
-                        payload: { scramble: newScrambleText }
-                    });
+                    try { onlineBroadcastChannel.postMessage(broadcastPayload); } catch (err) { }
                 }
 
                 syncOnlineModalScramble();
@@ -1851,6 +1892,7 @@
             }
         });
 
+        // 修正後：共用端末でも安全なログアウト処理
         submitLogoutBtn.addEventListener('click', async (e) => {
             e.currentTarget.blur();
             if (!supabaseClient) return;
@@ -1858,12 +1900,20 @@
             try {
                 const { error } = await supabaseClient.auth.signOut();
                 if (error) throw error;
+
+                // 共用端末対策：端末に記憶された直前メンバーや対戦キャッシュを初期化
+                localStorage.removeItem('cube_recent_user_ids');
+                localStorage.removeItem('cube_online_nickname');
+
                 showToast('ログアウトしました', 'info');
-                await updateAuthUI(null);
+
+                // ページを完全に再読み込みしてメモリ内のプレイヤー情報をリセット
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } catch (err) {
                 console.error(err);
                 showToast('ログアウトに失敗しました', 'error');
-            } finally {
                 submitLogoutBtn.disabled = false;
             }
         });
