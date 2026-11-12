@@ -1119,7 +1119,7 @@
                                     timeMs: null,
                                     status: 'ready'
                                 };
-                                showToast(`👋「${escapeHtml(p.name)}」が対戦ルームに入室しました！`, "info");
+                                showToast(`👋「${p.name}」が対戦ルームに入室しました！`, "info");
                                 renderOnlineRoomMembers();
                             }
                         })
@@ -3258,9 +3258,8 @@
                 user_id: p.userId,
                 time_ms: Math.round(p.elapsedTime),
                 solve_type: p.solveType || 'CROSS',
-                scramble: p.scramble || currentScrambleMoves.join(' '),
-                "supabase_Authid": authUserId,
-                created_at: new Date().toISOString()
+                scramble: p.scramble || currentScrambleMoves.join(' ')
+                // supabase_Authid と user_name は削除（DB側で自動かつ安全に補完される）
             }));
 
             lastRegisteredUserIds = Array.from(new Set(finishedPlayers.map(p => p.userId).filter(Boolean)));
